@@ -3,6 +3,11 @@ import { SORT_OPTIONS } from "~/composables/useCardSearch";
 
 const { searchQuery, cards, loading, loadingMore, error, hasMore, separateVariants, sortField, isAscending, searchCards, loadMore, setSort } = useCardSearch();
 
+const user = useSupabaseUser();
+const { activeBinder, binders, setActiveBinder } = useBinders();
+
+const quickAddStatus = ref({});
+
 // Search on load
 searchCards({ query: "rowlet" });
 
@@ -10,12 +15,61 @@ searchCards({ query: "rowlet" });
 watch(separateVariants, () => {
   searchCards();
 });
+
+function cardKey(card) {
+  return `${card.id}:${card.variant ?? "normal"}`;
+}
+
+async function quickAdd(card) {
+  if (!activeBinder.value) return;
+  const key = cardKey(card);
+  quickAddStatus.value = { ...quickAddStatus.value, [key]: "pending" };
+  try {
+    await $fetch(`/api/binders/${activeBinder.value.id}/items`, {
+      method: "POST",
+      body: {
+        cardId: card.id,
+        variant: card.variant ?? "normal",
+        card,
+      },
+    });
+    quickAddStatus.value = { ...quickAddStatus.value, [key]: "added" };
+    setTimeout(() => {
+      const next = { ...quickAddStatus.value };
+      delete next[key];
+      quickAddStatus.value = next;
+    }, 1200);
+  } catch (err) {
+    quickAddStatus.value = {
+      ...quickAddStatus.value,
+      [key]: err?.data?.statusMessage ?? "error",
+    };
+  }
+}
 </script>
 
 <template>
   <div class="page-container">
     <header class="search-header">
-      <h1 class="page-title">Pokémon Card Collection</h1>
+      <div class="title-row">
+        <h1 class="page-title">Pokémon Card Collection</h1>
+        <div class="title-actions">
+          <div v-if="user && binders.length" class="binder-selector">
+            <label for="active-binder">Active binder</label>
+            <select
+              id="active-binder"
+              :value="activeBinder?.id"
+              @change="setActiveBinder($event.target.value)"
+            >
+              <option v-for="b in binders" :key="b.id" :value="b.id">
+                {{ b.name }}{{ b.isDefault ? " (default)" : "" }}
+              </option>
+            </select>
+          </div>
+          <NuxtLink v-if="user" to="/binders" class="header-link">Binders</NuxtLink>
+          <AuthButton />
+        </div>
+      </div>
       <form class="search-form" @submit.prevent="searchCards()">
         <div class="search-input-wrapper">
           <UIcon name="i-lucide-search" class="search-icon" />
@@ -121,6 +175,23 @@ watch(separateVariants, () => {
             {{ card.formattedPrice }}
           </span>
         </div>
+        <div v-if="user" class="card-collection-row">
+          <button
+            type="button"
+            class="quick-add"
+            :disabled="!activeBinder || quickAddStatus[cardKey(card)] === 'pending'"
+            :title="activeBinder ? `Add to ${activeBinder.name}` : 'Create a binder first'"
+            @click="quickAdd(card)"
+          >
+            <span v-if="quickAddStatus[cardKey(card)] === 'pending'">…</span>
+            <span v-else-if="quickAddStatus[cardKey(card)] === 'added'">✓ Added</span>
+            <span v-else-if="quickAddStatus[cardKey(card)]" class="quick-add-error">
+              {{ quickAddStatus[cardKey(card)] }}
+            </span>
+            <span v-else>+ {{ activeBinder ? activeBinder.name : "No binder" }}</span>
+          </button>
+          <BinderPicker :card="card" :variant="card.variant ?? 'normal'" />
+        </div>
       </div>
     </div>
 
@@ -157,10 +228,54 @@ watch(separateVariants, () => {
   margin: 0 auto 2rem;
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.title-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.binder-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+  color: #9da8cf;
+}
+.binder-selector select {
+  padding: 0.45rem 0.6rem;
+  background: rgba(22, 33, 62, 0.9);
+  border: 1px solid #2f365a;
+  border-radius: 8px;
+  color: #d9e1ff;
+  font-size: 0.82rem;
+  max-width: 16rem;
+}
+.binder-selector select:focus {
+  outline: none;
+  border-color: #f5a623;
+}
+.header-link {
+  padding: 0.45rem 0.85rem;
+  background: rgba(22, 33, 62, 0.8);
+  border: 1px solid #2f365a;
+  border-radius: 999px;
+  color: #d9e1ff;
+  text-decoration: none;
+  font-size: 0.82rem;
+}
+.header-link:hover { border-color: #f5a623; color: #fff; }
+
 .page-title {
   font-size: 2rem;
   font-weight: 800;
-  margin-bottom: 1.25rem;
   background: linear-gradient(135deg, #f8d847, #f5a623, #e8792f);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -517,6 +632,34 @@ watch(separateVariants, () => {
   color: #666;
   font-weight: 400;
 }
+
+.card-collection-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 0.85rem 0.75rem;
+}
+.quick-add {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.45rem 0.7rem;
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.45);
+  border-radius: 8px;
+  color: #f5a623;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.quick-add:hover:not(:disabled) {
+  background: rgba(245, 166, 35, 0.25);
+  color: #fff;
+}
+.quick-add:disabled { opacity: 0.5; cursor: not-allowed; }
+.quick-add-error { color: #f87171; }
 
 /* Load More */
 .load-more-container {
