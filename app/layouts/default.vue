@@ -1,20 +1,15 @@
 <script setup>
-const open = ref(false)
+const user = useSupabaseUser();
+const open = ref(false);
 
-const links = [
+const items = computed(() => [
   [
-    {
-      label: 'Inicio',
-      icon: 'i-lucide-home',
-      to: '/',
-    },
-    {
-      label: 'Ejemplo',
-      icon: 'i-lucide-layout-dashboard',
-      to: '/example',
-    },
+    { label: "Search", icon: "i-lucide-search", to: "/" },
+    ...(user.value
+      ? [{ label: "Binders", icon: "i-lucide-library", to: "/binders" }]
+      : []),
   ],
-]
+]);
 </script>
 
 <template>
@@ -34,7 +29,7 @@ const links = [
       <template #default="{ collapsed }">
         <UNavigationMenu
           :collapsed="collapsed"
-          :items="links"
+          :items="items"
           orientation="vertical"
           tooltip
           popover
