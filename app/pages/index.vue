@@ -46,10 +46,15 @@ const activeSort = computed(() =>
 );
 
 const binderItems = computed(() =>
-  binders.value.map((b) => ({
-    label: b.isDefault ? `${b.name} (default)` : b.name,
-    value: b.id,
-  }))
+  binders.value.map((b) => {
+    let suffix = "";
+    if (b.mode === "custom") suffix = " (checklist)";
+    else if (b.isDefault) suffix = " (default)";
+    return {
+      label: `${b.name}${suffix}`,
+      value: b.id,
+    };
+  })
 );
 
 async function quickAdd(card) {
@@ -66,10 +71,11 @@ async function quickAdd(card) {
       },
     });
     quickAddStatus.value = { ...quickAddStatus.value, [key]: "added" };
+    const isCustom = activeBinder.value.mode === "custom";
     toast.add({
       color: "success",
       icon: "i-lucide-check-circle",
-      title: "Card added",
+      title: isCustom ? "Added to checklist" : "Card added",
       description: `${card.name} → ${activeBinder.value.name}`,
     });
     setTimeout(() => {

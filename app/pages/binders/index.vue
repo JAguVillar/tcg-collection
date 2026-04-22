@@ -21,8 +21,26 @@ const deleteDialog = overlay.create(
 
 const createOpen = ref(false);
 const createLoading = ref(false);
-const createState = reactive({ name: "", description: "", iconPokemon: null });
+const createState = reactive({
+  name: "",
+  description: "",
+  iconPokemon: null,
+  mode: "collection",
+});
 const createError = ref(null);
+
+const modeOptions = [
+  {
+    value: "collection",
+    label: "Collection",
+    description: "Track cards you already own.",
+  },
+  {
+    value: "custom",
+    label: "Custom checklist",
+    description: "Pick cards you want and mark them as you get them.",
+  },
+];
 
 const { options: pokemonOptions, pokemonSpriteUrl } = usePokemonIcons();
 
@@ -57,6 +75,7 @@ async function onCreate() {
       name: createState.name.trim(),
       description: createState.description?.trim() || null,
       iconPokemon: createState.iconPokemon || null,
+      mode: createState.mode,
     });
     toast.add({
       color: "success",
@@ -67,6 +86,7 @@ async function onCreate() {
     createState.name = "";
     createState.description = "";
     createState.iconPokemon = null;
+    createState.mode = "collection";
     createOpen.value = false;
   } catch (err) {
     createError.value =
@@ -212,6 +232,14 @@ async function onDelete(binder) {
             class="flex flex-col gap-4"
             @submit="onCreate"
           >
+            <UFormField label="Type" name="mode">
+              <URadioGroup
+                v-model="createState.mode"
+                :items="modeOptions"
+                value-key="value"
+              />
+            </UFormField>
+
             <UFormField label="Name" name="name" required>
               <UInput
                 v-model="createState.name"

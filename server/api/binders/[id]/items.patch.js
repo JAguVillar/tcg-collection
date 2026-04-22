@@ -1,6 +1,14 @@
 import { serverSupabaseClient } from "#supabase/server";
 import { requireUser } from "~~/server/utils/auth";
 
+// Toggle the owned/missing state of a checklist item in a custom binder.
+// Body: { cardId, variant?, owned: boolean }
+// Setting owned=true  -> quantity = 1 (have it)
+// Setting owned=false -> quantity = 0 (still missing)
+//
+// This endpoint only makes sense for custom binders. Collection binders should
+// use POST/DELETE to manage quantities.
+
 export default defineEventHandler(async (event) => {
   await requireUser(event);
   const binderId = getRouterParam(event, "id");
@@ -8,14 +16,13 @@ export default defineEventHandler(async (event) => {
 
   const cardId = body?.cardId;
   const variant = body?.variant ?? "normal";
-  const all = Boolean(body?.all);
-  const delta = Number.isFinite(body?.delta) ? Math.trunc(body.delta) : 1;
+  const owned = body?.owned;
 
   if (!cardId) {
     throw createError({ statusCode: 400, statusMessage: "cardId required" });
   }
-  if (!all && delta <= 0) {
-    throw createError({ statusCode: 400, statusMessage: "delta must be positive" });
+  if (typeof owned !== "boolean") {
+    throw createError({ statusCode: 400, statusMessage: "owned (boolean) required" });
   }
 
   const supabase = await serverSupabaseClient(event);
@@ -31,7 +38,12 @@ export default defineEventHandler(async (event) => {
   if (!binderRow) {
     throw createError({ statusCode: 404, statusMessage: "Binder not found" });
   }
-  const isCustom = binderRow.mode === "custom";
+  if (binderRow.mode !== "custom") {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "This endpoint is only for custom binders",
+    });
+  }
 
   const { data: existing, error: readErr } = await supabase
     .from("binder_items")
@@ -40,7 +52,6 @@ export default defineEventHandler(async (event) => {
     .eq("card_id", cardId)
     .eq("variant", variant)
     .maybeSingle();
-
   if (readErr) {
     throw createError({ statusCode: 500, statusMessage: readErr.message });
   }
@@ -48,26 +59,22 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Item not found" });
   }
 
-  // In custom binders a DELETE always removes the item from the checklist
-  // regardless of quantity; collection binders keep the legacy decrement flow.
-  if (isCustom || all || existing.quantity - delta <= 0) {
-    const { error } = await supabase.from("binder_items").delete().eq("id", existing.id);
-    if (error) {
-      throw createError({ statusCode: 500, statusMessage: error.message });
-    }
-    return { id: existing.id, quantity: 0, removed: true };
-  }
-
+  const nextQuantity = owned ? 1 : 0;
   const { data, error } = await supabase
     .from("binder_items")
-    .update({ quantity: existing.quantity - delta })
+    .update({ quantity: nextQuantity })
     .eq("id", existing.id)
-    .select("id, quantity")
+    .select("id, card_id, variant, quantity")
     .single();
 
   if (error) {
     throw createError({ statusCode: 500, statusMessage: error.message });
   }
 
-  return { id: data.id, quantity: data.quantity, removed: false };
+  return {
+    id: data.id,
+    cardId: data.card_id,
+    variant: data.variant,
+    quantity: data.quantity,
+  };
 });

@@ -20,8 +20,27 @@ export default defineEventHandler(async (event) => {
   if (typeof body?.iconPokemon === "string" || body?.iconPokemon === null) {
     patch.icon_pokemon = body.iconPokemon?.trim?.() || null;
   }
+  if (body?.mode === "custom" || body?.mode === "collection") {
+    patch.mode = body.mode;
+  }
 
   const supabase = await serverSupabaseClient(event);
+
+  if (patch.mode) {
+    const { count, error: countErr } = await supabase
+      .from("binder_items")
+      .select("id", { count: "exact", head: true })
+      .eq("binder_id", id);
+    if (countErr) {
+      throw createError({ statusCode: 500, statusMessage: countErr.message });
+    }
+    if ((count ?? 0) > 0) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: "Cannot change mode of a binder that already has cards",
+      });
+    }
+  }
 
   if (body?.isDefault === true) {
     const { error: clearErr } = await supabase
@@ -46,7 +65,7 @@ export default defineEventHandler(async (event) => {
     .from("binders")
     .update(patch)
     .eq("id", id)
-    .select("id, name, description, is_default, icon_pokemon, created_at, updated_at")
+    .select("id, name, description, is_default, icon_pokemon, mode, created_at, updated_at")
     .single();
 
   if (error) {
@@ -62,6 +81,7 @@ export default defineEventHandler(async (event) => {
     description: data.description,
     isDefault: data.is_default,
     iconPokemon: data.icon_pokemon,
+    mode: data.mode,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
   };
