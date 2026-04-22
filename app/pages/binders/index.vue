@@ -183,64 +183,64 @@ async function onDelete(binder) {
           @delete="onDelete"
         />
       </div>
+
+      <UModal
+        v-model:open="createOpen"
+        title="New binder"
+        description="Organize your cards into a themed binder."
+      >
+        <template #body>
+          <UForm
+            id="create-binder-form"
+            :state="createState"
+            :validate="validateCreate"
+            class="flex flex-col gap-4"
+            @submit="onCreate"
+          >
+            <UFormField label="Name" name="name" required>
+              <UInput
+                v-model="createState.name"
+                placeholder="My shiny collection"
+                autofocus
+                class="w-full"
+              />
+            </UFormField>
+
+            <UFormField label="Description" name="description">
+              <UTextarea
+                v-model="createState.description"
+                placeholder="What goes in this binder?"
+                :rows="3"
+                class="w-full"
+              />
+            </UFormField>
+
+            <UAlert
+              v-if="createError"
+              color="error"
+              icon="i-lucide-triangle-alert"
+              :description="createError"
+            />
+          </UForm>
+        </template>
+
+        <template #footer>
+          <div class="flex justify-end gap-2">
+            <UButton
+              color="neutral"
+              variant="outline"
+              label="Cancel"
+              @click="createOpen = false"
+            />
+            <UButton
+              type="submit"
+              form="create-binder-form"
+              label="Create"
+              :loading="createLoading"
+            />
+          </div>
+        </template>
+      </UModal>
     </template>
-
-    <UModal
-      v-model:open="createOpen"
-      title="New binder"
-      description="Organize your cards into a themed binder."
-    >
-      <template #body>
-        <UForm
-          id="create-binder-form"
-          :state="createState"
-          :validate="validateCreate"
-          class="flex flex-col gap-4"
-          @submit="onCreate"
-        >
-          <UFormField label="Name" name="name" required>
-            <UInput
-              v-model="createState.name"
-              placeholder="My shiny collection"
-              autofocus
-              class="w-full"
-            />
-          </UFormField>
-
-          <UFormField label="Description" name="description">
-            <UTextarea
-              v-model="createState.description"
-              placeholder="What goes in this binder?"
-              :rows="3"
-              class="w-full"
-            />
-          </UFormField>
-
-          <UAlert
-            v-if="createError"
-            color="error"
-            icon="i-lucide-triangle-alert"
-            :description="createError"
-          />
-        </UForm>
-      </template>
-
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <UButton
-            color="neutral"
-            variant="outline"
-            label="Cancel"
-            @click="createOpen = false"
-          />
-          <UButton
-            type="submit"
-            form="create-binder-form"
-            label="Create"
-            :loading="createLoading"
-          />
-        </div>
-      </template>
-    </UModal>
   </UDashboardPanel>
 </template>
