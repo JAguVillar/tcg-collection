@@ -30,11 +30,13 @@ export function useBinder(binderId) {
     return findItem(cardId, variant)?.quantity ?? 0;
   }
 
-  async function addCard(card, variant = "normal", delta = 1) {
+  async function addCard(card, variant = "normal", delta = 1, opts = {}) {
     if (!id.value) throw new Error("Binder id is not set");
+    const body = { cardId: card.id, variant, card, delta };
+    if (opts.owned === true || opts.owned === false) body.owned = opts.owned;
     const result = await $fetch(`/api/binders/${id.value}/items`, {
       method: "POST",
-      body: { cardId: card.id, variant, card, delta },
+      body,
     });
 
     const existing = findItem(card.id, variant);
@@ -53,6 +55,17 @@ export function useBinder(binderId) {
         },
       ];
     }
+    return result;
+  }
+
+  async function setOwned(cardId, variant = "normal", owned) {
+    if (!id.value) throw new Error("Binder id is not set");
+    const result = await $fetch(`/api/binders/${id.value}/items`, {
+      method: "PATCH",
+      body: { cardId, variant, owned },
+    });
+    const existing = findItem(cardId, variant);
+    if (existing) existing.quantity = result.quantity;
     return result;
   }
 
@@ -86,5 +99,6 @@ export function useBinder(binderId) {
     getCount,
     addCard,
     removeCard,
+    setOwned,
   };
 }

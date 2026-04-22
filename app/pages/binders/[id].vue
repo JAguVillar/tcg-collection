@@ -4,9 +4,9 @@ definePageMeta({ middleware: ["auth"] });
 const route = useRoute();
 const binderId = computed(() => route.params.id);
 
-const { binder, items, loading, error, addCard, removeCard } =
+const { binder, items, loading, error, addCard, removeCard, setOwned } =
   useBinder(binderId);
-const { setActiveBinder, activeBinderId } = useBinders();
+const { setActiveBinder, activeBinderId, fetchBinders } = useBinders();
 const toast = useToast();
 const overlay = useOverlay();
 const deleteDialog = overlay.create(
@@ -14,6 +14,7 @@ const deleteDialog = overlay.create(
 );
 
 const isActive = computed(() => activeBinderId.value === binderId.value);
+const isCustom = computed(() => binder.value?.mode === "custom");
 
 const breadcrumbOverrides = computed(() => ({
   [`/binders/${binderId.value}`]: binder.value?.name ?? "Binder",
@@ -21,6 +22,30 @@ const breadcrumbOverrides = computed(() => ({
 
 const { pokemonSpriteUrl } = usePokemonIcons();
 const iconUrl = computed(() => pokemonSpriteUrl(binder.value?.iconPokemon));
+
+// Custom binder progress
+const totalItems = computed(() => items.value.length);
+const ownedItems = computed(
+  () => items.value.filter((i) => i.quantity > 0).length,
+);
+const progressPct = computed(() => {
+  if (!totalItems.value) return 0;
+  return Math.round((ownedItems.value / totalItems.value) * 100);
+});
+
+const FILTERS = [
+  { label: "All", value: "all" },
+  { label: "Missing", value: "missing" },
+  { label: "Owned", value: "owned" },
+];
+const filter = ref("all");
+
+const filteredItems = computed(() => {
+  if (!isCustom.value) return items.value;
+  if (filter.value === "missing") return items.value.filter((i) => i.quantity === 0);
+  if (filter.value === "owned") return items.value.filter((i) => i.quantity > 0);
+  return items.value;
+});
 
 function formatVariant(variant) {
   if (!variant || variant === "normal") return null;
@@ -52,11 +77,27 @@ async function bumpDown(item) {
   }
 }
 
+async function toggleOwned(item) {
+  try {
+    await setOwned(item.cardId, item.variant, item.quantity === 0);
+  } catch (err) {
+    toast.add({
+      color: "error",
+      title: "Failed",
+      description: err?.data?.statusMessage ?? err?.message ?? "Error",
+    });
+  }
+}
+
 async function removeAll(item) {
   const name = item.card?.name ?? item.cardId;
   const instance = deleteDialog.open({
-    title: `Remove all copies of ${name}?`,
-    description: "All copies of this card will be removed from this binder.",
+    title: isCustom.value
+      ? `Remove ${name} from this binder?`
+      : `Remove all copies of ${name}?`,
+    description: isCustom.value
+      ? "This card will be removed from the checklist."
+      : "All copies of this card will be removed from this binder.",
     confirmLabel: "Remove",
     cancelLabel: "Cancel",
     color: "error",
@@ -89,6 +130,14 @@ function onSetActive() {
     description: binder.value?.name,
   });
 }
+
+// Keep the binder list progress in sync when items change in a custom binder.
+watch(
+  [ownedItems, totalItems],
+  () => {
+    if (isCustom.value) fetchBinders().catch(() => {});
+  },
+);
 </script>
 
 <template>
@@ -108,6 +157,15 @@ function onSetActive() {
               class="size-8 shrink-0 object-contain"
             />
             <AppBreadcrumb :overrides="breadcrumbOverrides" />
+            <UBadge
+              v-if="isCustom"
+              color="info"
+              variant="soft"
+              icon="i-lucide-list-checks"
+              size="sm"
+            >
+              Custom
+            </UBadge>
           </div>
         </template>
 
@@ -134,10 +192,27 @@ function onSetActive() {
       />
 
       <div class="mb-4">
-        <p class="text-sm text-muted">{{ binder.name }}</p>
+        <p class="text-sm text-muted">{{ binder?.name }}</p>
       </div>
       <div v-if="binder?.description" class="mb-4">
         <p class="text-sm text-muted">{{ binder.description }}</p>
+      </div>
+
+      <div v-if="isCustom && totalItems" class="mb-4 flex flex-col gap-2">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-sm font-medium text-default">
+            {{ ownedItems }} of {{ totalItems }} cards collected
+            <span class="text-muted font-normal">({{ progressPct }}%)</span>
+          </span>
+          <UTabs
+            :items="FILTERS"
+            v-model="filter"
+            variant="pill"
+            size="xs"
+            :content="false"
+          />
+        </div>
+        <UProgress :model-value="progressPct" :max="100" color="primary" />
       </div>
 
       <div
@@ -153,10 +228,23 @@ function onSetActive() {
       >
         <UIcon name="i-lucide-folder-open" class="size-10 text-muted" />
         <p class="text-sm text-muted">
-          This binder is empty.
+          {{
+            isCustom
+              ? "This checklist is empty."
+              : "This binder is empty."
+          }}
           <ULink to="/" class="text-primary">Search cards</ULink>
-          to start filling it.
+          to
+          {{ isCustom ? "add cards you want to collect." : "start filling it." }}
         </p>
+      </div>
+
+      <div
+        v-else-if="!filteredItems.length"
+        class="flex flex-col items-center justify-center py-16 gap-3 text-center"
+      >
+        <UIcon name="i-lucide-filter" class="size-10 text-muted" />
+        <p class="text-sm text-muted">No cards match this filter.</p>
       </div>
 
       <div
@@ -164,9 +252,12 @@ function onSetActive() {
         class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
       >
         <UCard
-          v-for="item in items"
+          v-for="item in filteredItems"
           :key="item.id"
-          :ui="{ body: 'p-3 flex flex-col gap-2' }"
+          :ui="{
+            root: isCustom && item.quantity === 0 ? 'opacity-60' : '',
+            body: 'p-3 flex flex-col gap-2',
+          }"
         >
           <div class="relative">
             <img
@@ -175,6 +266,7 @@ function onSetActive() {
               :alt="item.card?.name"
               loading="lazy"
               class="w-full rounded-md block"
+              :class="isCustom && item.quantity === 0 ? 'grayscale' : ''"
             />
             <UBadge
               v-if="formatVariant(item.variant)"
@@ -186,11 +278,30 @@ function onSetActive() {
               {{ formatVariant(item.variant) }}
             </UBadge>
             <UBadge
+              v-if="!isCustom"
               color="primary"
               variant="solid"
               class="absolute top-2 right-2"
             >
               x{{ item.quantity }}
+            </UBadge>
+            <UBadge
+              v-else-if="item.quantity > 0"
+              color="success"
+              variant="solid"
+              icon="i-lucide-check"
+              class="absolute top-2 right-2"
+            >
+              Owned
+            </UBadge>
+            <UBadge
+              v-else
+              color="neutral"
+              variant="solid"
+              icon="i-lucide-circle-dashed"
+              class="absolute top-2 right-2"
+            >
+              Missing
             </UBadge>
           </div>
 
@@ -211,7 +322,30 @@ function onSetActive() {
             </span>
           </div>
 
-          <div class="flex items-center gap-1.5">
+          <div v-if="isCustom" class="flex items-center gap-1.5">
+            <UButton
+              :label="item.quantity > 0 ? 'Mark as missing' : 'Got it'"
+              :icon="item.quantity > 0 ? 'i-lucide-circle-dashed' : 'i-lucide-check'"
+              :color="item.quantity > 0 ? 'neutral' : 'success'"
+              :variant="item.quantity > 0 ? 'outline' : 'soft'"
+              size="xs"
+              block
+              class="flex-1 min-w-0"
+              :ui="{ label: 'truncate' }"
+              @click="toggleOwned(item)"
+            />
+            <UButton
+              icon="i-lucide-trash-2"
+              color="error"
+              variant="soft"
+              size="xs"
+              square
+              aria-label="Remove from checklist"
+              @click="removeAll(item)"
+            />
+          </div>
+
+          <div v-else class="flex items-center gap-1.5">
             <UButtonGroup size="xs" class="flex-1">
               <UButton
                 icon="i-lucide-plus"
