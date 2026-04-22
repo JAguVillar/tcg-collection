@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
   const { data, error } = await supabase
     .from("binders")
-    .select("id, name, description, is_default, created_at, updated_at, binder_items(count)")
+    .select("id, name, description, is_default, icon_pokemon, created_at, updated_at, binder_items(count)")
     .order("is_default", { ascending: false })
     .order("created_at", { ascending: true });
 
@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
     name: b.name,
     description: b.description,
     isDefault: b.is_default,
+    iconPokemon: b.icon_pokemon,
     createdAt: b.created_at,
     updatedAt: b.updated_at,
     itemCount: b.binder_items?.[0]?.count ?? 0,

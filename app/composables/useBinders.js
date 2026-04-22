@@ -51,10 +51,10 @@ export function useBinders() {
     }
   }
 
-  async function createBinder({ name, description = null, isDefault = false } = {}) {
+  async function createBinder({ name, description = null, isDefault = false, iconPokemon = null } = {}) {
     const created = await $fetch("/api/binders", {
       method: "POST",
-      body: { name, description, isDefault },
+      body: { name, description, isDefault, iconPokemon },
     });
     // Refresh to keep `is_default` flags consistent across the list.
     await fetchBinders();
