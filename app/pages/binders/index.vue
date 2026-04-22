@@ -16,13 +16,44 @@ const {
 const toast = useToast();
 const overlay = useOverlay();
 const deleteDialog = overlay.create(
-  defineAsyncComponent(() => import("~/components/ConfirmDialog.vue"))
+  defineAsyncComponent(() => import("~/components/ConfirmDialog.vue")),
 );
 
 const createOpen = ref(false);
 const createLoading = ref(false);
-const createState = reactive({ name: "", description: "" });
+const createState = reactive({
+  name: "",
+  description: "",
+  iconPokemon: null,
+  mode: "collection",
+});
 const createError = ref(null);
+
+const modeOptions = [
+  {
+    value: "collection",
+    label: "Collection",
+    description: "Track cards you already own.",
+  },
+  {
+    value: "custom",
+    label: "Custom checklist",
+    description: "Pick cards you want and mark them as you get them.",
+  },
+];
+
+const { options: pokemonOptions, pokemonSpriteUrl } = usePokemonIcons();
+
+const iconPokemonOption = computed({
+  get() {
+    return (
+      pokemonOptions.find((o) => o.value === createState.iconPokemon) ?? null
+    );
+  },
+  set(option) {
+    createState.iconPokemon = option?.value ?? null;
+  },
+});
 
 onMounted(() => {
   fetchBinders().catch(() => {});
@@ -43,6 +74,8 @@ async function onCreate() {
     await createBinder({
       name: createState.name.trim(),
       description: createState.description?.trim() || null,
+      iconPokemon: createState.iconPokemon || null,
+      mode: createState.mode,
     });
     toast.add({
       color: "success",
@@ -52,6 +85,8 @@ async function onCreate() {
     });
     createState.name = "";
     createState.description = "";
+    createState.iconPokemon = null;
+    createState.mode = "collection";
     createOpen.value = false;
   } catch (err) {
     createError.value =
@@ -122,7 +157,10 @@ async function onDelete(binder) {
 <template>
   <UDashboardPanel id="binders">
     <template #header>
-      <UDashboardNavbar title="Binders" :description="activeBinder ? `Active: ${activeBinder.name}` : undefined">
+      <UDashboardNavbar
+        title="Binders"
+        :description="activeBinder ? `Active: ${activeBinder.name}` : undefined"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -169,10 +207,7 @@ async function onDelete(binder) {
         />
       </div>
 
-      <div
-        v-else
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-      >
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <BinderTile
           v-for="b in binders"
           :key="b.id"
@@ -197,6 +232,14 @@ async function onDelete(binder) {
             class="flex flex-col gap-4"
             @submit="onCreate"
           >
+            <UFormField label="Type" name="mode">
+              <URadioGroup
+                v-model="createState.mode"
+                :items="modeOptions"
+                value-key="value"
+              />
+            </UFormField>
+
             <UFormField label="Name" name="name" required>
               <UInput
                 v-model="createState.name"
@@ -213,6 +256,28 @@ async function onDelete(binder) {
                 :rows="3"
                 class="w-full"
               />
+            </UFormField>
+
+            <UFormField
+              label="Pokémon icon"
+              name="iconPokemon"
+              help="Optional. Used as the binder's icon."
+            >
+              <div class="flex items-center gap-3">
+                <UInputMenu
+                  v-model="iconPokemonOption"
+                  :items="pokemonOptions"
+                  placeholder="Search a Pokémon…"
+                  icon="i-lucide-search"
+                  class="flex-1 min-w-0"
+                />
+                <img
+                  v-if="createState.iconPokemon"
+                  :src="pokemonSpriteUrl(createState.iconPokemon)"
+                  :alt="createState.iconPokemon"
+                  class="size-10 shrink-0 object-contain"
+                />
+              </div>
             </UFormField>
 
             <UAlert

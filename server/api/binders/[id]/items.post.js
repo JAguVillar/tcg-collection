@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
   const cardId = body?.cardId ?? card?.id;
   const variant = body?.variant ?? "normal";
   const delta = Number.isFinite(body?.delta) ? Math.trunc(body.delta) : 1;
+  const owned = body?.owned === true;
 
   if (!cardId) {
     throw createError({ statusCode: 400, statusMessage: "cardId or card.id required" });
@@ -22,6 +23,20 @@ export default defineEventHandler(async (event) => {
   const supabase = await serverSupabaseClient(event);
   const admin = serverSupabaseServiceRole(event);
 
+  // Check binder mode so we can apply the right semantics for the item.
+  const { data: binderRow, error: binderErr } = await supabase
+    .from("binders")
+    .select("id, mode")
+    .eq("id", binderId)
+    .maybeSingle();
+  if (binderErr) {
+    throw createError({ statusCode: 500, statusMessage: binderErr.message });
+  }
+  if (!binderRow) {
+    throw createError({ statusCode: 404, statusMessage: "Binder not found" });
+  }
+  const isCustom = binderRow.mode === "custom";
+
   // 1) Upsert the card cache (service role, bypasses RLS on writes).
   if (card) {
     const { error: cardErr } = await admin
@@ -31,7 +46,6 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 500, statusMessage: cardErr.message });
     }
   } else {
-    // No card payload: make sure the card already exists in cache.
     const { data: existing, error: existErr } = await admin
       .from("cards")
       .select("id")
@@ -48,9 +62,12 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // 2) Upsert the binder_item. If the row exists, we want to increment
-  // quantity rather than overwrite — upsert can't do that atomically, so we
-  // read-then-write with RLS enforcing ownership.
+  // 2) Upsert the binder_item.
+  // - collection mode: existing row -> increment quantity; new row -> insert
+  //   with quantity = delta.
+  // - custom mode: each card is a single checklist slot. If it already exists
+  //   we return it unchanged (no incrementing). New rows get quantity = 1 if
+  //   owned was requested, else 0 (wanted-but-not-yet-owned).
   const { data: existingItem, error: readErr } = await supabase
     .from("binder_items")
     .select("id, quantity")
@@ -65,29 +82,38 @@ export default defineEventHandler(async (event) => {
 
   let row;
   if (existingItem) {
-    const { data, error } = await supabase
-      .from("binder_items")
-      .update({ quantity: existingItem.quantity + delta })
-      .eq("id", existingItem.id)
-      .select("id, card_id, variant, quantity")
-      .single();
-    if (error) {
-      throw createError({ statusCode: 500, statusMessage: error.message });
+    if (isCustom) {
+      row = {
+        id: existingItem.id,
+        card_id: cardId,
+        variant,
+        quantity: existingItem.quantity,
+      };
+    } else {
+      const { data, error } = await supabase
+        .from("binder_items")
+        .update({ quantity: existingItem.quantity + delta })
+        .eq("id", existingItem.id)
+        .select("id, card_id, variant, quantity")
+        .single();
+      if (error) {
+        throw createError({ statusCode: 500, statusMessage: error.message });
+      }
+      row = data;
     }
-    row = data;
   } else {
+    const initialQuantity = isCustom ? (owned ? 1 : 0) : delta;
     const { data, error } = await supabase
       .from("binder_items")
       .insert({
         binder_id: binderId,
         card_id: cardId,
         variant,
-        quantity: delta,
+        quantity: initialQuantity,
       })
       .select("id, card_id, variant, quantity")
       .single();
     if (error) {
-      // RLS violation -> user doesn't own this binder -> 404.
       if (error.code === "42501" || error.code === "PGRST301") {
         throw createError({ statusCode: 404, statusMessage: "Binder not found" });
       }

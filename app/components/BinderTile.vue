@@ -6,6 +6,17 @@ const props = defineProps({
 
 const emit = defineEmits(["set-active", "make-default", "delete"]);
 
+const { pokemonSpriteUrl } = usePokemonIcons();
+const iconUrl = computed(() => pokemonSpriteUrl(props.binder.iconPokemon));
+
+const isCustom = computed(() => props.binder.mode === "custom");
+const ownedItems = computed(() => props.binder.ownedItems ?? 0);
+const totalItems = computed(() => props.binder.totalItems ?? props.binder.itemCount ?? 0);
+const progressPct = computed(() => {
+  if (!totalItems.value) return 0;
+  return Math.round((ownedItems.value / totalItems.value) * 100);
+});
+
 const menuItems = computed(() => {
   const groups = [];
   const first = [];
@@ -48,22 +59,61 @@ const menuItems = computed(() => {
       class="flex flex-col gap-1 p-4 min-h-28"
     >
       <div class="flex items-start justify-between gap-2">
-        <h2 class="text-base font-semibold text-default truncate">
-          {{ binder.name }}
-        </h2>
-        <UBadge v-if="binder.isDefault" color="primary" variant="soft" size="sm">
-          default
-        </UBadge>
+        <div class="flex items-center gap-2 min-w-0">
+          <img
+            v-if="iconUrl"
+            :src="iconUrl"
+            :alt="binder.iconPokemon"
+            class="size-14 shrink-0 object-contain"
+          />
+          <h2 class="text-base font-semibold text-default truncate">
+            {{ binder.name }}
+          </h2>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <UBadge
+            v-if="isCustom"
+            color="info"
+            variant="soft"
+            size="sm"
+            icon="i-lucide-list-checks"
+          >
+            custom
+          </UBadge>
+          <UBadge
+            v-if="binder.isDefault"
+            color="primary"
+            variant="soft"
+            size="sm"
+          >
+            default
+          </UBadge>
+        </div>
       </div>
       <p v-if="binder.description" class="text-sm text-muted line-clamp-2">
         {{ binder.description }}
       </p>
-      <p class="mt-auto text-xs text-dimmed">
+      <div v-if="isCustom" class="mt-auto flex flex-col gap-1">
+        <p class="text-xs text-dimmed">
+          {{ ownedItems }} / {{ totalItems }} collected
+          <span v-if="totalItems">· {{ progressPct }}%</span>
+        </p>
+        <UProgress
+          v-if="totalItems"
+          :model-value="progressPct"
+          :max="100"
+          size="xs"
+          color="primary"
+        />
+      </div>
+      <p v-else class="mt-auto text-xs text-dimmed">
         {{ binder.itemCount }}
         {{ binder.itemCount === 1 ? "card" : "cards" }}
       </p>
     </NuxtLink>
-    <div class="flex items-center justify-between gap-2 p-2 border-t border-muted">
+    <div
+      class="flex items-center justify-between gap-2 p-2 border-t border-muted"
+    >
       <UBadge
         v-if="active"
         color="primary"

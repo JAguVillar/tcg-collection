@@ -17,6 +17,16 @@ const formattedVariant = computed(() => {
 
 const isAdding = computed(() => props.addStatus === "pending");
 const justAdded = computed(() => props.addStatus === "added");
+
+const isCustomActive = computed(() => props.activeBinder?.mode === "custom");
+
+const addLabel = computed(() => {
+  if (justAdded.value) return isCustomActive.value ? "Added to list" : "Added";
+  if (!props.activeBinder) return "No binder";
+  return isCustomActive.value
+    ? `+ ${props.activeBinder.name} (want)`
+    : `+ ${props.activeBinder.name}`;
+});
 </script>
 
 <template>
@@ -36,9 +46,9 @@ const justAdded = computed(() => props.addStatus === "added");
       <UBadge
         v-if="formattedVariant"
         color="primary"
-        variant="soft"
+        variant="solid"
         size="sm"
-        class="absolute bottom-2 left-1/2 -translate-x-1/2 capitalize"
+        class="absolute bottom-2 left-1/2 -translate-x-1/2 capitalize shadow-md"
       >
         {{ formattedVariant }}
       </UBadge>
@@ -69,12 +79,8 @@ const justAdded = computed(() => props.addStatus === "added");
 
     <div v-if="user" class="flex items-center gap-1.5">
       <UButton
-        :label="justAdded
-          ? 'Added'
-          : activeBinder
-            ? `+ ${activeBinder.name}`
-            : 'No binder'"
-        :icon="justAdded ? 'i-lucide-check' : undefined"
+        :label="addLabel"
+        :icon="justAdded ? 'i-lucide-check' : isCustomActive ? 'i-lucide-list-plus' : undefined"
         color="primary"
         variant="soft"
         size="xs"

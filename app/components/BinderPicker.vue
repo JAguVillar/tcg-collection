@@ -62,8 +62,18 @@ const items = computed(() => {
   }
   return [
     binders.value.map((b) => ({
-      label: b.name,
-      icon: b.isDefault ? "i-lucide-star" : "i-lucide-folder",
+      label:
+        b.mode === "custom"
+          ? `${b.name} (checklist)`
+          : b.isDefault
+            ? `${b.name} (default)`
+            : b.name,
+      icon:
+        b.mode === "custom"
+          ? "i-lucide-list-checks"
+          : b.isDefault
+            ? "i-lucide-star"
+            : "i-lucide-folder",
       onSelect: () => addTo(b),
     })),
   ];
