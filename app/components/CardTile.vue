@@ -36,9 +36,9 @@ const justAdded = computed(() => props.addStatus === "added");
       <UBadge
         v-if="formattedVariant"
         color="primary"
-        variant="soft"
+        variant="solid"
         size="sm"
-        class="absolute bottom-2 left-1/2 -translate-x-1/2 capitalize"
+        class="absolute bottom-2 left-1/2 -translate-x-1/2 capitalize shadow-md"
       >
         {{ formattedVariant }}
       </UBadge>
