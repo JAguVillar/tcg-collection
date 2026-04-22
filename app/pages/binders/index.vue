@@ -242,7 +242,7 @@ async function onDelete(binder) {
                 <img
                   v-if="createState.iconPokemon"
                   :src="pokemonSpriteUrl(createState.iconPokemon)"
-                  :alt="createState.iconPokemon"
+                  :alt="iconPokemonOption?.label"
                   class="size-10 shrink-0 object-contain"
                 />
               </div>

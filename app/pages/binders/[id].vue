@@ -19,8 +19,9 @@ const breadcrumbOverrides = computed(() => ({
   [`/binders/${binderId.value}`]: binder.value?.name ?? "Binder",
 }));
 
-const { pokemonSpriteUrl } = usePokemonIcons();
+const { pokemonSpriteUrl, pokemonNameFromId } = usePokemonIcons();
 const iconUrl = computed(() => pokemonSpriteUrl(binder.value?.iconPokemon));
+const iconName = computed(() => pokemonNameFromId(binder.value?.iconPokemon));
 
 function formatVariant(variant) {
   if (!variant || variant === "normal") return null;
@@ -104,7 +105,7 @@ function onSetActive() {
             <img
               v-if="iconUrl"
               :src="iconUrl"
-              :alt="binder?.iconPokemon"
+              :alt="iconName ?? ''"
               class="size-8 shrink-0 object-contain"
             />
             <AppBreadcrumb :overrides="breadcrumbOverrides" />

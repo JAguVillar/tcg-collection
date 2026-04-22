@@ -6,8 +6,9 @@ const props = defineProps({
 
 const emit = defineEmits(["set-active", "make-default", "delete"]);
 
-const { pokemonSpriteUrl } = usePokemonIcons();
+const { pokemonSpriteUrl, pokemonNameFromId } = usePokemonIcons();
 const iconUrl = computed(() => pokemonSpriteUrl(props.binder.iconPokemon));
+const iconName = computed(() => pokemonNameFromId(props.binder.iconPokemon));
 
 const menuItems = computed(() => {
   const groups = [];
@@ -55,7 +56,7 @@ const menuItems = computed(() => {
           <img
             v-if="iconUrl"
             :src="iconUrl"
-            :alt="binder.iconPokemon"
+            :alt="iconName ?? ''"
             class="size-10 shrink-0 object-contain"
           />
           <h2 class="text-base font-semibold text-default truncate">
