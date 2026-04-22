@@ -1,6 +1,7 @@
 import pokemonData from "~/assets/pokemon-compact.json";
 
-const POKEMON_SPRITE_BASE = "https://img.pokemondb.net/sprites/sword-shield/normal";
+const POKEMON_SPRITE_BASE =
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
 
 export function pokemonSpriteUrl(slug) {
   if (!slug) return null;
@@ -17,7 +18,7 @@ function slugToLabel(slug) {
 export function usePokemonIcons() {
   const options = pokemonData.map((p) => ({
     label: slugToLabel(p.name),
-    value: p.name,
+    value: p.id,
   }));
 
   return { options, pokemonSpriteUrl };

@@ -56,13 +56,18 @@ const menuItems = computed(() => {
             v-if="iconUrl"
             :src="iconUrl"
             :alt="binder.iconPokemon"
-            class="size-10 shrink-0 object-contain"
+            class="size-14 shrink-0 object-contain"
           />
           <h2 class="text-base font-semibold text-default truncate">
             {{ binder.name }}
           </h2>
         </div>
-        <UBadge v-if="binder.isDefault" color="primary" variant="soft" size="sm">
+        <UBadge
+          v-if="binder.isDefault"
+          color="primary"
+          variant="soft"
+          size="sm"
+        >
           default
         </UBadge>
       </div>
@@ -74,7 +79,9 @@ const menuItems = computed(() => {
         {{ binder.itemCount === 1 ? "card" : "cards" }}
       </p>
     </NuxtLink>
-    <div class="flex items-center justify-between gap-2 p-2 border-t border-muted">
+    <div
+      class="flex items-center justify-between gap-2 p-2 border-t border-muted"
+    >
       <UBadge
         v-if="active"
         color="primary"

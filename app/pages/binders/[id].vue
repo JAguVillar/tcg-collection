@@ -10,7 +10,7 @@ const { setActiveBinder, activeBinderId } = useBinders();
 const toast = useToast();
 const overlay = useOverlay();
 const deleteDialog = overlay.create(
-  defineAsyncComponent(() => import("~/components/ConfirmDialog.vue"))
+  defineAsyncComponent(() => import("~/components/ConfirmDialog.vue")),
 );
 
 const isActive = computed(() => activeBinderId.value === binderId.value);
@@ -133,6 +133,9 @@ function onSetActive() {
         class="mb-4"
       />
 
+      <div class="mb-4">
+        <p class="text-sm text-muted">{{ binder.name }}</p>
+      </div>
       <div v-if="binder?.description" class="mb-4">
         <p class="text-sm text-muted">{{ binder.description }}</p>
       </div>
@@ -203,10 +206,7 @@ function onSetActive() {
                 {{ item.card?.name ?? item.cardId }}
               </span>
             </div>
-            <span
-              v-if="item.card?.numberDisplay"
-              class="text-xs text-muted"
-            >
+            <span v-if="item.card?.numberDisplay" class="text-xs text-muted">
               #{{ item.card.numberDisplay }}
             </span>
           </div>

@@ -16,7 +16,7 @@ const {
 const toast = useToast();
 const overlay = useOverlay();
 const deleteDialog = overlay.create(
-  defineAsyncComponent(() => import("~/components/ConfirmDialog.vue"))
+  defineAsyncComponent(() => import("~/components/ConfirmDialog.vue")),
 );
 
 const createOpen = ref(false);
@@ -137,7 +137,10 @@ async function onDelete(binder) {
 <template>
   <UDashboardPanel id="binders">
     <template #header>
-      <UDashboardNavbar title="Binders" :description="activeBinder ? `Active: ${activeBinder.name}` : undefined">
+      <UDashboardNavbar
+        title="Binders"
+        :description="activeBinder ? `Active: ${activeBinder.name}` : undefined"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -184,10 +187,7 @@ async function onDelete(binder) {
         />
       </div>
 
-      <div
-        v-else
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-      >
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <BinderTile
           v-for="b in binders"
           :key="b.id"
@@ -230,7 +230,11 @@ async function onDelete(binder) {
               />
             </UFormField>
 
-            <UFormField label="Pokémon icon" name="iconPokemon" help="Optional. Used as the binder's icon.">
+            <UFormField
+              label="Pokémon icon"
+              name="iconPokemon"
+              help="Optional. Used as the binder's icon."
+            >
               <div class="flex items-center gap-3">
                 <UInputMenu
                   v-model="iconPokemonOption"
