@@ -40,11 +40,78 @@ const FILTERS = [
 ];
 const filter = ref("all");
 
+const SORT_OPTIONS = [
+  { label: "Added", value: "added", hasDirection: true },
+  { label: "Name", value: "name", hasDirection: true },
+  { label: "Number", value: "number", hasDirection: true },
+  { label: "Rarity", value: "rarity", hasDirection: true },
+  { label: "Set", value: "set", hasDirection: true },
+  { label: "Released", value: "released", hasDirection: true },
+  { label: "Quantity", value: "quantity", hasDirection: true },
+];
+const sortField = ref("added");
+const isAscending = ref(true);
+const activeSort = computed(() =>
+  SORT_OPTIONS.find((o) => o.value === sortField.value),
+);
+
+function setSort(field) {
+  if (sortField.value === field) {
+    isAscending.value = !isAscending.value;
+  } else {
+    sortField.value = field;
+    isAscending.value = true;
+  }
+}
+
+function parseLeadingInt(s) {
+  if (!s) return null;
+  const m = String(s).match(/\d+/);
+  return m ? parseInt(m[0], 10) : null;
+}
+
+function sortKey(item) {
+  const c = item.card ?? {};
+  switch (sortField.value) {
+    case "name":
+      return (c.name ?? "").toLowerCase();
+    case "number":
+      return parseLeadingInt(c.numberDisplay) ?? Number.POSITIVE_INFINITY;
+    case "rarity":
+      return (c.rarity ?? "").toLowerCase();
+    case "set":
+      return (c.set ?? c.setName ?? "").toLowerCase();
+    case "released":
+      return c.releaseDate ?? "";
+    case "quantity":
+      return item.quantity ?? 0;
+    case "added":
+    default:
+      return item.createdAt ?? "";
+  }
+}
+
+function compare(a, b) {
+  const ka = sortKey(a);
+  const kb = sortKey(b);
+  const aNull = ka === null || ka === undefined || ka === "";
+  const bNull = kb === null || kb === undefined || kb === "";
+  // Push missing values to the end regardless of direction.
+  if (aNull && !bNull) return 1;
+  if (!aNull && bNull) return -1;
+  if (aNull && bNull) return 0;
+  if (ka < kb) return isAscending.value ? -1 : 1;
+  if (ka > kb) return isAscending.value ? 1 : -1;
+  return 0;
+}
+
 const filteredItems = computed(() => {
-  if (!isCustom.value) return items.value;
-  if (filter.value === "missing") return items.value.filter((i) => i.quantity === 0);
-  if (filter.value === "owned") return items.value.filter((i) => i.quantity > 0);
-  return items.value;
+  let list = items.value;
+  if (isCustom.value) {
+    if (filter.value === "missing") list = list.filter((i) => i.quantity === 0);
+    else if (filter.value === "owned") list = list.filter((i) => i.quantity > 0);
+  }
+  return [...list].sort(compare);
 });
 
 function formatVariant(variant) {
@@ -213,6 +280,30 @@ watch(
           />
         </div>
         <UProgress :model-value="progressPct" :max="100" color="primary" />
+      </div>
+
+      <div
+        v-if="items.length"
+        class="mb-4 flex items-center gap-2 flex-wrap"
+      >
+        <UTabs
+          :items="SORT_OPTIONS"
+          :model-value="sortField"
+          variant="pill"
+          size="xs"
+          :content="false"
+          @update:model-value="setSort"
+        />
+        <UButton
+          v-if="activeSort?.hasDirection"
+          :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
+          color="neutral"
+          variant="outline"
+          size="xs"
+          square
+          :aria-label="isAscending ? 'Ascending' : 'Descending'"
+          @click="setSort(sortField)"
+        />
       </div>
 
       <div
