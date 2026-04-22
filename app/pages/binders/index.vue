@@ -21,8 +21,21 @@ const deleteDialog = overlay.create(
 
 const createOpen = ref(false);
 const createLoading = ref(false);
-const createState = reactive({ name: "", description: "" });
+const createState = reactive({ name: "", description: "", iconPokemon: null });
 const createError = ref(null);
+
+const { options: pokemonOptions, pokemonSpriteUrl } = usePokemonIcons();
+
+const iconPokemonOption = computed({
+  get() {
+    return (
+      pokemonOptions.find((o) => o.value === createState.iconPokemon) ?? null
+    );
+  },
+  set(option) {
+    createState.iconPokemon = option?.value ?? null;
+  },
+});
 
 onMounted(() => {
   fetchBinders().catch(() => {});
@@ -43,6 +56,7 @@ async function onCreate() {
     await createBinder({
       name: createState.name.trim(),
       description: createState.description?.trim() || null,
+      iconPokemon: createState.iconPokemon || null,
     });
     toast.add({
       color: "success",
@@ -52,6 +66,7 @@ async function onCreate() {
     });
     createState.name = "";
     createState.description = "";
+    createState.iconPokemon = null;
     createOpen.value = false;
   } catch (err) {
     createError.value =
@@ -213,6 +228,24 @@ async function onDelete(binder) {
                 :rows="3"
                 class="w-full"
               />
+            </UFormField>
+
+            <UFormField label="Pokémon icon" name="iconPokemon" help="Optional. Used as the binder's icon.">
+              <div class="flex items-center gap-3">
+                <UInputMenu
+                  v-model="iconPokemonOption"
+                  :items="pokemonOptions"
+                  placeholder="Search a Pokémon…"
+                  icon="i-lucide-search"
+                  class="flex-1 min-w-0"
+                />
+                <img
+                  v-if="createState.iconPokemon"
+                  :src="pokemonSpriteUrl(createState.iconPokemon)"
+                  :alt="createState.iconPokemon"
+                  class="size-10 shrink-0 object-contain"
+                />
+              </div>
             </UFormField>
 
             <UAlert

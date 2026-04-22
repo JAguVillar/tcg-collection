@@ -19,6 +19,9 @@ const breadcrumbOverrides = computed(() => ({
   [`/binders/${binderId.value}`]: binder.value?.name ?? "Binder",
 }));
 
+const { pokemonSpriteUrl } = usePokemonIcons();
+const iconUrl = computed(() => pokemonSpriteUrl(binder.value?.iconPokemon));
+
 function formatVariant(variant) {
   if (!variant || variant === "normal") return null;
   return variant.replace(/([A-Z])/g, " $1").trim();
@@ -97,7 +100,15 @@ function onSetActive() {
         </template>
 
         <template #title>
-          <AppBreadcrumb :overrides="breadcrumbOverrides" />
+          <div class="flex items-center gap-2">
+            <img
+              v-if="iconUrl"
+              :src="iconUrl"
+              :alt="binder?.iconPokemon"
+              class="size-8 shrink-0 object-contain"
+            />
+            <AppBreadcrumb :overrides="breadcrumbOverrides" />
+          </div>
         </template>
 
         <template #right>

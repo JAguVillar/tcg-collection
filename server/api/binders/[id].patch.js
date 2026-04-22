@@ -17,6 +17,9 @@ export default defineEventHandler(async (event) => {
   if (typeof body?.description === "string" || body?.description === null) {
     patch.description = body.description?.trim?.() || null;
   }
+  if (typeof body?.iconPokemon === "string" || body?.iconPokemon === null) {
+    patch.icon_pokemon = body.iconPokemon?.trim?.() || null;
+  }
 
   const supabase = await serverSupabaseClient(event);
 
@@ -43,7 +46,7 @@ export default defineEventHandler(async (event) => {
     .from("binders")
     .update(patch)
     .eq("id", id)
-    .select("id, name, description, is_default, created_at, updated_at")
+    .select("id, name, description, is_default, icon_pokemon, created_at, updated_at")
     .single();
 
   if (error) {
@@ -58,6 +61,7 @@ export default defineEventHandler(async (event) => {
     name: data.name,
     description: data.description,
     isDefault: data.is_default,
+    iconPokemon: data.icon_pokemon,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
   };

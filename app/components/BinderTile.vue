@@ -6,6 +6,9 @@ const props = defineProps({
 
 const emit = defineEmits(["set-active", "make-default", "delete"]);
 
+const { pokemonSpriteUrl } = usePokemonIcons();
+const iconUrl = computed(() => pokemonSpriteUrl(props.binder.iconPokemon));
+
 const menuItems = computed(() => {
   const groups = [];
   const first = [];
@@ -48,9 +51,17 @@ const menuItems = computed(() => {
       class="flex flex-col gap-1 p-4 min-h-28"
     >
       <div class="flex items-start justify-between gap-2">
-        <h2 class="text-base font-semibold text-default truncate">
-          {{ binder.name }}
-        </h2>
+        <div class="flex items-center gap-2 min-w-0">
+          <img
+            v-if="iconUrl"
+            :src="iconUrl"
+            :alt="binder.iconPokemon"
+            class="size-10 shrink-0 object-contain"
+          />
+          <h2 class="text-base font-semibold text-default truncate">
+            {{ binder.name }}
+          </h2>
+        </div>
         <UBadge v-if="binder.isDefault" color="primary" variant="soft" size="sm">
           default
         </UBadge>
