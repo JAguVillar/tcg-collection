@@ -288,21 +288,20 @@ watch(
       </div>
 
       <div v-if="isCustom && totalItems" class="mb-4 flex flex-col gap-2">
-        <div class="flex items-center justify-between gap-3">
-          <span class="text-sm font-medium text-default">
-            {{ ownedItems }} of {{ totalItems }} cards collected
-            <span class="text-muted font-normal">({{ progressPct }}%)</span>
-          </span>
-          <UTabs
-            :items="FILTERS"
-            v-model="filter"
-            variant="pill"
-            size="xs"
-            :content="false"
-          />
-        </div>
+        <span class="text-sm font-medium text-default">
+          {{ ownedItems }} of {{ totalItems }} cards collected
+          <span class="text-muted font-normal">({{ progressPct }}%)</span>
+        </span>
         <UProgress :model-value="progressPct" :max="100" color="primary" />
       </div>
+
+      <UTabs
+        v-if="isCustom && totalItems"
+        :items="FILTERS"
+        v-model="filter"
+        :content="false"
+        class="mb-4"
+      />
 
       <div
         v-if="items.length"
