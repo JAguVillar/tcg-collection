@@ -2,10 +2,12 @@
 const props = defineProps({
   card: { type: Object, required: true },
   activeBinder: { type: Object, default: null },
+  defaultBinder: { type: Object, default: null },
   addStatus: { type: String, default: null },
+  addToDefaultStatus: { type: String, default: null },
 });
 
-const emit = defineEmits(["add"]);
+const emit = defineEmits(["add", "add-default"]);
 
 const user = useSupabaseUser();
 
@@ -27,6 +29,19 @@ const addLabel = computed(() => {
     ? `+ ${props.activeBinder.name} (want)`
     : `+ ${props.activeBinder.name}`;
 });
+
+const showDefaultAdd = computed(
+  () =>
+    !!props.defaultBinder &&
+    !!props.activeBinder &&
+    props.defaultBinder.id !== props.activeBinder.id,
+);
+const isAddingDefault = computed(
+  () => props.addToDefaultStatus === "pending",
+);
+const justAddedDefault = computed(
+  () => props.addToDefaultStatus === "added",
+);
 </script>
 
 <template>
@@ -91,6 +106,22 @@ const addLabel = computed(() => {
         class="flex-1 min-w-0"
         @click="emit('add', card)"
       />
+      <UTooltip
+        v-if="showDefaultAdd"
+        :text="`Add to ${defaultBinder.name}`"
+      >
+        <UButton
+          :icon="justAddedDefault ? 'i-lucide-check' : 'i-lucide-library'"
+          color="primary"
+          variant="outline"
+          size="xs"
+          square
+          :loading="isAddingDefault"
+          :disabled="isAddingDefault"
+          :aria-label="`Add to ${defaultBinder.name}`"
+          @click="emit('add-default', card)"
+        />
+      </UTooltip>
       <BinderPicker :card="card" :variant="card.variant ?? 'normal'" />
     </div>
   </UCard>
