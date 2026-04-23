@@ -208,6 +208,7 @@ function onSetActive() {
 }
 
 const bulkAddOpen = ref(false);
+const addCardOpen = ref(false);
 
 function onBulkAdded(result) {
   const label = result.pokemon?.label ?? "Pokémon";
@@ -218,6 +219,15 @@ function onBulkAdded(result) {
     icon: "i-lucide-check-circle",
     title: `${label} added`,
     description: parts.join(" · "),
+  });
+}
+
+function onCardAdded(card) {
+  toast.add({
+    color: "success",
+    icon: "i-lucide-check-circle",
+    title: isCustom.value ? "Added to checklist" : "Card added",
+    description: `${card.name} → ${binder.value?.name}`,
   });
 }
 
@@ -257,6 +267,13 @@ watch([ownedItems, totalItems], () => {
         </template>
 
         <template #right>
+          <UButton
+            icon="i-lucide-plus"
+            label="Add card"
+            color="neutral"
+            variant="outline"
+            @click="addCardOpen = true"
+          />
           <UButton
             v-if="isCustom"
             icon="i-lucide-list-plus"
@@ -509,6 +526,13 @@ watch([ownedItems, totalItems], () => {
         v-model:open="bulkAddOpen"
         :bulk-add="bulkAdd"
         @added="onBulkAdded"
+      />
+
+      <AddCardToBinderDialog
+        v-model:open="addCardOpen"
+        :binder="binder"
+        :add-card="addCard"
+        @added="onCardAdded"
       />
     </template>
   </UDashboardPanel>
