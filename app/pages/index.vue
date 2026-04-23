@@ -19,10 +19,11 @@ const {
 } = useCardSearch();
 
 const user = useSupabaseUser();
-const { activeBinder, binders, setActiveBinder } = useBinders();
+const { activeBinder, defaultBinder, binders, setActiveBinder } = useBinders();
 const toast = useToast();
 
 const quickAddStatus = ref({});
+const defaultAddStatus = ref({});
 
 searchCards({ query: "rowlet" });
 
@@ -57,12 +58,12 @@ const binderItems = computed(() =>
   })
 );
 
-async function quickAdd(card) {
-  if (!activeBinder.value) return;
+async function addCardToBinder(card, binder, statusRef) {
+  if (!binder) return;
   const key = cardKey(card);
-  quickAddStatus.value = { ...quickAddStatus.value, [key]: "pending" };
+  statusRef.value = { ...statusRef.value, [key]: "pending" };
   try {
-    await $fetch(`/api/binders/${activeBinder.value.id}/items`, {
+    await $fetch(`/api/binders/${binder.id}/items`, {
       method: "POST",
       body: {
         cardId: card.id,
@@ -70,21 +71,21 @@ async function quickAdd(card) {
         card,
       },
     });
-    quickAddStatus.value = { ...quickAddStatus.value, [key]: "added" };
-    const isCustom = activeBinder.value.mode === "custom";
+    statusRef.value = { ...statusRef.value, [key]: "added" };
+    const isCustom = binder.mode === "custom";
     toast.add({
       color: "success",
       icon: "i-lucide-check-circle",
       title: isCustom ? "Added to checklist" : "Card added",
-      description: `${card.name} → ${activeBinder.value.name}`,
+      description: `${card.name} → ${binder.name}`,
     });
     setTimeout(() => {
-      const next = { ...quickAddStatus.value };
+      const next = { ...statusRef.value };
       delete next[key];
-      quickAddStatus.value = next;
+      statusRef.value = next;
     }, 1500);
   } catch (err) {
-    quickAddStatus.value = { ...quickAddStatus.value, [key]: "error" };
+    statusRef.value = { ...statusRef.value, [key]: "error" };
     toast.add({
       color: "error",
       icon: "i-lucide-triangle-alert",
@@ -92,6 +93,14 @@ async function quickAdd(card) {
       description: err?.data?.statusMessage ?? err?.message ?? "Error",
     });
   }
+}
+
+function quickAdd(card) {
+  return addCardToBinder(card, activeBinder.value, quickAddStatus);
+}
+
+function quickAddToDefault(card) {
+  return addCardToBinder(card, defaultBinder.value, defaultAddStatus);
 }
 </script>
 
@@ -195,8 +204,11 @@ async function quickAdd(card) {
           :key="`${card.id}-${card.variant}-${index}`"
           :card="card"
           :active-binder="activeBinder"
+          :default-binder="defaultBinder"
           :add-status="quickAddStatus[cardKey(card)]"
+          :add-to-default-status="defaultAddStatus[cardKey(card)]"
           @add="quickAdd"
+          @add-default="quickAddToDefault"
         />
       </div>
 
