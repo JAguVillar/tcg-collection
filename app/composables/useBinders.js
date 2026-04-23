@@ -21,13 +21,17 @@ export function useBinders() {
     }
   });
 
+  const defaultBinder = computed(
+    () => binders.value.find((b) => b.isDefault) ?? null,
+  );
+
   const activeBinder = computed(() => {
     const id = activeBinderId.value;
     if (id) {
       const match = binders.value.find((b) => b.id === id);
       if (match) return match;
     }
-    return binders.value.find((b) => b.isDefault) ?? binders.value[0] ?? null;
+    return defaultBinder.value ?? binders.value[0] ?? null;
   });
 
   async function fetchBinders() {
@@ -109,6 +113,7 @@ export function useBinders() {
     error,
     activeBinderId,
     activeBinder,
+    defaultBinder,
     fetchBinders,
     createBinder,
     updateBinder,
