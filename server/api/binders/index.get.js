@@ -1,20 +1,49 @@
 import { serverSupabaseClient } from "#supabase/server";
 import { requireUser } from "~~/server/utils/auth";
 
-export default defineEventHandler(async (event) => {
-  await requireUser(event);
-  const supabase = await serverSupabaseClient(event);
+const BINDER_SELECT =
+  "id, name, description, is_default, icon_pokemon, mode, created_at, updated_at, binder_items(quantity)";
 
-  const { data, error } = await supabase
+function fetchBinders(supabase) {
+  return supabase
     .from("binders")
-    .select(
-      "id, name, description, is_default, icon_pokemon, mode, created_at, updated_at, binder_items(quantity)",
-    )
+    .select(BINDER_SELECT)
     .order("is_default", { ascending: false })
     .order("created_at", { ascending: true });
+}
+
+export default defineEventHandler(async (event) => {
+  const user = await requireUser(event);
+  const supabase = await serverSupabaseClient(event);
+
+  let { data, error } = await fetchBinders(supabase);
 
   if (error) {
     throw createError({ statusCode: 500, statusMessage: error.message });
+  }
+
+  if (!data.length) {
+    const { error: upsertError } = await supabase
+      .from("binders")
+      .upsert(
+        {
+          user_id: user.id,
+          name: "My Collection",
+          is_default: true,
+          mode: "collection",
+        },
+        { onConflict: "user_id,name", ignoreDuplicates: true },
+      );
+    if (upsertError) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: upsertError.message,
+      });
+    }
+    ({ data, error } = await fetchBinders(supabase));
+    if (error) {
+      throw createError({ statusCode: 500, statusMessage: error.message });
+    }
   }
 
   return data.map((b) => {
