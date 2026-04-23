@@ -4,7 +4,7 @@ definePageMeta({ middleware: ["auth"] });
 const route = useRoute();
 const binderId = computed(() => route.params.id);
 
-const { binder, items, loading, error, addCard, removeCard, setOwned } =
+const { binder, items, loading, error, addCard, removeCard, setOwned, bulkAdd } =
   useBinder(binderId);
 const { setActiveBinder, activeBinderId, fetchBinders } = useBinders();
 const toast = useToast();
@@ -198,6 +198,20 @@ function onSetActive() {
   });
 }
 
+const bulkAddOpen = ref(false);
+
+function onBulkAdded(result) {
+  const label = result.pokemon?.label ?? "Pokémon";
+  const parts = [`Added ${result.inserted}`];
+  if (result.skipped) parts.push(`${result.skipped} already in binder`);
+  toast.add({
+    color: "success",
+    icon: "i-lucide-check-circle",
+    title: `${label} added`,
+    description: parts.join(" · "),
+  });
+}
+
 // Keep the binder list progress in sync when items change in a custom binder.
 watch(
   [ownedItems, totalItems],
@@ -237,6 +251,14 @@ watch(
         </template>
 
         <template #right>
+          <UButton
+            v-if="isCustom"
+            icon="i-lucide-list-plus"
+            label="Add Pokémon"
+            color="neutral"
+            variant="outline"
+            @click="bulkAddOpen = true"
+          />
           <UButton
             :label="isActive ? 'Active binder' : 'Set as active'"
             :icon="isActive ? 'i-lucide-bookmark-check' : 'i-lucide-bookmark'"
@@ -324,9 +346,24 @@ watch(
               ? "This checklist is empty."
               : "This binder is empty."
           }}
+        </p>
+        <div v-if="isCustom" class="flex items-center gap-2">
+          <UButton
+            icon="i-lucide-list-plus"
+            label="Add cards of a Pokémon"
+            @click="bulkAddOpen = true"
+          />
+          <UButton
+            to="/"
+            icon="i-lucide-search"
+            label="Search cards"
+            color="neutral"
+            variant="outline"
+          />
+        </div>
+        <p v-else class="text-sm text-muted">
           <ULink to="/" class="text-primary">Search cards</ULink>
-          to
-          {{ isCustom ? "add cards you want to collect." : "start filling it." }}
+          to start filling it.
         </p>
       </div>
 
@@ -468,6 +505,13 @@ watch(
           </div>
         </UCard>
       </div>
+
+      <BulkAddPokemonDialog
+        v-if="isCustom"
+        v-model:open="bulkAddOpen"
+        :bulk-add="bulkAdd"
+        @added="onBulkAdded"
+      />
     </template>
   </UDashboardPanel>
 </template>
