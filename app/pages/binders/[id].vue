@@ -286,14 +286,14 @@ watch([ownedItems, totalItems], () => {
         class="mb-4"
       />
 
-      <div class="mb-4 flex justify-between">
+      <div class="mb-4 flex justify-between items-center">
         <p class="text-5xl font-bold">{{ binder?.name }}</p>
         <div class="flex flex-col gap-1 items-center">
           <p class="text-sm font-medium text-default">
             {{ ownedItems }} of {{ totalItems }} cards collected
             <span class="text-muted font-normal">({{ progressPct }}%)</span>
           </p>
-          <UProgress :model-value="progressPct" :max="100" color="primary" />
+          <UProgress :model-value="progressPct" :max="100" color="warning" />
         </div>
       </div>
       <div v-if="binder?.description" class="mb-4">

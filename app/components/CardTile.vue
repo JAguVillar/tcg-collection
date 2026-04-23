@@ -36,12 +36,8 @@ const showDefaultAdd = computed(
     !!props.activeBinder &&
     props.defaultBinder.id !== props.activeBinder.id,
 );
-const isAddingDefault = computed(
-  () => props.addToDefaultStatus === "pending",
-);
-const justAddedDefault = computed(
-  () => props.addToDefaultStatus === "added",
-);
+const isAddingDefault = computed(() => props.addToDefaultStatus === "pending");
+const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
 </script>
 
 <template>
@@ -58,7 +54,7 @@ const justAddedDefault = computed(
         loading="lazy"
         class="w-full rounded-md block"
       />
-      <UBadge
+      <!-- <UBadge
         v-if="formattedVariant"
         color="primary"
         variant="solid"
@@ -66,7 +62,7 @@ const justAddedDefault = computed(
         class="absolute bottom-2 left-1/2 -translate-x-1/2 capitalize shadow-md"
       >
         {{ formattedVariant }}
-      </UBadge>
+      </UBadge> -->
     </div>
 
     <div class="flex items-start justify-between gap-2 min-w-0">
@@ -84,18 +80,44 @@ const justAddedDefault = computed(
         </div>
         <span class="text-xs text-muted">#{{ card.numberDisplay }}</span>
       </div>
-      <span
-        class="text-sm font-bold shrink-0"
-        :class="card.formattedPrice === 'N/A' ? 'text-dimmed font-normal' : 'text-success'"
-      >
-        {{ card.formattedPrice }}
-      </span>
+
+      <div class="flex flex-col items-end justify-end min-w-0">
+        <span
+          class="text-sm font-bold shrink-0"
+          :class="
+            card.formattedPrice === 'N/A'
+              ? 'text-dimmed font-normal'
+              : 'text-success'
+          "
+        >
+          {{ card.formattedPrice }}
+        </span>
+        <UBadge
+          v-if="formattedVariant"
+          color="purple"
+          variant="solid"
+          size="sm"
+          class="capitalize shadow-md"
+        >
+          {{ formattedVariant }}
+        </UBadge>
+
+        <!-- <span class="text-xs capitalize">
+          {{ formattedVariant }}
+        </span> -->
+      </div>
     </div>
 
     <div v-if="user" class="flex items-center gap-1.5">
       <UButton
         :label="addLabel"
-        :icon="justAdded ? 'i-lucide-check' : isCustomActive ? 'i-lucide-list-plus' : undefined"
+        :icon="
+          justAdded
+            ? 'i-lucide-check'
+            : isCustomActive
+              ? 'i-lucide-list-plus'
+              : undefined
+        "
         color="primary"
         variant="soft"
         size="xs"
@@ -106,10 +128,7 @@ const justAddedDefault = computed(
         class="flex-1 min-w-0"
         @click="emit('add', card)"
       />
-      <UTooltip
-        v-if="showDefaultAdd"
-        :text="`Add to ${defaultBinder.name}`"
-      >
+      <UTooltip v-if="showDefaultAdd" :text="`Add to ${defaultBinder.name}`">
         <UButton
           :icon="justAddedDefault ? 'i-lucide-check' : 'i-lucide-library'"
           color="primary"
