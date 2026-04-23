@@ -19,6 +19,7 @@ const {
 } = useCardSearch();
 
 const addStatus = ref({});
+const addedCount = ref(0);
 
 function cardKey(card) {
   return `${card.id}:${card.variant ?? "normal"}`;
@@ -28,6 +29,7 @@ function reset() {
   searchQuery.value = "";
   cards.value = [];
   addStatus.value = {};
+  addedCount.value = 0;
 }
 
 watch(
@@ -53,6 +55,7 @@ async function addToBinder(card) {
   try {
     await props.addCard(card, card.variant ?? "normal", 1);
     addStatus.value = { ...addStatus.value, [key]: "added" };
+    addedCount.value += 1;
     emit("added", card);
   } catch (err) {
     addStatus.value = { ...addStatus.value, [key]: "error" };
@@ -80,8 +83,11 @@ function setOpen(value) {
     @update:open="setOpen"
   >
     <template #body>
-      <div class="flex flex-col gap-4">
-        <form class="flex items-center gap-2" @submit.prevent="submitSearch">
+      <div class="flex flex-col gap-3 sm:gap-4">
+        <form
+          class="flex items-center gap-2"
+          @submit.prevent="submitSearch"
+        >
           <UInput
             v-model="searchQuery"
             icon="i-lucide-search"
@@ -93,11 +99,29 @@ function setOpen(value) {
           <UButton
             type="submit"
             icon="i-lucide-search"
-            label="Search"
             :loading="loading"
             :disabled="!searchQuery.trim()"
+            :ui="{ label: 'hidden sm:inline' }"
+            label="Search"
           />
         </form>
+
+        <div
+          v-if="addedCount"
+          class="flex items-center justify-between gap-2 rounded-md bg-primary/5 border border-primary/20 px-3 py-2"
+        >
+          <div class="flex items-center gap-2 text-sm text-primary min-w-0">
+            <UIcon
+              name="i-lucide-check-circle"
+              class="size-4 shrink-0"
+            />
+            <span class="truncate">
+              <span class="font-semibold">{{ addedCount }}</span>
+              {{ addedCount === 1 ? "card" : "cards" }} added to
+              <span class="font-semibold">{{ binder?.name }}</span>
+            </span>
+          </div>
+        </div>
 
         <UAlert
           v-if="error"
@@ -115,7 +139,7 @@ function setOpen(value) {
 
         <div
           v-else-if="cards.length"
-          class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[28rem] overflow-y-auto pr-1"
+          class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[55vh] sm:max-h-[32rem] overflow-y-auto pr-1"
         >
           <UCard
             v-for="(card, index) in cards"
