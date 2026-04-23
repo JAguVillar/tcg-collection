@@ -300,16 +300,13 @@ watch([ownedItems, totalItems], () => {
         <p class="text-sm text-muted">{{ binder.description }}</p>
       </div>
 
-      <div v-if="isCustom && totalItems" class="mb-4 flex flex-col gap-2">
-        <div class="flex items-center justify-between gap-3">
-          <UTabs
-            :items="FILTERS"
-            v-model="filter"
-            variant="pill"
-            size="xs"
-            :content="false"
-          />
-        </div>
+      <div v-if="isCustom && totalItems" class="mb-4">
+        <UTabs
+          :items="FILTERS"
+          v-model="filter"
+          variant="link"
+          :content="false"
+        />
       </div>
 
       <div v-if="items.length" class="mb-4 flex items-center gap-2 flex-wrap">
