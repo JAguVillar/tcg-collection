@@ -69,6 +69,18 @@ export function useBinder(binderId) {
     return result;
   }
 
+  async function bulkAdd(pokedexNumber, { preview = false } = {}) {
+    if (!id.value) throw new Error("Binder id is not set");
+    const result = await $fetch(`/api/binders/${id.value}/items/bulk`, {
+      method: "POST",
+      body: { pokedexNumber, preview },
+    });
+    if (!preview) {
+      await fetchItems();
+    }
+    return result;
+  }
+
   async function removeCard(cardId, variant = "normal", { all = false, delta = 1 } = {}) {
     if (!id.value) throw new Error("Binder id is not set");
     const result = await $fetch(`/api/binders/${id.value}/items`, {
@@ -100,5 +112,6 @@ export function useBinder(binderId) {
     addCard,
     removeCard,
     setOwned,
+    bulkAdd,
   };
 }
