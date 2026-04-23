@@ -288,7 +288,7 @@ watch([ownedItems, totalItems], () => {
 
       <div class="mb-4 flex justify-between">
         <p class="text-5xl font-bold">{{ binder?.name }}</p>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 items-center">
           <p class="text-sm font-medium text-default">
             {{ ownedItems }} of {{ totalItems }} cards collected
             <span class="text-muted font-normal">({{ progressPct }}%)</span>
@@ -298,15 +298,6 @@ watch([ownedItems, totalItems], () => {
       </div>
       <div v-if="binder?.description" class="mb-4">
         <p class="text-sm text-muted">{{ binder.description }}</p>
-      </div>
-
-      <div v-if="isCustom && totalItems" class="mb-4">
-        <UTabs
-          :items="FILTERS"
-          v-model="filter"
-          variant="link"
-          :content="false"
-        />
       </div>
 
       <div v-if="items.length" class="mb-4 flex items-center gap-2 flex-wrap">
@@ -329,7 +320,14 @@ watch([ownedItems, totalItems], () => {
           @click="setSort(sortField)"
         />
       </div>
-
+      <div v-if="isCustom && totalItems" class="mb-4">
+        <UTabs
+          :items="FILTERS"
+          v-model="filter"
+          variant="link"
+          :content="false"
+        />
+      </div>
       <div
         v-if="loading && !items.length"
         class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
