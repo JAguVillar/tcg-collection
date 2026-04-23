@@ -4,8 +4,16 @@ definePageMeta({ middleware: ["auth"] });
 const route = useRoute();
 const binderId = computed(() => route.params.id);
 
-const { binder, items, loading, error, addCard, removeCard, setOwned, bulkAdd } =
-  useBinder(binderId);
+const {
+  binder,
+  items,
+  loading,
+  error,
+  addCard,
+  removeCard,
+  setOwned,
+  bulkAdd,
+} = useBinder(binderId);
 const { setActiveBinder, activeBinderId, fetchBinders } = useBinders();
 const toast = useToast();
 const overlay = useOverlay();
@@ -109,7 +117,8 @@ const filteredItems = computed(() => {
   let list = items.value;
   if (isCustom.value) {
     if (filter.value === "missing") list = list.filter((i) => i.quantity === 0);
-    else if (filter.value === "owned") list = list.filter((i) => i.quantity > 0);
+    else if (filter.value === "owned")
+      list = list.filter((i) => i.quantity > 0);
   }
   return [...list].sort(compare);
 });
@@ -213,12 +222,9 @@ function onBulkAdded(result) {
 }
 
 // Keep the binder list progress in sync when items change in a custom binder.
-watch(
-  [ownedItems, totalItems],
-  () => {
-    if (isCustom.value) fetchBinders().catch(() => {});
-  },
-);
+watch([ownedItems, totalItems], () => {
+  if (isCustom.value) fetchBinders().catch(() => {});
+});
 </script>
 
 <template>
@@ -280,8 +286,15 @@ watch(
         class="mb-4"
       />
 
-      <div class="mb-4">
-        <p class="text-sm text-muted">{{ binder?.name }}</p>
+      <div class="mb-4 flex justify-between">
+        <p class="text-5xl font-bold">{{ binder?.name }}</p>
+        <div class="flex flex-col gap-1">
+          <p class="text-sm font-medium text-default">
+            {{ ownedItems }} of {{ totalItems }} cards collected
+            <span class="text-muted font-normal">({{ progressPct }}%)</span>
+          </p>
+          <UProgress :model-value="progressPct" :max="100" color="primary" />
+        </div>
       </div>
       <div v-if="binder?.description" class="mb-4">
         <p class="text-sm text-muted">{{ binder.description }}</p>
@@ -289,10 +302,6 @@ watch(
 
       <div v-if="isCustom && totalItems" class="mb-4 flex flex-col gap-2">
         <div class="flex items-center justify-between gap-3">
-          <span class="text-sm font-medium text-default">
-            {{ ownedItems }} of {{ totalItems }} cards collected
-            <span class="text-muted font-normal">({{ progressPct }}%)</span>
-          </span>
           <UTabs
             :items="FILTERS"
             v-model="filter"
@@ -301,13 +310,9 @@ watch(
             :content="false"
           />
         </div>
-        <UProgress :model-value="progressPct" :max="100" color="primary" />
       </div>
 
-      <div
-        v-if="items.length"
-        class="mb-4 flex items-center gap-2 flex-wrap"
-      >
+      <div v-if="items.length" class="mb-4 flex items-center gap-2 flex-wrap">
         <UTabs
           :items="SORT_OPTIONS"
           :model-value="sortField"
@@ -341,11 +346,7 @@ watch(
       >
         <UIcon name="i-lucide-folder-open" class="size-10 text-muted" />
         <p class="text-sm text-muted">
-          {{
-            isCustom
-              ? "This checklist is empty."
-              : "This binder is empty."
-          }}
+          {{ isCustom ? "This checklist is empty." : "This binder is empty." }}
         </p>
         <div v-if="isCustom" class="flex items-center gap-2">
           <UButton
@@ -453,7 +454,9 @@ watch(
           <div v-if="isCustom" class="flex items-center gap-1.5">
             <UButton
               :label="item.quantity > 0 ? 'Mark as missing' : 'Got it'"
-              :icon="item.quantity > 0 ? 'i-lucide-circle-dashed' : 'i-lucide-check'"
+              :icon="
+                item.quantity > 0 ? 'i-lucide-circle-dashed' : 'i-lucide-check'
+              "
               :color="item.quantity > 0 ? 'neutral' : 'success'"
               :variant="item.quantity > 0 ? 'outline' : 'soft'"
               size="xs"
