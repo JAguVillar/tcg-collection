@@ -15,11 +15,13 @@ function slugToLabel(slug) {
     .join(" ");
 }
 
-export function usePokemonIcons() {
-  const options = pokemonData.map((p) => ({
+const options = Object.freeze(
+  pokemonData.map((p) => ({
     label: slugToLabel(p.name),
     value: p.id,
-  }));
+  })),
+);
 
+export function usePokemonIcons() {
   return { options, pokemonSpriteUrl };
 }

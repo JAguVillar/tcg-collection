@@ -267,6 +267,7 @@ async function onDelete(binder) {
                 <UInputMenu
                   v-model="iconPokemonOption"
                   :items="pokemonOptions"
+                  :virtualize="true"
                   placeholder="Search a Pokémon…"
                   icon="i-lucide-search"
                   class="flex-1 min-w-0"

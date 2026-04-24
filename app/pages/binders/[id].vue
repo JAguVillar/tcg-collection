@@ -72,7 +72,7 @@ const viewMode = ref("grid");
 const POCKET_SIZES = [
   { label: "4-Pocket", value: 4, cols: 2 },
   { label: "9-Pocket", value: 9, cols: 3 },
-  { label: "12-Pocket", value: 12, cols: 3 },
+  { label: "12-Pocket", value: 12, cols: 4 },
   { label: "16-Pocket", value: 16, cols: 4 },
 ];
 const pocketSize = ref(9);
