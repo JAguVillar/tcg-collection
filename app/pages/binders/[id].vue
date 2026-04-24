@@ -143,16 +143,20 @@ const filteredItems = computed(() => {
 });
 
 const totalPages = computed(() =>
-  Math.max(1, Math.ceil(filteredItems.value.length / pocketSize.value)),
+  Math.max(1, Math.ceil(filteredItems.value.length / (pocketSize.value * 2))),
 );
 
-const pagedItems = computed(() => {
-  const start = (currentPage.value - 1) * pocketSize.value;
-  const slice = filteredItems.value.slice(start, start + pocketSize.value);
+const spreadItems = computed(() => {
+  const spreadSize = pocketSize.value * 2;
+  const start = (currentPage.value - 1) * spreadSize;
+  const slice = filteredItems.value.slice(start, start + spreadSize);
   const padded = [...slice];
-  while (padded.length < pocketSize.value) padded.push(null);
+  while (padded.length < spreadSize) padded.push(null);
   return padded;
 });
+
+const leftPageItems = computed(() => spreadItems.value.slice(0, pocketSize.value));
+const rightPageItems = computed(() => spreadItems.value.slice(pocketSize.value));
 
 watch([pocketSize, filter, sortField, isAscending], () => {
   currentPage.value = 1;
@@ -594,8 +598,79 @@ watch([ownedItems, totalItems], () => {
         class="flex flex-col items-center gap-4"
       >
         <div
-          class="w-full max-w-4xl rounded-xl border border-default bg-elevated/40 p-4 sm:p-6 shadow-sm"
+          class="w-full max-w-7xl rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_top,_rgba(30,41,59,0.8),_rgba(2,6,23,0.95))] p-4 sm:p-6 shadow-xl"
         >
+          <div
+            class="grid gap-4 md:gap-6 md:grid-cols-[1fr_auto_1fr] items-start"
+          >
+            <div
+              class="grid gap-3 sm:gap-4"
+              :class="{
+                'grid-cols-2': activePocket.cols === 2,
+                'grid-cols-3': activePocket.cols === 3,
+                'grid-cols-4': activePocket.cols === 4,
+              }"
+            >
+            <template
+              v-for="(item, idx) in leftPageItems"
+              :key="item?.id ?? `left-empty-${idx}`"
+            >
+              <div
+                v-if="item"
+                class="relative"
+                :class="
+                  isCustom && item.quantity === 0
+                    ? 'group opacity-60 hover:opacity-100 transition'
+                    : ''
+                "
+              >
+                <img
+                  v-if="item.card?.thumbImageUrl"
+                  :src="item.card.thumbImageUrl"
+                  :alt="item.card?.name"
+                  loading="lazy"
+                  class="w-full rounded-md block transition shadow-md"
+                  :class="
+                    isCustom && item.quantity === 0
+                      ? 'grayscale group-hover:grayscale-0'
+                      : ''
+                  "
+                />
+                <UBadge
+                  v-if="!isCustom"
+                  color="primary"
+                  variant="solid"
+                  class="absolute top-1.5 right-1.5"
+                  size="sm"
+                >
+                  x{{ item.quantity }}
+                </UBadge>
+                <UBadge
+                  v-else-if="item.quantity > 0"
+                  color="success"
+                  variant="solid"
+                  icon="i-lucide-check"
+                  class="absolute top-1.5 right-1.5"
+                  size="sm"
+                />
+                <UBadge
+                  v-else
+                  color="neutral"
+                  variant="solid"
+                  icon="i-lucide-circle-dashed"
+                  class="absolute top-1.5 right-1.5"
+                  size="sm"
+                />
+              </div>
+              <div
+                v-else
+                class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
+              ></div>
+            </template>
+            </div>
+
+          <div class="hidden md:block w-3 rounded-full bg-gradient-to-b from-white/20 via-white/10 to-white/20 shadow-[inset_0_0_12px_rgba(255,255,255,0.2)]"></div>
+
           <div
             class="grid gap-3 sm:gap-4"
             :class="{
@@ -605,8 +680,8 @@ watch([ownedItems, totalItems], () => {
             }"
           >
             <template
-              v-for="(item, idx) in pagedItems"
-              :key="item?.id ?? `empty-${idx}`"
+              v-for="(item, idx) in rightPageItems"
+              :key="item?.id ?? `right-empty-${idx}`"
             >
               <div
                 v-if="item"
@@ -662,6 +737,7 @@ watch([ownedItems, totalItems], () => {
             </template>
           </div>
         </div>
+        </div>
 
         <div class="flex items-center gap-4">
           <UButton
@@ -673,7 +749,7 @@ watch([ownedItems, totalItems], () => {
             @click="currentPage--"
           />
           <span class="text-sm text-muted">
-            Page {{ currentPage }} of {{ totalPages }}
+            Spread {{ currentPage }} of {{ totalPages }}
           </span>
           <UButton
             trailing-icon="i-lucide-chevron-right"
