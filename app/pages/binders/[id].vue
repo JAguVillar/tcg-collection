@@ -63,6 +63,25 @@ const activeSort = computed(() =>
   SORT_OPTIONS.find((o) => o.value === sortField.value),
 );
 
+const VIEW_MODES = [
+  { label: "Grid", value: "grid", icon: "i-lucide-grid-2x2" },
+  { label: "Binder", value: "binder", icon: "i-lucide-book-open" },
+];
+const viewMode = ref("grid");
+
+const POCKET_SIZES = [
+  { label: "4-Pocket", value: 4, cols: 2 },
+  { label: "9-Pocket", value: 9, cols: 3 },
+  { label: "12-Pocket", value: 12, cols: 3 },
+  { label: "16-Pocket", value: 16, cols: 4 },
+];
+const pocketSize = ref(9);
+const currentPage = ref(1);
+
+const activePocket = computed(
+  () => POCKET_SIZES.find((p) => p.value === pocketSize.value) ?? POCKET_SIZES[1],
+);
+
 function setSort(field) {
   if (sortField.value === field) {
     isAscending.value = !isAscending.value;
@@ -121,6 +140,26 @@ const filteredItems = computed(() => {
       list = list.filter((i) => i.quantity > 0);
   }
   return [...list].sort(compare);
+});
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredItems.value.length / pocketSize.value)),
+);
+
+const pagedItems = computed(() => {
+  const start = (currentPage.value - 1) * pocketSize.value;
+  const slice = filteredItems.value.slice(start, start + pocketSize.value);
+  const padded = [...slice];
+  while (padded.length < pocketSize.value) padded.push(null);
+  return padded;
+});
+
+watch([pocketSize, filter, sortField, isAscending], () => {
+  currentPage.value = 1;
+});
+
+watch(totalPages, (tp) => {
+  if (currentPage.value > tp) currentPage.value = tp;
 });
 
 function formatVariant(variant) {
@@ -317,6 +356,15 @@ watch([ownedItems, totalItems], () => {
         <p class="text-sm text-muted">{{ binder.description }}</p>
       </div>
 
+      <div v-if="isCustom && totalItems" class="mb-4">
+        <UTabs
+          :items="FILTERS"
+          v-model="filter"
+          variant="link"
+          :content="false"
+        />
+      </div>
+
       <div v-if="items.length" class="mb-4 flex items-center gap-2 flex-wrap">
         <UTabs
           :items="SORT_OPTIONS"
@@ -336,12 +384,25 @@ watch([ownedItems, totalItems], () => {
           :aria-label="isAscending ? 'Ascending' : 'Descending'"
           @click="setSort(sortField)"
         />
-      </div>
-      <div v-if="isCustom && totalItems" class="mb-4">
         <UTabs
-          :items="FILTERS"
-          v-model="filter"
-          variant="link"
+          class="ml-auto"
+          :items="VIEW_MODES"
+          v-model="viewMode"
+          variant="pill"
+          size="xs"
+          :content="false"
+        />
+      </div>
+
+      <div
+        v-if="viewMode === 'binder' && filteredItems.length"
+        class="mb-4 flex items-center gap-2 flex-wrap"
+      >
+        <UTabs
+          :items="POCKET_SIZES"
+          v-model="pocketSize"
+          variant="pill"
+          size="xs"
           :content="false"
         />
       </div>
@@ -389,7 +450,7 @@ watch([ownedItems, totalItems], () => {
       </div>
 
       <div
-        v-else
+        v-else-if="viewMode === 'grid'"
         class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
       >
         <UCard
@@ -526,6 +587,103 @@ watch([ownedItems, totalItems], () => {
             />
           </div>
         </UCard>
+      </div>
+
+      <div
+        v-else-if="viewMode === 'binder'"
+        class="flex flex-col items-center gap-4"
+      >
+        <div
+          class="w-full max-w-4xl rounded-xl border border-default bg-elevated/40 p-4 sm:p-6 shadow-sm"
+        >
+          <div
+            class="grid gap-3 sm:gap-4"
+            :class="{
+              'grid-cols-2': activePocket.cols === 2,
+              'grid-cols-3': activePocket.cols === 3,
+              'grid-cols-4': activePocket.cols === 4,
+            }"
+          >
+            <template
+              v-for="(item, idx) in pagedItems"
+              :key="item?.id ?? `empty-${idx}`"
+            >
+              <div
+                v-if="item"
+                class="relative"
+                :class="
+                  isCustom && item.quantity === 0
+                    ? 'group opacity-60 hover:opacity-100 transition'
+                    : ''
+                "
+              >
+                <img
+                  v-if="item.card?.thumbImageUrl"
+                  :src="item.card.thumbImageUrl"
+                  :alt="item.card?.name"
+                  loading="lazy"
+                  class="w-full rounded-md block transition shadow-md"
+                  :class="
+                    isCustom && item.quantity === 0
+                      ? 'grayscale group-hover:grayscale-0'
+                      : ''
+                  "
+                />
+                <UBadge
+                  v-if="!isCustom"
+                  color="primary"
+                  variant="solid"
+                  class="absolute top-1.5 right-1.5"
+                  size="sm"
+                >
+                  x{{ item.quantity }}
+                </UBadge>
+                <UBadge
+                  v-else-if="item.quantity > 0"
+                  color="success"
+                  variant="solid"
+                  icon="i-lucide-check"
+                  class="absolute top-1.5 right-1.5"
+                  size="sm"
+                />
+                <UBadge
+                  v-else
+                  color="neutral"
+                  variant="solid"
+                  icon="i-lucide-circle-dashed"
+                  class="absolute top-1.5 right-1.5"
+                  size="sm"
+                />
+              </div>
+              <div
+                v-else
+                class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
+              ></div>
+            </template>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <UButton
+            icon="i-lucide-chevron-left"
+            label="Prev"
+            color="neutral"
+            variant="outline"
+            :disabled="currentPage <= 1"
+            @click="currentPage--"
+          />
+          <span class="text-sm text-muted">
+            Page {{ currentPage }} of {{ totalPages }}
+          </span>
+          <UButton
+            trailing-icon="i-lucide-chevron-right"
+            label="Next"
+            color="neutral"
+            variant="outline"
+            :disabled="currentPage >= totalPages"
+            @click="currentPage++"
+          />
+        </div>
       </div>
 
       <BulkAddPokemonDialog
