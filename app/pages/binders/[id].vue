@@ -396,7 +396,10 @@ watch([ownedItems, totalItems], () => {
           v-for="item in filteredItems"
           :key="item.id"
           :ui="{
-            root: isCustom && item.quantity === 0 ? 'opacity-60' : '',
+            root:
+              isCustom && item.quantity === 0
+                ? 'group opacity-60 hover:opacity-100 transition'
+                : '',
             body: 'p-3 flex flex-col gap-2',
           }"
         >
@@ -406,8 +409,12 @@ watch([ownedItems, totalItems], () => {
               :src="item.card.thumbImageUrl"
               :alt="item.card?.name"
               loading="lazy"
-              class="w-full rounded-md block"
-              :class="isCustom && item.quantity === 0 ? 'grayscale' : ''"
+              class="w-full rounded-md block transition"
+              :class="
+                isCustom && item.quantity === 0
+                  ? 'grayscale group-hover:grayscale-0'
+                  : ''
+              "
             />
             <UBadge
               v-if="formatVariant(item.variant)"

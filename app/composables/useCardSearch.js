@@ -47,6 +47,10 @@ export function useCardSearch() {
   const sortField = ref(7);
   const isAscending = ref(true);
 
+  // Monotonic guard so stale responses from rapid toggles/searches don't
+  // overwrite the state for the latest query.
+  let requestSeq = 0;
+
   function _buildBody(overrides = {}) {
     return {
       ...DEFAULT_SEARCH_BODY,
@@ -59,6 +63,7 @@ export function useCardSearch() {
   }
 
   async function searchCards(options = {}) {
+    const seq = ++requestSeq;
     loading.value = true;
     error.value = null;
     page.value = 1;
@@ -76,6 +81,8 @@ export function useCardSearch() {
         body,
       });
 
+      if (seq !== requestSeq) return [];
+
       const results = data?.value ?? [];
       cards.value = results;
 
@@ -85,17 +92,19 @@ export function useCardSearch() {
 
       return results;
     } catch (err) {
+      if (seq !== requestSeq) return [];
       error.value = err?.message ?? "Error searching cards";
       console.error("Card search error:", err);
       return [];
     } finally {
-      loading.value = false;
+      if (seq === requestSeq) loading.value = false;
     }
   }
 
   async function loadMore() {
     if (loadingMore.value || !hasMore.value) return;
 
+    const seq = requestSeq;
     loadingMore.value = true;
     error.value = null;
     page.value++;
@@ -108,6 +117,8 @@ export function useCardSearch() {
         body,
       });
 
+      if (seq !== requestSeq) return [];
+
       const results = data?.value ?? [];
 
       if (results.length === 0) {
@@ -118,12 +129,13 @@ export function useCardSearch() {
 
       return results;
     } catch (err) {
+      if (seq !== requestSeq) return [];
       error.value = err?.message ?? "Error loading more cards";
       page.value--;
       console.error("Load more error:", err);
       return [];
     } finally {
-      loadingMore.value = false;
+      if (seq === requestSeq) loadingMore.value = false;
     }
   }
 
