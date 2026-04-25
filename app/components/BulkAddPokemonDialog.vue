@@ -7,16 +7,51 @@ const props = defineProps({
 const emit = defineEmits(["update:open", "added"]);
 
 const { options: pokemonOptions, pokemonSpriteUrl } = usePokemonIcons();
+const { options: artistOptions } = useArtists();
 
-const selected = ref(null);
+const SOURCE_MODES = [
+  { label: "By Pokémon", value: "pokemon" },
+  { label: "By artist", value: "artist" },
+];
+
+const sourceMode = ref("pokemon");
+const selectedPokemon = ref(null);
+const selectedArtist = ref(null);
 const preview = ref(null);
 const previewLoading = ref(false);
 const previewError = ref(null);
 const submitting = ref(false);
 const submitError = ref(null);
 
+const currentSelection = computed(() =>
+  sourceMode.value === "artist" ? selectedArtist.value : selectedPokemon.value,
+);
+
+const sourceLabel = computed(() => {
+  if (!currentSelection.value) {
+    return sourceMode.value === "artist" ? "this artist" : "this Pokémon";
+  }
+  return currentSelection.value.label;
+});
+
+function buildPayload() {
+  if (sourceMode.value === "artist") {
+    return {
+      mode: "artist",
+      artist: selectedArtist.value?.value,
+    };
+  }
+
+  return {
+    mode: "pokemon",
+    pokedexNumber: selectedPokemon.value?.value,
+  };
+}
+
 function reset() {
-  selected.value = null;
+  sourceMode.value = "pokemon";
+  selectedPokemon.value = null;
+  selectedArtist.value = null;
   preview.value = null;
   previewError.value = null;
   submitError.value = null;
@@ -29,13 +64,20 @@ watch(
   },
 );
 
-watch(selected, async (opt) => {
+watch(sourceMode, () => {
   preview.value = null;
   previewError.value = null;
+  submitError.value = null;
+});
+
+watch(currentSelection, async (opt) => {
+  preview.value = null;
+  previewError.value = null;
+  submitError.value = null;
   if (!opt) return;
   previewLoading.value = true;
   try {
-    preview.value = await props.bulkAdd(opt.value, { preview: true });
+    preview.value = await props.bulkAdd(buildPayload(), { preview: true });
   } catch (err) {
     previewError.value =
       err?.data?.statusMessage ?? err?.message ?? "Could not load preview";
@@ -45,12 +87,19 @@ watch(selected, async (opt) => {
 });
 
 async function onConfirm() {
-  if (!selected.value) return;
+  if (!currentSelection.value) return;
   submitting.value = true;
   submitError.value = null;
   try {
-    const result = await props.bulkAdd(selected.value.value, { preview: false });
-    emit("added", { ...result, pokemon: selected.value });
+    const result = await props.bulkAdd(buildPayload(), { preview: false });
+    emit("added", {
+      ...result,
+      source: {
+        mode: sourceMode.value,
+        label: currentSelection.value.label,
+        value: currentSelection.value.value,
+      },
+    });
     emit("update:open", false);
   } catch (err) {
     submitError.value =
@@ -68,26 +117,50 @@ function setOpen(value) {
 <template>
   <UModal
     :open="open"
-    title="Add Pokémon to checklist"
-    description="Fetches every card for a given Pokémon and adds them as missing."
+    title="Bulk add cards"
+    description="Fetches cards by Pokémon or artist and adds missing ones to this checklist."
     @update:open="setOpen"
   >
     <template #body>
       <div class="flex flex-col gap-4">
-        <UFormField label="Pokémon" name="pokemon" required>
+        <UTabs
+          :items="SOURCE_MODES"
+          v-model="sourceMode"
+          variant="pill"
+          size="sm"
+          :content="false"
+        />
+
+        <UFormField
+          :label="sourceMode === 'artist' ? 'Artist' : 'Pokémon'"
+          :name="sourceMode"
+          required
+        >
           <div class="flex items-center gap-3">
             <UInputMenu
-              v-model="selected"
+              v-if="sourceMode === 'pokemon'"
+              v-model="selectedPokemon"
               :items="pokemonOptions"
               :virtualize="true"
               placeholder="Search a Pokémon…"
               icon="i-lucide-search"
               class="flex-1 min-w-0"
             />
+
+            <UInputMenu
+              v-else
+              v-model="selectedArtist"
+              :items="artistOptions"
+              :virtualize="true"
+              placeholder="Search an artist…"
+              icon="i-lucide-palette"
+              class="flex-1 min-w-0"
+            />
+
             <img
-              v-if="selected"
-              :src="pokemonSpriteUrl(selected.value)"
-              :alt="selected.label"
+              v-if="sourceMode === 'pokemon' && selectedPokemon"
+              :src="pokemonSpriteUrl(selectedPokemon.value)"
+              :alt="selectedPokemon.label"
               class="size-10 shrink-0 object-contain"
             />
           </div>
@@ -112,7 +185,7 @@ function setOpen(value) {
           <p class="text-sm text-default">
             <span class="font-semibold">{{ preview.count }}</span>
             {{ preview.count === 1 ? "card" : "cards" }} found for
-            <span class="font-semibold">{{ selected?.label }}</span>
+            <span class="font-semibold">{{ sourceLabel }}</span>
             <span v-if="preview.truncated" class="text-muted">
               (truncated — showing first batch)
             </span>
@@ -131,7 +204,7 @@ function setOpen(value) {
             />
           </div>
           <p v-if="preview.count === 0" class="text-sm text-muted">
-            No cards found for this Pokémon.
+            No cards found for this {{ sourceMode === "artist" ? "artist" : "Pokémon" }}.
           </p>
           <p v-else class="text-xs text-muted">
             Cards already in this binder will be skipped.
@@ -148,18 +221,22 @@ function setOpen(value) {
     </template>
 
     <template #footer>
-      <div class="flex justify-end gap-2">
+      <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
         <UButton
           color="neutral"
           variant="outline"
           label="Cancel"
           :disabled="submitting"
+          block
+          class="sm:w-auto"
           @click="setOpen(false)"
         />
         <UButton
           :label="preview?.count ? `Add ${preview.count} cards` : 'Add cards'"
           :loading="submitting"
-          :disabled="!selected || previewLoading || !preview?.count"
+          :disabled="!currentSelection || previewLoading || !preview?.count"
+          block
+          class="sm:w-auto"
           @click="onConfirm"
         />
       </div>

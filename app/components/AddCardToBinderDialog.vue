@@ -14,9 +14,11 @@ const {
   loadingMore,
   error,
   hasMore,
+  selectedArtist,
   searchCards,
   loadMore,
 } = useCardSearch();
+const { options: artistOptions } = useArtists();
 
 const addStatus = ref({});
 const addedCount = ref(0);
@@ -27,10 +29,21 @@ function cardKey(card) {
 
 function reset() {
   searchQuery.value = "";
+  selectedArtist.value = null;
   cards.value = [];
   addStatus.value = {};
   addedCount.value = 0;
 }
+
+const selectedArtistOption = computed({
+  get() {
+    if (!selectedArtist.value) return null;
+    return artistOptions.find((o) => o.value === selectedArtist.value) ?? null;
+  },
+  set(option) {
+    selectedArtist.value = option?.value ?? null;
+  },
+});
 
 watch(
   () => props.open,
@@ -38,6 +51,10 @@ watch(
     if (!open) reset();
   },
 );
+
+watch(selectedArtist, () => {
+  if (searchQuery.value.trim()) searchCards();
+});
 
 function formatVariant(variant) {
   if (!variant || variant === "normal" || variant === "holofoil") return null;
@@ -85,7 +102,7 @@ function setOpen(value) {
     <template #body>
       <div class="flex flex-col gap-3 sm:gap-4">
         <form
-          class="flex items-center gap-2"
+          class="flex flex-col sm:flex-row sm:items-center gap-2"
           @submit.prevent="submitSearch"
         >
           <UInput
@@ -103,8 +120,19 @@ function setOpen(value) {
             :disabled="!searchQuery.trim()"
             :ui="{ label: 'hidden sm:inline' }"
             label="Search"
+            block
+            class="sm:w-auto"
           />
         </form>
+
+        <UInputMenu
+          v-model="selectedArtistOption"
+          :items="artistOptions"
+          :virtualize="true"
+          placeholder="Filter by artist"
+          icon="i-lucide-palette"
+          clear
+        />
 
         <div
           v-if="addedCount"
@@ -215,6 +243,8 @@ function setOpen(value) {
           color="neutral"
           variant="outline"
           label="Done"
+          block
+          class="sm:w-auto"
           @click="setOpen(false)"
         />
       </div>

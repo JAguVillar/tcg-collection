@@ -15,6 +15,7 @@ export function cardToRow(card) {
     set_name: card.set ?? null,
     series: card.series ?? null,
     rarity: card.rarity ?? null,
+    artist: card.artist ?? null,
     thumb_image_url: card.thumbImageUrl ?? null,
     large_image_url: card.largeImageUrl ?? null,
     set_icon_url: card.setIconUrl ?? null,

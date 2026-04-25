@@ -97,6 +97,25 @@ function parseLeadingInt(s) {
   return m ? parseInt(m[0], 10) : null;
 }
 
+function releaseSortKey(card) {
+  const direct = Number(card?.releaseDateSortKey ?? card?.release_date_sort_key);
+  if (Number.isFinite(direct) && direct > 0) return direct;
+
+  const parsed = Date.parse(card?.releaseDate ?? card?.release_date ?? "");
+  if (Number.isFinite(parsed) && parsed > 0) return parsed;
+
+  return null;
+}
+
+function tieBreakKey(item) {
+  const c = item.card ?? {};
+  return [
+    (c.name ?? "").toLowerCase(),
+    parseLeadingInt(c.numberDisplay) ?? Number.POSITIVE_INFINITY,
+    (c.id ?? item.cardId ?? "").toLowerCase(),
+  ];
+}
+
 function sortKey(item) {
   const c = item.card ?? {};
   switch (sortField.value) {
@@ -109,7 +128,7 @@ function sortKey(item) {
     case "set":
       return (c.set ?? c.setName ?? "").toLowerCase();
     case "released":
-      return c.releaseDate ?? "";
+      return releaseSortKey(c);
     case "quantity":
       return item.quantity ?? 0;
     case "added":
@@ -129,6 +148,13 @@ function compare(a, b) {
   if (aNull && bNull) return 0;
   if (ka < kb) return isAscending.value ? -1 : 1;
   if (ka > kb) return isAscending.value ? 1 : -1;
+
+  const ta = tieBreakKey(a);
+  const tb = tieBreakKey(b);
+  for (let i = 0; i < ta.length; i++) {
+    if (ta[i] < tb[i]) return -1;
+    if (ta[i] > tb[i]) return 1;
+  }
   return 0;
 }
 
@@ -254,7 +280,7 @@ const bulkAddOpen = ref(false);
 const addCardOpen = ref(false);
 
 function onBulkAdded(result) {
-  const label = result.pokemon?.label ?? "Pokémon";
+  const label = result.source?.label ?? "Selection";
   const parts = [`Added ${result.inserted}`];
   if (result.skipped) parts.push(`${result.skipped} already in binder`);
   toast.add({
@@ -289,14 +315,16 @@ watch([ownedItems, totalItems], () => {
         </template>
 
         <template #title>
-          <div class="flex items-center gap-2">
+          <div class="flex min-w-0 items-center gap-2">
             <img
               v-if="iconUrl"
               :src="iconUrl"
               :alt="binder?.iconPokemon"
               class="size-8 shrink-0 object-contain"
             />
-            <AppBreadcrumb :overrides="breadcrumbOverrides" />
+            <div class="min-w-0">
+              <AppBreadcrumb :overrides="breadcrumbOverrides" />
+            </div>
             <UBadge
               v-if="isCustom"
               color="info"
@@ -315,14 +343,16 @@ watch([ownedItems, totalItems], () => {
             label="Add card"
             color="neutral"
             variant="outline"
+            :ui="{ label: 'hidden sm:inline' }"
             @click="addCardOpen = true"
           />
           <UButton
             v-if="isCustom"
             icon="i-lucide-list-plus"
-            label="Add Pokémon"
+            label="Bulk add cards"
             color="neutral"
             variant="outline"
+            :ui="{ label: 'hidden md:inline' }"
             @click="bulkAddOpen = true"
           />
           <UButton
@@ -331,6 +361,7 @@ watch([ownedItems, totalItems], () => {
             :color="isActive ? 'primary' : 'neutral'"
             :variant="isActive ? 'soft' : 'outline'"
             :disabled="isActive"
+            :ui="{ label: 'hidden lg:inline' }"
             @click="onSetActive"
           />
         </template>
@@ -346,14 +377,21 @@ watch([ownedItems, totalItems], () => {
         class="mb-4"
       />
 
-      <div class="mb-4 flex justify-between items-center">
-        <p class="text-5xl font-bold">{{ binder?.name }}</p>
-        <div class="flex flex-col gap-1 items-center">
+      <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <p class="text-2xl sm:text-4xl lg:text-5xl font-bold break-words">
+          {{ binder?.name }}
+        </p>
+        <div class="flex w-full sm:w-auto flex-col gap-1 sm:items-end">
           <p class="text-sm font-medium text-default">
             {{ ownedItems }} of {{ totalItems }} cards collected
             <span class="text-muted font-normal">({{ progressPct }}%)</span>
           </p>
-          <UProgress :model-value="progressPct" :max="100" color="warning" />
+          <UProgress
+            :model-value="progressPct"
+            :max="100"
+            color="warning"
+            class="w-full sm:w-56"
+          />
         </div>
       </div>
       <div v-if="binder?.description" class="mb-4">
@@ -369,33 +407,40 @@ watch([ownedItems, totalItems], () => {
         />
       </div>
 
-      <div v-if="items.length" class="mb-4 flex items-center gap-2 flex-wrap">
-        <UTabs
-          :items="SORT_OPTIONS"
-          :model-value="sortField"
-          variant="pill"
-          size="xs"
-          :content="false"
-          @update:model-value="setSort"
-        />
-        <UButton
-          v-if="activeSort?.hasDirection"
-          :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
-          color="neutral"
-          variant="outline"
-          size="xs"
-          square
-          :aria-label="isAscending ? 'Ascending' : 'Descending'"
-          @click="setSort(sortField)"
-        />
-        <UTabs
-          class="ml-auto"
-          :items="VIEW_MODES"
-          v-model="viewMode"
-          variant="pill"
-          size="xs"
-          :content="false"
-        />
+      <div v-if="items.length" class="mb-4 flex w-full flex-col gap-2">
+        <div class="w-full overflow-x-auto pb-1">
+          <UTabs
+            :items="SORT_OPTIONS"
+            :model-value="sortField"
+            variant="pill"
+            size="xs"
+            :content="false"
+            class="min-w-max"
+            @update:model-value="setSort"
+          />
+        </div>
+        <div class="flex w-full items-center gap-2">
+          <UButton
+            v-if="activeSort?.hasDirection"
+            :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
+            color="neutral"
+            variant="outline"
+            size="xs"
+            square
+            :aria-label="isAscending ? 'Ascending' : 'Descending'"
+            @click="setSort(sortField)"
+          />
+          <div class="ml-auto overflow-x-auto">
+            <UTabs
+              :items="VIEW_MODES"
+              v-model="viewMode"
+              variant="pill"
+              size="xs"
+              :content="false"
+              class="min-w-max"
+            />
+          </div>
+        </div>
       </div>
 
       <div
@@ -412,7 +457,7 @@ watch([ownedItems, totalItems], () => {
       </div>
       <div
         v-if="loading && !items.length"
-        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
       >
         <USkeleton v-for="n in 10" :key="n" class="h-80 rounded-lg" />
       </div>
@@ -425,10 +470,12 @@ watch([ownedItems, totalItems], () => {
         <p class="text-sm text-muted">
           {{ isCustom ? "This checklist is empty." : "This binder is empty." }}
         </p>
-        <div v-if="isCustom" class="flex items-center gap-2">
+        <div v-if="isCustom" class="flex flex-col sm:flex-row items-center gap-2">
           <UButton
             icon="i-lucide-list-plus"
-            label="Add cards of a Pokémon"
+            label="Bulk add cards"
+            block
+            class="sm:w-auto"
             @click="bulkAddOpen = true"
           />
           <UButton
@@ -437,6 +484,8 @@ watch([ownedItems, totalItems], () => {
             label="Search cards"
             color="neutral"
             variant="outline"
+            block
+            class="sm:w-auto"
           />
         </div>
         <p v-else class="text-sm text-muted">
@@ -455,7 +504,7 @@ watch([ownedItems, totalItems], () => {
 
       <div
         v-else-if="viewMode === 'grid'"
-        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
       >
         <UCard
           v-for="item in filteredItems"
@@ -739,7 +788,7 @@ watch([ownedItems, totalItems], () => {
         </div>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex flex-wrap items-center justify-center gap-3">
           <UButton
             icon="i-lucide-chevron-left"
             label="Prev"

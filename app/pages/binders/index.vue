@@ -169,6 +169,7 @@ async function onDelete(binder) {
           <UButton
             icon="i-lucide-plus"
             label="New binder"
+            :ui="{ label: 'hidden sm:inline' }"
             @click="createOpen = true"
           />
         </template>
@@ -291,11 +292,13 @@ async function onDelete(binder) {
         </template>
 
         <template #footer>
-          <div class="flex justify-end gap-2">
+          <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
             <UButton
               color="neutral"
               variant="outline"
               label="Cancel"
+              block
+              class="sm:w-auto"
               @click="createOpen = false"
             />
             <UButton
@@ -303,6 +306,8 @@ async function onDelete(binder) {
               form="create-binder-form"
               label="Create"
               :loading="createLoading"
+              block
+              class="sm:w-auto"
             />
           </div>
         </template>

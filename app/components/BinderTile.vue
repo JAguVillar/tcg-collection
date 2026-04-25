@@ -64,7 +64,7 @@ const menuItems = computed(() => {
             v-if="iconUrl"
             :src="iconUrl"
             :alt="binder.iconPokemon"
-            class="size-14 shrink-0 object-contain"
+            class="size-10 sm:size-14 shrink-0 object-contain"
           />
           <h2 class="text-base font-semibold text-default truncate">
             {{ binder.name }}

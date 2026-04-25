@@ -1,5 +1,6 @@
 export function useBinder(binderId) {
   const id = computed(() => unref(binderId));
+  const { handleAuthError } = useAuthErrorRedirect();
 
   const binder = ref(null);
   const items = ref([]);
@@ -15,6 +16,12 @@ export function useBinder(binderId) {
       binder.value = data.binder;
       items.value = data.items;
     } catch (err) {
+      if (await handleAuthError(err)) {
+        binder.value = null;
+        items.value = [];
+        error.value = null;
+        return;
+      }
       error.value = err?.data?.statusMessage ?? err?.message ?? "Error loading binder";
       throw err;
     } finally {
@@ -69,11 +76,17 @@ export function useBinder(binderId) {
     return result;
   }
 
-  async function bulkAdd(pokedexNumber, { preview = false } = {}) {
+  async function bulkAdd(source, { preview = false } = {}) {
     if (!id.value) throw new Error("Binder id is not set");
+
+    const body =
+      source && typeof source === "object"
+        ? { ...source, preview }
+        : { mode: "pokemon", pokedexNumber: source, preview };
+
     const result = await $fetch(`/api/binders/${id.value}/items/bulk`, {
       method: "POST",
-      body: { pokedexNumber, preview },
+      body,
     });
     if (!preview) {
       await fetchItems();

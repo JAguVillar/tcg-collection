@@ -11,12 +11,14 @@ const {
   error,
   hasMore,
   separateVariants,
+  selectedArtist,
   sortField,
   isAscending,
   searchCards,
   loadMore,
   setSort,
 } = useCardSearch();
+const { options: artistOptions } = useArtists();
 
 const user = useSupabaseUser();
 const { activeBinder, defaultBinder, binders, setActiveBinder } = useBinders();
@@ -27,8 +29,18 @@ const defaultAddStatus = ref({});
 
 searchCards({ query: "rowlet" });
 
-watch(separateVariants, () => {
+watch([separateVariants, selectedArtist], () => {
   searchCards();
+});
+
+const selectedArtistOption = computed({
+  get() {
+    if (!selectedArtist.value) return null;
+    return artistOptions.find((o) => o.value === selectedArtist.value) ?? null;
+  },
+  set(option) {
+    selectedArtist.value = option?.value ?? null;
+  },
 });
 
 function cardKey(card) {
@@ -119,7 +131,7 @@ function quickAddToDefault(card) {
             :items="binderItems"
             icon="i-lucide-library"
             placeholder="Active binder"
-            class="w-56"
+            class="w-full sm:w-56"
             @update:model-value="setActiveBinder"
           />
         </template>
@@ -128,7 +140,7 @@ function quickAddToDefault(card) {
       <UDashboardToolbar>
         <template #default>
           <form
-            class="flex items-center gap-2 w-full"
+            class="flex w-full flex-col gap-2 sm:flex-row sm:items-center"
             @submit.prevent="searchCards()"
           >
             <UInput
@@ -143,6 +155,8 @@ function quickAddToDefault(card) {
               icon="i-lucide-search"
               label="Search"
               :loading="loading"
+              block
+              class="sm:w-auto"
             />
           </form>
         </template>
@@ -150,30 +164,44 @@ function quickAddToDefault(card) {
 
       <UDashboardToolbar>
         <template #default>
-          <div class="flex items-center gap-2 w-full flex-wrap">
-            <UTabs
-              :items="sortItems"
-              :model-value="sortField"
-              variant="pill"
-              size="xs"
-              :content="false"
-              @update:model-value="setSort"
-            />
-            <UButton
-              v-if="activeSort?.hasDirection"
-              :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
-              color="neutral"
-              variant="outline"
-              size="xs"
-              square
-              :aria-label="isAscending ? 'Ascending' : 'Descending'"
-              @click="setSort(sortField)"
-            />
-            <USwitch
-              v-model="separateVariants"
-              label="Separate variants"
-              class="ml-auto"
-            />
+          <div class="flex w-full flex-col gap-2">
+            <div class="w-full overflow-x-auto pb-1">
+              <UTabs
+                :items="sortItems"
+                :model-value="sortField"
+                variant="pill"
+                size="xs"
+                :content="false"
+                class="min-w-max"
+                @update:model-value="setSort"
+              />
+            </div>
+            <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+              <UButton
+                v-if="activeSort?.hasDirection"
+                :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
+                color="neutral"
+                variant="outline"
+                size="xs"
+                square
+                :aria-label="isAscending ? 'Ascending' : 'Descending'"
+                @click="setSort(sortField)"
+              />
+              <USwitch
+                v-model="separateVariants"
+                label="Separate variants"
+                class="sm:ml-auto"
+              />
+              <UInputMenu
+                v-model="selectedArtistOption"
+                :items="artistOptions"
+                :virtualize="true"
+                placeholder="Filter by artist"
+                icon="i-lucide-palette"
+                clear
+                class="w-full sm:w-72"
+              />
+            </div>
           </div>
         </template>
       </UDashboardToolbar>
@@ -190,14 +218,14 @@ function quickAddToDefault(card) {
 
       <div
         v-if="loading"
-        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
       >
         <USkeleton v-for="n in 10" :key="n" class="h-80 rounded-lg" />
       </div>
 
       <div
         v-else-if="cards.length"
-        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
       >
         <CardTile
           v-for="(card, index) in cards"

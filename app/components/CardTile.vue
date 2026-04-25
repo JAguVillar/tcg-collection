@@ -108,7 +108,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
       </div>
     </div>
 
-    <div v-if="user" class="flex items-center gap-1.5">
+    <div v-if="user" class="flex flex-wrap items-center gap-1.5">
       <UButton
         :label="addLabel"
         :icon="

@@ -44,6 +44,7 @@ export function useCardSearch() {
   const error = ref(null);
   const hasMore = ref(true);
   const separateVariants = ref(false);
+  const selectedArtist = ref(null);
   const sortField = ref(7);
   const isAscending = ref(true);
 
@@ -56,6 +57,7 @@ export function useCardSearch() {
       ...DEFAULT_SEARCH_BODY,
       query: searchQuery.value,
       separateVariants: separateVariants.value,
+      artists: selectedArtist.value ? [selectedArtist.value] : [],
       sortField: sortField.value,
       isAscending: isAscending.value,
       ...overrides,
@@ -163,6 +165,7 @@ export function useCardSearch() {
     error,
     hasMore,
     separateVariants,
+    selectedArtist,
     sortField,
     isAscending,
     searchCards,

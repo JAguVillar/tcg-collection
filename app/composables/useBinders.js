@@ -2,6 +2,7 @@ const ACTIVE_BINDER_STORAGE_KEY = "tcg-active-binder-id";
 
 export function useBinders() {
   const user = useSupabaseUser();
+  const { handleAuthError } = useAuthErrorRedirect();
   const binders = useState("binders", () => []);
   const loading = useState("binders-loading", () => false);
   const loaded = useState("binders-loaded", () => false);
@@ -48,6 +49,12 @@ export function useBinders() {
       loaded.value = true;
       return data;
     } catch (err) {
+      if (await handleAuthError(err)) {
+        binders.value = [];
+        loaded.value = false;
+        error.value = null;
+        return [];
+      }
       error.value = err?.data?.statusMessage ?? err?.message ?? "Error loading binders";
       throw err;
     } finally {

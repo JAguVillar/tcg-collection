@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     .select(`
       id, card_id, variant, quantity, notes, created_at, updated_at,
       card:cards(
-        id, name, number_display, set_id, set_name, series, rarity,
+        id, name, number_display, set_id, set_name, series, rarity, artist,
         thumb_image_url, large_image_url, set_icon_url, release_date, raw
       )
     `)
@@ -54,7 +54,12 @@ export default defineEventHandler(async (event) => {
       notes: row.notes,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
-      card: row.card?.raw ?? null,
+      card: row.card?.raw
+        ? {
+            ...row.card.raw,
+            artist: row.card.artist ?? row.card.raw.artist ?? null,
+          }
+        : null,
     })),
   };
 });
