@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
   const pokedexNumber = Number(body?.pokedexNumber);
   const artist = body?.artist?.trim?.() ?? "";
   const preview = Boolean(body?.preview);
+  const separateVariants = Boolean(body?.separateVariants);
 
   if (mode === "pokemon" && (!Number.isInteger(pokedexNumber) || pokedexNumber <= 0)) {
     throw createError({ statusCode: 400, statusMessage: "pokedexNumber required" });
@@ -44,17 +45,22 @@ export default defineEventHandler(async (event) => {
 
   const searchOverrides =
     mode === "artist"
-      ? { artists: [artist], separateVariants: false }
-      : { nationalPokedexNumbers: [pokedexNumber], separateVariants: false };
+      ? { artists: [artist], separateVariants }
+      : { nationalPokedexNumbers: [pokedexNumber], separateVariants };
 
   const { cards, hits } = await collectAllCards(searchOverrides);
 
+  // Dedup by (id, variant) so master-set bulk adds keep one row per variant
+  // while regular bulk adds collapse to one row per card.
   const uniqueCards = [];
-  const uniqueById = new Set();
+  const seenKeys = new Set();
   for (const card of cards) {
-    if (!card?.id || uniqueById.has(card.id)) continue;
-    uniqueById.add(card.id);
-    uniqueCards.push(card);
+    if (!card?.id) continue;
+    const variant = separateVariants ? (card.variant ?? "normal") : "normal";
+    const key = `${card.id}|${variant}`;
+    if (seenKeys.has(key)) continue;
+    seenKeys.add(key);
+    uniqueCards.push({ card, variant });
   }
 
   if (preview) {
@@ -63,12 +69,12 @@ export default defineEventHandler(async (event) => {
       total: hits,
       uniqueCount: uniqueCards.length,
       truncated: false,
-      sample: uniqueCards.slice(0, 6).map((c) => ({
-        id: c.id,
-        name: c.name,
-        numberDisplay: c.numberDisplay,
-        set: c.set,
-        thumbImageUrl: c.thumbImageUrl,
+      sample: uniqueCards.slice(0, 6).map(({ card }) => ({
+        id: card.id,
+        name: card.name,
+        numberDisplay: card.numberDisplay,
+        set: card.set,
+        thumbImageUrl: card.thumbImageUrl,
       })),
     };
   }
@@ -79,35 +85,40 @@ export default defineEventHandler(async (event) => {
 
   const admin = serverSupabaseServiceRole(event);
 
-  // Upsert all cards into the cache in one round-trip.
-  const cardRows = uniqueCards.map((c) => cardToRow(c));
+  // Upsert one row per distinct card id (variants share the cards-table row).
+  const cardRowsById = new Map();
+  for (const { card } of uniqueCards) {
+    if (!cardRowsById.has(card.id)) cardRowsById.set(card.id, cardToRow(card));
+  }
   const { error: cardErr } = await admin
     .from("cards")
-    .upsert(cardRows, { onConflict: "id" });
+    .upsert(Array.from(cardRowsById.values()), { onConflict: "id" });
   if (cardErr) {
     throw createError({ statusCode: 500, statusMessage: cardErr.message });
   }
 
-  // Find which (binder_id, card_id, variant='normal') already exist so we can
-  // skip them — unique constraint would otherwise reject the whole batch.
-  const cardIds = uniqueCards.map((c) => c.id);
+  // Find which (card_id, variant) pairs already exist so we skip them.
+  const cardIds = Array.from(cardRowsById.keys());
+  const variantsInBatch = Array.from(new Set(uniqueCards.map((u) => u.variant)));
   const { data: existing, error: existErr } = await supabase
     .from("binder_items")
-    .select("card_id")
+    .select("card_id, variant")
     .eq("binder_id", binderId)
-    .eq("variant", "normal")
-    .in("card_id", cardIds);
+    .in("card_id", cardIds)
+    .in("variant", variantsInBatch);
   if (existErr) {
     throw createError({ statusCode: 500, statusMessage: existErr.message });
   }
-  const existingIds = new Set((existing ?? []).map((r) => r.card_id));
+  const existingPairs = new Set(
+    (existing ?? []).map((r) => `${r.card_id}|${r.variant}`),
+  );
 
-  const toInsert = cardIds
-    .filter((id) => !existingIds.has(id))
-    .map((id) => ({
+  const toInsert = uniqueCards
+    .filter(({ card, variant }) => !existingPairs.has(`${card.id}|${variant}`))
+    .map(({ card, variant }) => ({
       binder_id: binderId,
-      card_id: id,
-      variant: "normal",
+      card_id: card.id,
+      variant,
       quantity: 0,
     }));
 

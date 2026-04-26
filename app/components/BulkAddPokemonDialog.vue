@@ -17,6 +17,7 @@ const SOURCE_MODES = [
 const sourceMode = ref("pokemon");
 const selectedPokemon = ref(null);
 const selectedArtist = ref(null);
+const separateVariants = ref(false);
 const preview = ref(null);
 const previewLoading = ref(false);
 const previewError = ref(null);
@@ -35,14 +36,12 @@ const sourceLabel = computed(() => {
 });
 
 function buildPayload() {
+  const base = { separateVariants: separateVariants.value };
   if (sourceMode.value === "artist") {
-    return {
-      mode: "artist",
-      artist: selectedArtist.value?.value,
-    };
+    return { ...base, mode: "artist", artist: selectedArtist.value?.value };
   }
-
   return {
+    ...base,
     mode: "pokemon",
     pokedexNumber: selectedPokemon.value?.value,
   };
@@ -52,6 +51,7 @@ function reset() {
   sourceMode.value = "pokemon";
   selectedPokemon.value = null;
   selectedArtist.value = null;
+  separateVariants.value = false;
   preview.value = null;
   previewError.value = null;
   submitError.value = null;
@@ -70,11 +70,11 @@ watch(sourceMode, () => {
   submitError.value = null;
 });
 
-watch(currentSelection, async (opt) => {
+async function refreshPreview() {
   preview.value = null;
   previewError.value = null;
   submitError.value = null;
-  if (!opt) return;
+  if (!currentSelection.value) return;
   previewLoading.value = true;
   try {
     preview.value = await props.bulkAdd(buildPayload(), { preview: true });
@@ -84,6 +84,10 @@ watch(currentSelection, async (opt) => {
   } finally {
     previewLoading.value = false;
   }
+}
+
+watch([currentSelection, separateVariants], () => {
+  refreshPreview();
 });
 
 async function onConfirm() {
@@ -164,6 +168,20 @@ function setOpen(value) {
               class="size-10 shrink-0 object-contain"
             />
           </div>
+        </UFormField>
+
+        <UFormField
+          label="Master set"
+          :description="
+            sourceMode === 'artist'
+              ? 'Add every variant as a separate entry (normal + holofoil + reverse holo + …).'
+              : 'Add every variant of this Pokémon as a separate entry (normal + holofoil + reverse holo + …).'
+          "
+        >
+          <USwitch
+            v-model="separateVariants"
+            label="Include all variants"
+          />
         </UFormField>
 
         <div v-if="previewLoading" class="flex items-center gap-2 text-sm text-muted">
