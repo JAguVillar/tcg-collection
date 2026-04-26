@@ -4,15 +4,8 @@ const props = defineProps({
   variant: { type: String, default: null },
   quantity: { type: Number, default: null },
   isCustom: { type: Boolean, default: false },
-  showVariantBadge: { type: Boolean, default: true },
   showStatusBadge: { type: Boolean, default: true },
   shadow: { type: Boolean, default: false },
-});
-
-const formattedVariant = computed(() => {
-  const v = props.variant ?? props.card?.variant;
-  if (!v || v === "normal" || v === "holofoil") return null;
-  return v.replace(/([A-Z])/g, " $1").trim();
 });
 
 const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
@@ -40,16 +33,6 @@ const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
     >
       <UIcon name="i-lucide-image-off" class="size-6 text-muted" />
     </div>
-
-    <UBadge
-      v-if="showVariantBadge && formattedVariant"
-      color="primary"
-      variant="solid"
-      size="sm"
-      class="absolute bottom-1.5 left-1/2 -translate-x-1/2 capitalize shadow-md"
-    >
-      {{ formattedVariant }}
-    </UBadge>
 
     <template v-if="showStatusBadge">
       <UBadge

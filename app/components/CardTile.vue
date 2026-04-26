@@ -16,6 +16,12 @@ const justAdded = computed(() => props.addStatus === "added");
 
 const isCustomActive = computed(() => props.activeBinder?.mode === "custom");
 
+const formattedVariant = computed(() => {
+  const v = props.card?.variant;
+  if (!v || v === "normal" || v === "holofoil") return null;
+  return v.replace(/([A-Z])/g, " $1").trim();
+});
+
 const addLabel = computed(() => {
   if (justAdded.value) return isCustomActive.value ? "Added to list" : "Added";
   if (!props.activeBinder) return "No binder";
@@ -45,7 +51,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
 
     <div class="flex items-start justify-between gap-2 min-w-0">
       <CardMeta :card="card" />
-      <div class="flex flex-col items-end">
+      <div class="flex flex-col items-end gap-1">
         <span
           class="text-sm font-bold shrink-0"
           :class="
@@ -58,13 +64,13 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
         </span>
 
         <UBadge
-          v-if="card.variant"
+          v-if="formattedVariant"
           color="primary"
           variant="solid"
-          size="sm"
-          class="absolute bottom-1.5 left-1/2 -translate-x-1/2 capitalize shadow-md"
+          size="xs"
+          class="capitalize"
         >
-          aqui claude
+          {{ formattedVariant }}
         </UBadge>
       </div>
     </div>

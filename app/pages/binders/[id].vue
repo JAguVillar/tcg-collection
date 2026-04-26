@@ -599,7 +599,6 @@ watch([ownedItems, totalItems], () => {
                   :variant="item.variant"
                   :quantity="item.quantity"
                   :is-custom="isCustom"
-                  :show-variant-badge="false"
                   shadow
                 />
                 <div
@@ -622,7 +621,6 @@ watch([ownedItems, totalItems], () => {
                   :variant="item.variant"
                   :quantity="item.quantity"
                   :is-custom="isCustom"
-                  :show-variant-badge="false"
                   shadow
                 />
                 <div
