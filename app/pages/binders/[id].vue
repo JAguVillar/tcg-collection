@@ -82,6 +82,19 @@ const activePocket = computed(
   () => POCKET_SIZES.find((p) => p.value === pocketSize.value) ?? POCKET_SIZES[1],
 );
 
+const pocketGridClass = computed(() => {
+  switch (activePocket.value.cols) {
+    case 2:
+      return "grid-cols-2";
+    case 3:
+      return "grid-cols-3";
+    case 4:
+      return "grid-cols-4";
+    default:
+      return "grid-cols-3";
+  }
+});
+
 function setSort(field) {
   if (sortField.value === field) {
     isAscending.value = !isAscending.value;
@@ -191,11 +204,6 @@ watch([pocketSize, filter, sortField, isAscending], () => {
 watch(totalPages, (tp) => {
   if (currentPage.value > tp) currentPage.value = tp;
 });
-
-function formatVariant(variant) {
-  if (!variant || variant === "normal") return null;
-  return variant.replace(/([A-Z])/g, " $1").trim();
-}
 
 async function bumpUp(item) {
   if (!item.card) return;
@@ -378,9 +386,9 @@ watch([ownedItems, totalItems], () => {
       />
 
       <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <p class="text-2xl sm:text-4xl lg:text-5xl font-bold break-words">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words">
           {{ binder?.name }}
-        </p>
+        </h1>
         <div class="flex w-full sm:w-auto flex-col gap-1 sm:items-end">
           <p class="text-sm font-medium text-default">
             {{ ownedItems }} of {{ totalItems }} cards collected
@@ -394,9 +402,12 @@ watch([ownedItems, totalItems], () => {
           />
         </div>
       </div>
-      <div v-if="binder?.description" class="mb-4">
-        <p class="text-sm text-muted">{{ binder.description }}</p>
-      </div>
+      <p
+        v-if="binder?.description"
+        class="mb-4 text-sm text-muted"
+      >
+        {{ binder.description }}
+      </p>
 
       <div v-if="isCustom && totalItems" class="mb-4">
         <UTabs
@@ -408,18 +419,18 @@ watch([ownedItems, totalItems], () => {
       </div>
 
       <div v-if="items.length" class="mb-4 flex w-full flex-col gap-2">
-        <div class="w-full overflow-x-auto pb-1">
-          <UTabs
-            :items="SORT_OPTIONS"
-            :model-value="sortField"
-            variant="pill"
-            size="xs"
-            :content="false"
-            class="min-w-max"
-            @update:model-value="setSort"
-          />
-        </div>
         <div class="flex w-full items-center gap-2">
+          <div class="flex-1 overflow-x-auto">
+            <UTabs
+              :items="SORT_OPTIONS"
+              :model-value="sortField"
+              variant="pill"
+              size="xs"
+              :content="false"
+              class="min-w-max"
+              @update:model-value="setSort"
+            />
+          </div>
           <UButton
             v-if="activeSort?.hasDirection"
             :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
@@ -430,36 +441,30 @@ watch([ownedItems, totalItems], () => {
             :aria-label="isAscending ? 'Ascending' : 'Descending'"
             @click="setSort(sortField)"
           />
-          <div class="ml-auto overflow-x-auto">
+        </div>
+        <div class="flex w-full items-center gap-2">
+          <UTabs
+            v-if="viewMode === 'binder' && filteredItems.length"
+            :items="POCKET_SIZES"
+            v-model="pocketSize"
+            variant="pill"
+            size="xs"
+            :content="false"
+          />
+          <div class="ml-auto">
             <UTabs
               :items="VIEW_MODES"
               v-model="viewMode"
               variant="pill"
               size="xs"
               :content="false"
-              class="min-w-max"
             />
           </div>
         </div>
       </div>
 
-      <div
-        v-if="viewMode === 'binder' && filteredItems.length"
-        class="mb-4 flex items-center gap-2 flex-wrap"
-      >
-        <UTabs
-          :items="POCKET_SIZES"
-          v-model="pocketSize"
-          variant="pill"
-          size="xs"
-          :content="false"
-        />
-      </div>
-      <div
-        v-if="loading && !items.length"
-        class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-      >
-        <USkeleton v-for="n in 10" :key="n" class="h-80 rounded-lg" />
+      <div v-if="loading && !items.length" class="cards-grid">
+        <USkeleton v-for="n in 10" :key="n" class="aspect-[5/7] rounded-lg" />
       </div>
 
       <div
@@ -502,87 +507,20 @@ watch([ownedItems, totalItems], () => {
         <p class="text-sm text-muted">No cards match this filter.</p>
       </div>
 
-      <div
-        v-else-if="viewMode === 'grid'"
-        class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-      >
+      <div v-else-if="viewMode === 'grid'" class="cards-grid">
         <UCard
           v-for="item in filteredItems"
           :key="item.id"
-          :ui="{
-            root:
-              isCustom && item.quantity === 0
-                ? 'group opacity-60 hover:opacity-100 transition'
-                : '',
-            body: 'p-3 flex flex-col gap-2',
-          }"
+          :ui="{ body: 'p-2.5 sm:p-3 flex flex-col gap-2' }"
         >
-          <div class="relative">
-            <img
-              v-if="item.card?.thumbImageUrl"
-              :src="item.card.thumbImageUrl"
-              :alt="item.card?.name"
-              loading="lazy"
-              class="w-full rounded-md block transition"
-              :class="
-                isCustom && item.quantity === 0
-                  ? 'grayscale group-hover:grayscale-0'
-                  : ''
-              "
-            />
-            <UBadge
-              v-if="formatVariant(item.variant)"
-              color="primary"
-              variant="solid"
-              size="sm"
-              class="absolute bottom-2 left-1/2 -translate-x-1/2 capitalize shadow-md"
-            >
-              {{ formatVariant(item.variant) }}
-            </UBadge>
-            <UBadge
-              v-if="!isCustom"
-              color="primary"
-              variant="solid"
-              class="absolute top-2 right-2"
-            >
-              x{{ item.quantity }}
-            </UBadge>
-            <UBadge
-              v-else-if="item.quantity > 0"
-              color="success"
-              variant="solid"
-              icon="i-lucide-check"
-              class="absolute top-2 right-2"
-            >
-              Owned
-            </UBadge>
-            <UBadge
-              v-else
-              color="neutral"
-              variant="solid"
-              icon="i-lucide-circle-dashed"
-              class="absolute top-2 right-2"
-            >
-              Missing
-            </UBadge>
-          </div>
+          <CardImage
+            :card="item.card"
+            :variant="item.variant"
+            :quantity="item.quantity"
+            :is-custom="isCustom"
+          />
 
-          <div class="flex flex-col min-w-0">
-            <div class="flex items-center gap-1.5 min-w-0">
-              <img
-                v-if="item.card?.setIconUrl"
-                :src="item.card.setIconUrl"
-                :alt="item.card?.set"
-                class="size-4 shrink-0 object-contain opacity-70"
-              />
-              <span class="text-sm font-semibold text-default truncate">
-                {{ item.card?.name ?? item.cardId }}
-              </span>
-            </div>
-            <span v-if="item.card?.numberDisplay" class="text-xs text-muted">
-              #{{ item.card.numberDisplay }}
-            </span>
-          </div>
+          <CardMeta :card="item.card" :fallback-name="item.cardId" />
 
           <div v-if="isCustom" class="flex items-center gap-1.5">
             <UButton
@@ -647,145 +585,53 @@ watch([ownedItems, totalItems], () => {
         class="flex flex-col items-center gap-4"
       >
         <div
-          class="w-full max-w-7xl rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_top,_rgba(30,41,59,0.8),_rgba(2,6,23,0.95))] p-4 sm:p-6 shadow-xl"
+          class="w-full max-w-7xl rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_top,_rgba(30,41,59,0.8),_rgba(2,6,23,0.95))] p-3 sm:p-6 shadow-xl"
         >
-          <div
-            class="grid gap-4 md:gap-6 md:grid-cols-[1fr_auto_1fr] items-start"
-          >
-            <div
-              class="grid gap-3 sm:gap-4"
-              :class="{
-                'grid-cols-2': activePocket.cols === 2,
-                'grid-cols-3': activePocket.cols === 3,
-                'grid-cols-4': activePocket.cols === 4,
-              }"
-            >
-            <template
-              v-for="(item, idx) in leftPageItems"
-              :key="item?.id ?? `left-empty-${idx}`"
-            >
-              <div
-                v-if="item"
-                class="relative"
-                :class="
-                  isCustom && item.quantity === 0
-                    ? 'group opacity-60 hover:opacity-100 transition'
-                    : ''
-                "
+          <div class="grid gap-4 md:gap-6 md:grid-cols-[1fr_auto_1fr] items-start">
+            <div class="grid gap-2 sm:gap-3 md:gap-4" :class="pocketGridClass">
+              <template
+                v-for="(item, idx) in leftPageItems"
+                :key="item?.id ?? `left-empty-${idx}`"
               >
-                <img
-                  v-if="item.card?.thumbImageUrl"
-                  :src="item.card.thumbImageUrl"
-                  :alt="item.card?.name"
-                  loading="lazy"
-                  class="w-full rounded-md block transition shadow-md"
-                  :class="
-                    isCustom && item.quantity === 0
-                      ? 'grayscale group-hover:grayscale-0'
-                      : ''
-                  "
+                <CardImage
+                  v-if="item"
+                  :card="item.card"
+                  :variant="item.variant"
+                  :quantity="item.quantity"
+                  :is-custom="isCustom"
+                  :show-variant-badge="false"
+                  shadow
                 />
-                <UBadge
-                  v-if="!isCustom"
-                  color="primary"
-                  variant="solid"
-                  class="absolute top-1.5 right-1.5"
-                  size="sm"
-                >
-                  x{{ item.quantity }}
-                </UBadge>
-                <UBadge
-                  v-else-if="item.quantity > 0"
-                  color="success"
-                  variant="solid"
-                  icon="i-lucide-check"
-                  class="absolute top-1.5 right-1.5"
-                  size="sm"
-                />
-                <UBadge
+                <div
                   v-else
-                  color="neutral"
-                  variant="solid"
-                  icon="i-lucide-circle-dashed"
-                  class="absolute top-1.5 right-1.5"
-                  size="sm"
-                />
-              </div>
-              <div
-                v-else
-                class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
-              ></div>
-            </template>
+                  class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
+                ></div>
+              </template>
             </div>
 
-          <div class="hidden md:block w-3 rounded-full bg-gradient-to-b from-white/20 via-white/10 to-white/20 shadow-[inset_0_0_12px_rgba(255,255,255,0.2)]"></div>
+            <div class="hidden md:block w-3 rounded-full bg-gradient-to-b from-white/20 via-white/10 to-white/20 shadow-[inset_0_0_12px_rgba(255,255,255,0.2)]"></div>
 
-          <div
-            class="grid gap-3 sm:gap-4"
-            :class="{
-              'grid-cols-2': activePocket.cols === 2,
-              'grid-cols-3': activePocket.cols === 3,
-              'grid-cols-4': activePocket.cols === 4,
-            }"
-          >
-            <template
-              v-for="(item, idx) in rightPageItems"
-              :key="item?.id ?? `right-empty-${idx}`"
-            >
-              <div
-                v-if="item"
-                class="relative"
-                :class="
-                  isCustom && item.quantity === 0
-                    ? 'group opacity-60 hover:opacity-100 transition'
-                    : ''
-                "
+            <div class="grid gap-2 sm:gap-3 md:gap-4" :class="pocketGridClass">
+              <template
+                v-for="(item, idx) in rightPageItems"
+                :key="item?.id ?? `right-empty-${idx}`"
               >
-                <img
-                  v-if="item.card?.thumbImageUrl"
-                  :src="item.card.thumbImageUrl"
-                  :alt="item.card?.name"
-                  loading="lazy"
-                  class="w-full rounded-md block transition shadow-md"
-                  :class="
-                    isCustom && item.quantity === 0
-                      ? 'grayscale group-hover:grayscale-0'
-                      : ''
-                  "
+                <CardImage
+                  v-if="item"
+                  :card="item.card"
+                  :variant="item.variant"
+                  :quantity="item.quantity"
+                  :is-custom="isCustom"
+                  :show-variant-badge="false"
+                  shadow
                 />
-                <UBadge
-                  v-if="!isCustom"
-                  color="primary"
-                  variant="solid"
-                  class="absolute top-1.5 right-1.5"
-                  size="sm"
-                >
-                  x{{ item.quantity }}
-                </UBadge>
-                <UBadge
-                  v-else-if="item.quantity > 0"
-                  color="success"
-                  variant="solid"
-                  icon="i-lucide-check"
-                  class="absolute top-1.5 right-1.5"
-                  size="sm"
-                />
-                <UBadge
+                <div
                   v-else
-                  color="neutral"
-                  variant="solid"
-                  icon="i-lucide-circle-dashed"
-                  class="absolute top-1.5 right-1.5"
-                  size="sm"
-                />
-              </div>
-              <div
-                v-else
-                class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
-              ></div>
-            </template>
+                  class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
+                ></div>
+              </template>
+            </div>
           </div>
-        </div>
         </div>
 
         <div class="flex flex-wrap items-center justify-center gap-3">

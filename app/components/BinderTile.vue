@@ -50,25 +50,36 @@ const menuItems = computed(() => {
 <template>
   <UCard
     :ui="{
-      root: active ? 'ring-2 ring-primary/70' : 'hover:ring-primary/40',
+      root: active
+        ? 'ring-2 ring-primary/70 transition'
+        : 'hover:ring-primary/40 transition',
       body: 'p-0',
     }"
   >
     <NuxtLink
       :to="`/binders/${binder.id}`"
-      class="flex flex-col gap-1 p-4 min-h-28"
+      class="flex flex-col gap-2 p-4 min-h-28"
     >
       <div class="flex items-start justify-between gap-2">
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-3 min-w-0">
           <img
             v-if="iconUrl"
             :src="iconUrl"
             :alt="binder.iconPokemon"
-            class="size-10 sm:size-14 shrink-0 object-contain"
+            class="size-12 sm:size-14 shrink-0 object-contain"
           />
-          <h2 class="text-base font-semibold text-default truncate">
-            {{ binder.name }}
-          </h2>
+          <div class="min-w-0">
+            <h2 class="text-base font-semibold text-default truncate">
+              {{ binder.name }}
+            </h2>
+            <p
+              v-if="!isCustom"
+              class="text-xs text-dimmed"
+            >
+              {{ binder.itemCount }}
+              {{ binder.itemCount === 1 ? "card" : "cards" }}
+            </p>
+          </div>
         </div>
         <div class="flex items-center gap-1 shrink-0">
           <UBadge
@@ -106,23 +117,20 @@ const menuItems = computed(() => {
           color="primary"
         />
       </div>
-      <p v-else class="mt-auto text-xs text-dimmed">
-        {{ binder.itemCount }}
-        {{ binder.itemCount === 1 ? "card" : "cards" }}
-      </p>
     </NuxtLink>
     <div
-      class="flex items-center justify-between gap-2 p-2 border-t border-muted"
+      class="flex items-center justify-between gap-2 px-3 py-2 border-t border-default"
     >
       <UBadge
         v-if="active"
         color="primary"
         variant="subtle"
+        size="sm"
         icon="i-lucide-bookmark-check"
       >
         Active
       </UBadge>
-      <span v-else class="text-xs text-muted px-2">Inactive</span>
+      <span v-else class="text-xs text-muted">Inactive</span>
       <UDropdownMenu :items="menuItems">
         <UButton
           icon="i-lucide-ellipsis-vertical"

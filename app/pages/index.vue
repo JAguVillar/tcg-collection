@@ -165,18 +165,18 @@ function quickAddToDefault(card) {
       <UDashboardToolbar>
         <template #default>
           <div class="flex w-full flex-col gap-2">
-            <div class="w-full overflow-x-auto pb-1">
-              <UTabs
-                :items="sortItems"
-                :model-value="sortField"
-                variant="pill"
-                size="xs"
-                :content="false"
-                class="min-w-max"
-                @update:model-value="setSort"
-              />
-            </div>
-            <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+            <div class="flex w-full items-center gap-2">
+              <div class="flex-1 overflow-x-auto">
+                <UTabs
+                  :items="sortItems"
+                  :model-value="sortField"
+                  variant="pill"
+                  size="xs"
+                  :content="false"
+                  class="min-w-max"
+                  @update:model-value="setSort"
+                />
+              </div>
               <UButton
                 v-if="activeSort?.hasDirection"
                 :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
@@ -187,10 +187,11 @@ function quickAddToDefault(card) {
                 :aria-label="isAscending ? 'Ascending' : 'Descending'"
                 @click="setSort(sortField)"
               />
+            </div>
+            <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
               <USwitch
                 v-model="separateVariants"
                 label="Separate variants"
-                class="sm:ml-auto"
               />
               <UInputMenu
                 v-model="selectedArtistOption"
@@ -199,7 +200,7 @@ function quickAddToDefault(card) {
                 placeholder="Filter by artist"
                 icon="i-lucide-palette"
                 clear
-                class="w-full sm:w-72"
+                class="w-full sm:w-72 sm:ml-auto"
               />
             </div>
           </div>
@@ -216,17 +217,11 @@ function quickAddToDefault(card) {
         class="mb-4"
       />
 
-      <div
-        v-if="loading"
-        class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-      >
-        <USkeleton v-for="n in 10" :key="n" class="h-80 rounded-lg" />
+      <div v-if="loading" class="cards-grid">
+        <USkeleton v-for="n in 10" :key="n" class="aspect-[5/7] rounded-lg" />
       </div>
 
-      <div
-        v-else-if="cards.length"
-        class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-      >
+      <div v-else-if="cards.length" class="cards-grid">
         <CardTile
           v-for="(card, index) in cards"
           :key="`${card.id}-${card.variant}-${index}`"
@@ -240,7 +235,7 @@ function quickAddToDefault(card) {
         />
       </div>
 
-      <div v-if="cards.length && hasMore" class="flex justify-center mt-8">
+      <div v-if="cards.length && hasMore" class="mt-6 sm:mt-8 flex justify-center">
         <UButton
           size="lg"
           color="neutral"
@@ -253,7 +248,7 @@ function quickAddToDefault(card) {
 
       <p
         v-if="cards.length && !hasMore"
-        class="mt-8 text-center text-sm text-muted"
+        class="mt-6 sm:mt-8 text-center text-sm text-muted"
       >
         No more cards to show
       </p>

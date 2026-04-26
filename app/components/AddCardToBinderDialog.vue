@@ -56,11 +56,6 @@ watch(selectedArtist, () => {
   if (searchQuery.value.trim()) searchCards();
 });
 
-function formatVariant(variant) {
-  if (!variant || variant === "normal" || variant === "holofoil") return null;
-  return variant.replace(/([A-Z])/g, " $1").trim();
-}
-
 function submitSearch() {
   if (!searchQuery.value.trim()) return;
   searchCards();
@@ -162,7 +157,7 @@ function setOpen(value) {
           v-if="loading"
           class="grid grid-cols-2 sm:grid-cols-3 gap-3"
         >
-          <USkeleton v-for="n in 6" :key="n" class="h-56 rounded-lg" />
+          <USkeleton v-for="n in 6" :key="n" class="aspect-[5/7] rounded-lg" />
         </div>
 
         <div
@@ -174,29 +169,8 @@ function setOpen(value) {
             :key="`${card.id}-${card.variant}-${index}`"
             :ui="{ body: 'p-2 flex flex-col gap-1.5' }"
           >
-            <div class="relative">
-              <img
-                :src="card.thumbImageUrl"
-                :alt="card.name"
-                loading="lazy"
-                class="w-full rounded-md block"
-              />
-              <UBadge
-                v-if="formatVariant(card.variant)"
-                color="primary"
-                variant="solid"
-                size="sm"
-                class="absolute bottom-1 left-1/2 -translate-x-1/2 capitalize shadow-md"
-              >
-                {{ formatVariant(card.variant) }}
-              </UBadge>
-            </div>
-            <div class="flex flex-col min-w-0">
-              <span class="text-xs font-semibold text-default truncate">
-                {{ card.name }}
-              </span>
-              <span class="text-xs text-muted">#{{ card.numberDisplay }}</span>
-            </div>
+            <CardImage :card="card" :show-status-badge="false" />
+            <CardMeta :card="card" />
             <UButton
               :label="
                 addStatus[cardKey(card)] === 'added' ? 'Added' : addLabel

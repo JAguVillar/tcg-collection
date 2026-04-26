@@ -187,7 +187,7 @@ async function onDelete(binder) {
 
       <div
         v-if="loading && !binders.length"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
       >
         <USkeleton v-for="n in 3" :key="n" class="h-40 rounded-lg" />
       </div>
@@ -208,7 +208,10 @@ async function onDelete(binder) {
         />
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-else
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
+      >
         <BinderTile
           v-for="b in binders"
           :key="b.id"
