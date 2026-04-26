@@ -45,16 +45,28 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
 
     <div class="flex items-start justify-between gap-2 min-w-0">
       <CardMeta :card="card" />
-      <span
-        class="text-sm font-bold shrink-0"
-        :class="
-          card.formattedPrice === 'N/A'
-            ? 'text-dimmed font-normal'
-            : 'text-success'
-        "
-      >
-        {{ card.formattedPrice }}
-      </span>
+      <div class="flex flex-col items-end">
+        <span
+          class="text-sm font-bold shrink-0"
+          :class="
+            card.formattedPrice === 'N/A'
+              ? 'text-dimmed font-normal'
+              : 'text-success'
+          "
+        >
+          {{ card.formattedPrice }}
+        </span>
+
+        <UBadge
+          v-if="card.variant"
+          color="primary"
+          variant="solid"
+          size="sm"
+          class="absolute bottom-1.5 left-1/2 -translate-x-1/2 capitalize shadow-md"
+        >
+          aqui claude
+        </UBadge>
+      </div>
     </div>
 
     <div v-if="user" class="flex items-center gap-1.5">
