@@ -12,7 +12,10 @@ export default defineEventHandler(async (event) => {
 
   const description = body?.description?.trim?.() || null;
   const isDefault = Boolean(body?.isDefault);
-  const iconPokemon = body?.iconPokemon?.trim?.() || null;
+  const iconPokemon =
+    body?.iconPokemon != null && body.iconPokemon !== ""
+      ? String(body.iconPokemon).trim() || null
+      : null;
   const color = body?.color?.trim?.() || null;
   const mode = body?.mode === "custom" ? "custom" : "collection";
 
