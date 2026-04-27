@@ -12,13 +12,13 @@ defineProps({
         v-if="card?.setIconUrl"
         :src="card.setIconUrl"
         :alt="card.set"
-        class="size-4 shrink-0 object-contain opacity-70"
+        class="size-6 shrink-0 object-contain bg-white rounded-md"
       />
-      <span class="text-sm font-semibold text-default truncate">
+      <span class="text-md font-semibold text-default truncate">
         {{ card?.name ?? fallbackName }}
       </span>
     </div>
-    <span v-if="card?.numberDisplay" class="text-xs text-muted">
+    <span v-if="card?.numberDisplay" class="text-md text-muted">
       #{{ card.numberDisplay }}
     </span>
   </div>

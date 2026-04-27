@@ -51,11 +51,11 @@ const sortItems = computed(() =>
   SORT_OPTIONS.map((o) => ({
     label: o.label,
     value: o.value,
-  }))
+  })),
 );
 
 const activeSort = computed(() =>
-  SORT_OPTIONS.find((o) => o.value === sortField.value)
+  SORT_OPTIONS.find((o) => o.value === sortField.value),
 );
 
 const binderItems = computed(() =>
@@ -67,7 +67,7 @@ const binderItems = computed(() =>
       label: `${b.name}${suffix}`,
       value: b.id,
     };
-  })
+  }),
 );
 
 async function addCardToBinder(card, binder, statusRef) {
@@ -164,7 +164,7 @@ function quickAddToDefault(card) {
 
       <UDashboardToolbar>
         <template #default>
-          <div class="flex w-full flex-col gap-2">
+          <div class="flex w-full flex-col gap-2 py-2">
             <div class="flex w-full items-center gap-2">
               <div class="flex-1 overflow-x-auto">
                 <UTabs
@@ -179,7 +179,9 @@ function quickAddToDefault(card) {
               </div>
               <UButton
                 v-if="activeSort?.hasDirection"
-                :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
+                :icon="
+                  isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'
+                "
                 color="neutral"
                 variant="outline"
                 size="xs"
@@ -189,10 +191,7 @@ function quickAddToDefault(card) {
               />
             </div>
             <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
-              <USwitch
-                v-model="separateVariants"
-                label="Separate variants"
-              />
+              <USwitch v-model="separateVariants" label="Separate variants" />
               <UInputMenu
                 v-model="selectedArtistOption"
                 :items="artistOptions"
@@ -235,7 +234,10 @@ function quickAddToDefault(card) {
         />
       </div>
 
-      <div v-if="cards.length && hasMore" class="mt-6 sm:mt-8 flex justify-center">
+      <div
+        v-if="cards.length && hasMore"
+        class="mt-6 sm:mt-8 flex justify-center"
+      >
         <UButton
           size="lg"
           color="neutral"

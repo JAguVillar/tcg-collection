@@ -54,7 +54,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
 <template>
   <UCard
     :ui="{
-      root: 'overflow-hidden transition hover:ring-primary/60 hover:-translate-y-0.5',
+      root: 'cursor-pointer overflow-hidden transition hover:ring-primary/60 hover:-translate-y-0.5',
       body: 'p-2.5 sm:p-3 flex flex-col gap-2',
     }"
   >
@@ -64,7 +64,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
       <CardMeta :card="card" />
       <div class="flex flex-col items-end gap-1">
         <span
-          class="text-sm font-bold shrink-0"
+          class="text-md font-bold shrink-0"
           :class="
             card.formattedPrice === 'N/A'
               ? 'text-dimmed font-normal'
@@ -77,7 +77,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
           v-if="formattedVariant"
           :color="variantColor"
           variant="solid"
-          size="sm"
+          size="md"
           class="capitalize"
         >
           {{ formattedVariant }}
@@ -97,7 +97,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
         "
         color="primary"
         variant="soft"
-        size="xs"
+        size="md"
         block
         :loading="isAdding"
         :disabled="!activeBinder || isAdding"
@@ -110,7 +110,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
           :icon="justAddedDefault ? 'i-lucide-check' : 'i-lucide-library'"
           color="primary"
           variant="outline"
-          size="xs"
+          size="md"
           square
           :loading="isAddingDefault"
           :disabled="isAddingDefault"
