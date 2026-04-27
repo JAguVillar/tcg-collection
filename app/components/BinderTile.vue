@@ -106,7 +106,7 @@ const menuItems = computed(() => {
               trailing-icon="i-lucide-star"
               variant="soft"
               :aria-label="'Default'"
-              color="warning"
+              color="primary"
             >
               Default
             </UBadge>
@@ -115,6 +115,7 @@ const menuItems = computed(() => {
               trailing-icon="i-lucide-list-checks"
               variant="soft"
               :aria-label="'Custom checklist'"
+              color="pink"
             >
               Custom
             </UBadge>
@@ -126,7 +127,7 @@ const menuItems = computed(() => {
           :model-value="progressPct"
           :max="100"
           size="xs"
-          :color="accent"
+          :color="warning"
           class="my-1"
         />
 
