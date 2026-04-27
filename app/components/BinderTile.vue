@@ -54,109 +54,118 @@ const menuItems = computed(() => {
 <template>
   <UCard
     :ui="{
-      root: ['binder-tile transition', active && 'binder-tile--active']
+      root: ['binder-tile transition overflow-hidden', active && 'binder-tile--active']
         .filter(Boolean)
         .join(' '),
       body: 'p-0',
     }"
-    :style="{ '--binder-accent': `var(--ui-color-${accent}-500)` }"
+    :style="{
+      '--binder-accent': `var(--ui-color-${accent}-500)`,
+      '--binder-accent-soft': `var(--ui-color-${accent}-100)`,
+    }"
   >
-    <NuxtLink
-      :to="`/binders/${binder.id}`"
-      class="flex flex-col gap-2 p-4 min-h-28"
-    >
-      <div class="flex items-start justify-between gap-2">
-        <div class="flex items-center gap-3 min-w-0">
-          <img
-            v-if="iconUrl"
-            :src="iconUrl"
-            :alt="binder.iconPokemon"
-            class="size-12 sm:size-14 shrink-0 object-contain"
-          />
-          <div class="min-w-0">
+    <div class="flex items-stretch min-h-28">
+      <NuxtLink
+        :to="`/binders/${binder.id}`"
+        class="shrink-0 w-24 sm:w-28 flex items-center justify-center"
+        :style="{ backgroundColor: 'var(--binder-accent-soft)' }"
+        :aria-label="binder.name"
+      >
+        <img
+          v-if="iconUrl"
+          :src="iconUrl"
+          :alt="binder.iconPokemon"
+          class="size-16 sm:size-20 object-contain"
+        />
+        <UIcon
+          v-else
+          name="i-lucide-folder"
+          class="size-10 binder-tile__placeholder"
+        />
+      </NuxtLink>
+
+      <div class="flex-1 min-w-0 flex flex-col gap-1.5 p-4">
+        <div class="flex items-start justify-between gap-2 min-w-0">
+          <NuxtLink
+            :to="`/binders/${binder.id}`"
+            class="min-w-0 flex-1"
+          >
             <h2 class="text-base font-semibold text-default truncate">
               {{ binder.name }}
             </h2>
-            <p v-if="!isCustom" class="text-xs text-dimmed">
-              {{ binder.itemCount }}
-              {{ binder.itemCount === 1 ? "card" : "cards" }}
+            <p
+              v-if="binder.description"
+              class="text-xs text-muted line-clamp-1"
+            >
+              {{ binder.description }}
             </p>
+          </NuxtLink>
+          <div class="flex items-center gap-1 shrink-0 binder-tile__indicators">
+            <UIcon
+              v-if="binder.isDefault"
+              name="i-lucide-star"
+              class="size-4"
+              :title="'Default'"
+            />
+            <UIcon
+              v-if="isCustom"
+              name="i-lucide-list-checks"
+              class="size-4"
+              :title="'Custom checklist'"
+            />
           </div>
         </div>
-        <div class="flex items-center gap-1 shrink-0">
-          <UBadge
-            v-if="isCustom"
-            color="info"
-            variant="soft"
-            size="sm"
-            icon="i-lucide-list-checks"
-          >
-            custom
-          </UBadge>
-          <UBadge
-            v-if="binder.isDefault"
-            :color="accent"
-            variant="soft"
-            size="sm"
-          >
-            default
-          </UBadge>
-        </div>
-      </div>
-      <p v-if="binder.description" class="text-sm text-muted line-clamp-2">
-        {{ binder.description }}
-      </p>
-      <div v-if="isCustom" class="mt-auto flex flex-col gap-1">
-        <p class="text-xs text-dimmed">
-          {{ ownedItems }} / {{ totalItems }} collected
-          <span v-if="totalItems">· {{ progressPct }}%</span>
-        </p>
+
         <UProgress
-          v-if="totalItems"
+          v-if="isCustom && totalItems"
           :model-value="progressPct"
           :max="100"
           size="xs"
           :color="accent"
+          class="my-1"
         />
+
+        <div class="mt-auto flex items-center justify-between gap-2">
+          <p class="text-xs text-muted truncate">
+            <template v-if="isCustom">
+              {{ ownedItems }} of {{ totalItems }}
+            </template>
+            <template v-else>
+              {{ binder.itemCount }}
+              {{ binder.itemCount === 1 ? "Card" : "Cards" }}
+            </template>
+          </p>
+          <UDropdownMenu :items="menuItems">
+            <UButton
+              :icon="active ? 'i-lucide-bookmark-check' : 'i-lucide-ellipsis-vertical'"
+              :color="accent"
+              variant="ghost"
+              size="xs"
+              square
+              :aria-label="active ? 'Active binder · actions' : 'Binder actions'"
+              @click.prevent
+            />
+          </UDropdownMenu>
+        </div>
       </div>
-    </NuxtLink>
-    <div
-      class="flex items-center justify-between gap-2 px-3 py-2 border-t border-default"
-    >
-      <UBadge
-        v-if="active"
-        :color="accent"
-        variant="subtle"
-        size="sm"
-        icon="i-lucide-bookmark-check"
-      >
-        Active
-      </UBadge>
-      <span v-else class="text-xs text-muted">Inactive</span>
-      <UDropdownMenu :items="menuItems">
-        <UButton
-          icon="i-lucide-ellipsis-vertical"
-          color="neutral"
-          variant="ghost"
-          size="xs"
-          square
-          aria-label="Binder actions"
-        />
-      </UDropdownMenu>
     </div>
   </UCard>
 </template>
 
 <style scoped>
 .binder-tile {
-  border-left: 16px solid var(--binder-accent);
+  transition: box-shadow 150ms ease;
 }
 .binder-tile:hover {
-  box-shadow: 0 0 0 2px
-    color-mix(in srgb, var(--binder-accent) 100%, transparent);
+  box-shadow: 0 0 0 1px var(--binder-accent);
 }
 .binder-tile--active {
-  box-shadow: 0 0 0 2px
-    color-mix(in srgb, var(--binder-accent) 100%, transparent);
+  box-shadow: 0 0 0 2px var(--binder-accent);
+}
+.binder-tile__indicators {
+  color: var(--binder-accent);
+}
+.binder-tile__placeholder {
+  color: var(--binder-accent);
 }
 </style>
