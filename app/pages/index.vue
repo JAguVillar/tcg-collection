@@ -27,6 +27,8 @@ const toast = useToast();
 const quickAddStatus = ref({});
 const defaultAddStatus = ref({});
 
+const advancedFilters = ref(false);
+
 searchCards({ query: "rowlet" });
 
 watch([separateVariants, selectedArtist], () => {
@@ -139,59 +141,45 @@ function quickAddToDefault(card) {
 
       <UDashboardToolbar>
         <template #default>
-          <form
-            class="flex w-full flex-col gap-2 sm:flex-row sm:items-center"
-            @submit.prevent="searchCards()"
-          >
-            <UInput
-              v-model="searchQuery"
-              icon="i-lucide-search"
-              placeholder="Search for a Pokémon card…"
-              class="flex-1"
-              size="md"
-            />
-            <UButton
-              type="submit"
-              icon="i-lucide-search"
-              label="Search"
-              :loading="loading"
-              block
-              class="sm:w-auto"
-            />
-          </form>
-        </template>
-      </UDashboardToolbar>
-
-      <UDashboardToolbar>
-        <template #default>
-          <div class="flex w-full flex-col gap-2 py-2">
-            <div class="flex w-full items-center gap-2">
-              <div class="flex-1 overflow-x-auto">
-                <UTabs
-                  :items="sortItems"
-                  :model-value="sortField"
-                  variant="pill"
-                  size="xs"
-                  :content="false"
-                  class="min-w-max"
-                  @update:model-value="setSort"
-                />
-              </div>
+          <div class="flex flex-col w-full py-4 gap-4">
+            <form
+              class="flex w-full flex-col gap-4 sm:flex-row sm:items-center"
+              @submit.prevent="searchCards()"
+            >
               <UButton
-                v-if="activeSort?.hasDirection"
-                :icon="
-                  isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'
-                "
-                color="neutral"
-                variant="outline"
-                size="xs"
-                square
-                :aria-label="isAscending ? 'Ascending' : 'Descending'"
-                @click="setSort(sortField)"
+                icon="i-lucide-sliders-horizontal"
+                block
+                :variant="advancedFilters ? 'solid' : 'outline'"
+                class="sm:w-auto"
+                size="xl"
+                @click="advancedFilters = !advancedFilters"
               />
-            </div>
-            <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
-              <USwitch v-model="separateVariants" label="Separate variants" />
+              <UInput
+                v-model="searchQuery"
+                icon="i-lucide-search"
+                placeholder="Search for a Pokémon card…"
+                class="flex-1"
+                size="xl"
+              />
+              <UButton
+                type="submit"
+                icon="i-lucide-search"
+                label="Search"
+                :loading="loading"
+                block
+                class="sm:w-auto"
+                size="xl"
+              />
+              <USeparator orientation="vertical" class="h-8" />
+
+              <USwitch
+                v-model="separateVariants"
+                label="Separate variants"
+                size="xl"
+                checked-icon="i-lucide-sparkles"
+              />
+            </form>
+            <UCard variant="subtle" v-if="advancedFilters">
               <UInputMenu
                 v-model="selectedArtistOption"
                 :items="artistOptions"
@@ -200,7 +188,38 @@ function quickAddToDefault(card) {
                 icon="i-lucide-palette"
                 clear
                 class="w-full sm:w-72 sm:ml-auto"
+                size="xl"
               />
+            </UCard>
+            <div class="flex w-full flex-col gap-2">
+              <div class="flex w-full items-center gap-2">
+                <span class="text-md font-semibold text-default"
+                  >Ordenar por</span
+                >
+                <div class="flex-1 overflow-x-auto">
+                  <UTabs
+                    :items="sortItems"
+                    :model-value="sortField"
+                    variant="pill"
+                    size="xl"
+                    :content="false"
+                    class="min-w-max"
+                    @update:model-value="setSort"
+                  />
+                </div>
+                <UButton
+                  v-if="activeSort?.hasDirection"
+                  :icon="
+                    isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'
+                  "
+                  color="neutral"
+                  variant="outline"
+                  size="xl"
+                  square
+                  :aria-label="isAscending ? 'Ascending' : 'Descending'"
+                  @click="setSort(sortField)"
+                />
+              </div>
             </div>
           </div>
         </template>
