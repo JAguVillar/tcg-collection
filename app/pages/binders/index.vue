@@ -25,9 +25,44 @@ const createState = reactive({
   name: "",
   description: "",
   iconPokemon: null,
+  color: null,
   mode: "collection",
 });
 const createError = ref(null);
+
+const BINDER_COLOR_PALETTE = [
+  "red",
+  "orange",
+  "amber",
+  "yellow",
+  "lime",
+  "green",
+  "emerald",
+  "teal",
+  "cyan",
+  "sky",
+  "blue",
+  "indigo",
+  "violet",
+  "purple",
+  "fuchsia",
+  "pink",
+  "rose",
+];
+
+const colorOptions = BINDER_COLOR_PALETTE.map((c) => ({
+  value: c,
+  label: c.charAt(0).toUpperCase() + c.slice(1),
+}));
+
+const colorOption = computed({
+  get() {
+    return colorOptions.find((o) => o.value === createState.color) ?? null;
+  },
+  set(option) {
+    createState.color = option?.value ?? null;
+  },
+});
 
 const modeOptions = [
   {
@@ -75,6 +110,7 @@ async function onCreate() {
       name: createState.name.trim(),
       description: createState.description?.trim() || null,
       iconPokemon: createState.iconPokemon || null,
+      color: createState.color || null,
       mode: createState.mode,
     });
     toast.add({
@@ -86,6 +122,7 @@ async function onCreate() {
     createState.name = "";
     createState.description = "";
     createState.iconPokemon = null;
+    createState.color = null;
     createState.mode = "collection";
     createOpen.value = false;
   } catch (err) {
@@ -283,6 +320,38 @@ async function onDelete(binder) {
                   class="size-10 shrink-0 object-contain"
                 />
               </div>
+            </UFormField>
+
+            <UFormField
+              label="Color"
+              name="color"
+              help="Optional. Used as the binder's accent. Defaults to primary."
+            >
+              <USelectMenu
+                v-model="colorOption"
+                :items="colorOptions"
+                placeholder="Default"
+                clearable
+                class="w-full"
+              >
+                <template #leading>
+                  <span
+                    v-if="createState.color"
+                    class="size-3 rounded-full"
+                    :style="{
+                      background: `var(--ui-color-${createState.color}-500)`,
+                    }"
+                  />
+                </template>
+                <template #item-leading="{ item }">
+                  <span
+                    class="size-3 rounded-full"
+                    :style="{
+                      background: `var(--ui-color-${item.value}-500)`,
+                    }"
+                  />
+                </template>
+              </USelectMenu>
             </UFormField>
 
             <UAlert

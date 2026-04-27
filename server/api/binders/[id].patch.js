@@ -20,6 +20,9 @@ export default defineEventHandler(async (event) => {
   if (typeof body?.iconPokemon === "string" || body?.iconPokemon === null) {
     patch.icon_pokemon = body.iconPokemon?.trim?.() || null;
   }
+  if (typeof body?.color === "string" || body?.color === null) {
+    patch.color = body.color?.trim?.() || null;
+  }
   if (body?.mode === "custom" || body?.mode === "collection") {
     patch.mode = body.mode;
   }
@@ -65,7 +68,7 @@ export default defineEventHandler(async (event) => {
     .from("binders")
     .update(patch)
     .eq("id", id)
-    .select("id, name, description, is_default, icon_pokemon, mode, created_at, updated_at")
+    .select("id, name, description, is_default, icon_pokemon, color, mode, created_at, updated_at")
     .single();
 
   if (error) {
@@ -81,6 +84,7 @@ export default defineEventHandler(async (event) => {
     description: data.description,
     isDefault: data.is_default,
     iconPokemon: data.icon_pokemon,
+    color: data.color,
     mode: data.mode,
     createdAt: data.created_at,
     updatedAt: data.updated_at,

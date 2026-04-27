@@ -9,6 +9,8 @@ const emit = defineEmits(["set-active", "make-default", "delete"]);
 const { pokemonSpriteUrl } = usePokemonIcons();
 const iconUrl = computed(() => pokemonSpriteUrl(props.binder.iconPokemon));
 
+const accent = computed(() => props.binder.color ?? "primary");
+
 const isCustom = computed(() => props.binder.mode === "custom");
 const ownedItems = computed(() => props.binder.ownedItems ?? 0);
 const totalItems = computed(() => props.binder.totalItems ?? props.binder.itemCount ?? 0);
@@ -50,11 +52,12 @@ const menuItems = computed(() => {
 <template>
   <UCard
     :ui="{
-      root: active
-        ? 'ring-2 ring-primary/70 transition'
-        : 'hover:ring-primary/40 transition',
+      root: ['binder-tile transition', active && 'binder-tile--active']
+        .filter(Boolean)
+        .join(' '),
       body: 'p-0',
     }"
+    :style="{ '--binder-accent': `var(--ui-color-${accent}-500)` }"
   >
     <NuxtLink
       :to="`/binders/${binder.id}`"
@@ -93,7 +96,7 @@ const menuItems = computed(() => {
           </UBadge>
           <UBadge
             v-if="binder.isDefault"
-            color="primary"
+            :color="accent"
             variant="soft"
             size="sm"
           >
@@ -114,7 +117,7 @@ const menuItems = computed(() => {
           :model-value="progressPct"
           :max="100"
           size="xs"
-          color="primary"
+          :color="accent"
         />
       </div>
     </NuxtLink>
@@ -123,7 +126,7 @@ const menuItems = computed(() => {
     >
       <UBadge
         v-if="active"
-        color="primary"
+        :color="accent"
         variant="subtle"
         size="sm"
         icon="i-lucide-bookmark-check"
@@ -144,3 +147,12 @@ const menuItems = computed(() => {
     </div>
   </UCard>
 </template>
+
+<style scoped>
+.binder-tile:hover {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--binder-accent) 40%, transparent);
+}
+.binder-tile--active {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--binder-accent) 70%, transparent);
+}
+</style>
