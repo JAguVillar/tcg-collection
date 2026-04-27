@@ -200,25 +200,42 @@ const filteredItems = computed(() => {
   return [...list].sort(compare);
 });
 
+const physicalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredItems.value.length / pocketSize.value)),
+);
+
+// Real binders open with the inside cover on the left (empty) and page 1
+// on the right. Subsequent spreads then pair (2,3), (4,5), and so on.
 const totalPages = computed(() =>
-  Math.max(1, Math.ceil(filteredItems.value.length / (pocketSize.value * 2))),
+  Math.max(1, Math.ceil((physicalPages.value + 1) / 2)),
 );
 
-const spreadItems = computed(() => {
-  const spreadSize = pocketSize.value * 2;
-  const start = (currentPage.value - 1) * spreadSize;
-  const slice = filteredItems.value.slice(start, start + spreadSize);
+function pageSlice(pageNum) {
+  const empty = Array(pocketSize.value).fill(null);
+  if (pageNum < 1 || pageNum > physicalPages.value) return empty;
+  const start = (pageNum - 1) * pocketSize.value;
+  const slice = filteredItems.value.slice(start, start + pocketSize.value);
   const padded = [...slice];
-  while (padded.length < spreadSize) padded.push(null);
+  while (padded.length < pocketSize.value) padded.push(null);
   return padded;
-});
+}
 
-const leftPageItems = computed(() =>
-  spreadItems.value.slice(0, pocketSize.value),
+const leftPageNumber = computed(() =>
+  currentPage.value === 1 ? 0 : currentPage.value * 2 - 2,
 );
-const rightPageItems = computed(() =>
-  spreadItems.value.slice(pocketSize.value),
+const rightPageNumber = computed(() =>
+  currentPage.value === 1 ? 1 : currentPage.value * 2 - 1,
 );
+
+const hasLeftPage = computed(
+  () => leftPageNumber.value >= 1 && leftPageNumber.value <= physicalPages.value,
+);
+const hasRightPage = computed(
+  () => rightPageNumber.value >= 1 && rightPageNumber.value <= physicalPages.value,
+);
+
+const leftPageItems = computed(() => pageSlice(leftPageNumber.value));
+const rightPageItems = computed(() => pageSlice(rightPageNumber.value));
 
 watch([pocketSize, filter, sortField, isAscending], () => {
   currentPage.value = 1;
@@ -628,7 +645,11 @@ watch([ownedItems, totalItems], () => {
           <div
             class="grid gap-4 md:gap-6 md:grid-cols-[1fr_auto_1fr] items-start"
           >
-            <div class="grid gap-2 sm:gap-3 md:gap-4" :class="pocketGridClass">
+            <div
+              v-if="hasLeftPage"
+              class="grid gap-2 sm:gap-3 md:gap-4"
+              :class="pocketGridClass"
+            >
               <template
                 v-for="(item, idx) in leftPageItems"
                 :key="item?.id ?? `left-empty-${idx}`"
@@ -657,12 +678,17 @@ watch([ownedItems, totalItems], () => {
                 ></div>
               </template>
             </div>
+            <div v-else aria-hidden="true"></div>
 
             <div
               class="hidden md:block w-3 rounded-full bg-gradient-to-b from-white/20 via-white/10 to-white/20 shadow-[inset_0_0_12px_rgba(255,255,255,0.2)]"
             ></div>
 
-            <div class="grid gap-2 sm:gap-3 md:gap-4" :class="pocketGridClass">
+            <div
+              v-if="hasRightPage"
+              class="grid gap-2 sm:gap-3 md:gap-4"
+              :class="pocketGridClass"
+            >
               <template
                 v-for="(item, idx) in rightPageItems"
                 :key="item?.id ?? `right-empty-${idx}`"
@@ -691,6 +717,7 @@ watch([ownedItems, totalItems], () => {
                 ></div>
               </template>
             </div>
+            <div v-else aria-hidden="true"></div>
           </div>
         </div>
 
