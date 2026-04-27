@@ -17,8 +17,11 @@ export default defineEventHandler(async (event) => {
   if (typeof body?.description === "string" || body?.description === null) {
     patch.description = body.description?.trim?.() || null;
   }
-  if (typeof body?.iconPokemon === "string" || body?.iconPokemon === null) {
-    patch.icon_pokemon = body.iconPokemon?.trim?.() || null;
+  if ("iconPokemon" in (body ?? {})) {
+    patch.icon_pokemon =
+      body.iconPokemon != null && body.iconPokemon !== ""
+        ? String(body.iconPokemon).trim() || null
+        : null;
   }
   if (typeof body?.color === "string" || body?.color === null) {
     patch.color = body.color?.trim?.() || null;
