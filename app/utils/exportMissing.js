@@ -6,6 +6,13 @@ function pickSet(card) {
   return card?.set ?? card?.setName ?? "";
 }
 
+function pickNumber(card) {
+  const n = card?.numberDisplay ?? "";
+  const total = card?.totalDisplay ?? "";
+  if (n && total) return `${n}/${total}`;
+  return n || "";
+}
+
 export function buildMissingRows(items) {
   if (!Array.isArray(items)) return [];
   return items
@@ -14,7 +21,7 @@ export function buildMissingRows(items) {
       cardId: item.cardId ?? item.card?.id ?? "",
       name: item.card?.name ?? "",
       set: pickSet(item.card),
-      number: item.card?.numberDisplay ?? "",
+      number: pickNumber(item.card),
       rarity: item.card?.rarity ?? "",
       variant: item.variant ?? "normal",
       imageUrl: pickImageUrl(item.card),
