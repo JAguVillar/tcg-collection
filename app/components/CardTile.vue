@@ -62,12 +62,10 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
         >
           {{ card.formattedPrice }}
         </span>
-
         <UBadge
           v-if="formattedVariant"
-          color="primary"
           variant="solid"
-          size="xs"
+          size="sm"
           class="capitalize"
         >
           {{ formattedVariant }}
