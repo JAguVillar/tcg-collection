@@ -25,9 +25,9 @@ const formattedVariant = computed(() => {
 const variantColor = computed(() => {
   switch (props.card?.variant) {
     case "holofoil":
-      return "warning";
+      return "pink";
     case "reverseHolofoil":
-      return "secondary";
+      return "cyan";
     default:
       return "neutral";
   }

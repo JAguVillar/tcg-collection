@@ -177,6 +177,7 @@ function quickAddToDefault(card) {
                 label="Separate variants"
                 size="xl"
                 checked-icon="i-lucide-sparkles"
+                color="purple"
               />
             </form>
             <UCard variant="subtle" v-if="advancedFilters">

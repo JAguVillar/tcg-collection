@@ -11,7 +11,9 @@ const iconUrl = computed(() => pokemonSpriteUrl(props.binder.iconPokemon));
 
 const isCustom = computed(() => props.binder.mode === "custom");
 const ownedItems = computed(() => props.binder.ownedItems ?? 0);
-const totalItems = computed(() => props.binder.totalItems ?? props.binder.itemCount ?? 0);
+const totalItems = computed(
+  () => props.binder.totalItems ?? props.binder.itemCount ?? 0,
+);
 const progressPct = computed(() => {
   if (!totalItems.value) return 0;
   return Math.round((ownedItems.value / totalItems.value) * 100);
@@ -72,10 +74,7 @@ const menuItems = computed(() => {
             <h2 class="text-base font-semibold text-default truncate">
               {{ binder.name }}
             </h2>
-            <p
-              v-if="!isCustom"
-              class="text-xs text-dimmed"
-            >
+            <p v-if="!isCustom" class="text-xs text-dimmed">
               {{ binder.itemCount }}
               {{ binder.itemCount === 1 ? "card" : "cards" }}
             </p>
