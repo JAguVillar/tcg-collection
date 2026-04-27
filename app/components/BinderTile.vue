@@ -148,6 +148,9 @@ const menuItems = computed(() => {
 </template>
 
 <style scoped>
+.binder-tile {
+  border-left: 8px solid var(--binder-accent);
+}
 .binder-tile:hover {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--binder-accent) 40%, transparent);
 }
