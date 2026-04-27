@@ -101,18 +101,23 @@ const menuItems = computed(() => {
             </p>
           </NuxtLink>
           <div class="flex items-center gap-1 shrink-0 binder-tile__indicators">
-            <UIcon
+            <UBadge
               v-if="binder.isDefault"
-              name="i-lucide-star"
-              class="size-4"
-              :title="'Default'"
-            />
-            <UIcon
+              trailing-icon="i-lucide-star"
+              variant="soft"
+              :aria-label="'Default'"
+              color="warning"
+            >
+              Default
+            </UBadge>
+            <UBadge
               v-if="isCustom"
-              name="i-lucide-list-checks"
-              class="size-4"
-              :title="'Custom checklist'"
-            />
+              trailing-icon="i-lucide-list-checks"
+              variant="soft"
+              :aria-label="'Custom checklist'"
+            >
+              Custom
+            </UBadge>
           </div>
         </div>
 
