@@ -29,7 +29,7 @@ const defaultAddStatus = ref({});
 
 const advancedFilters = ref(false);
 
-searchCards({ query: "rowlet" });
+searchCards({ query: "" });
 
 watch([separateVariants, selectedArtist], () => {
   searchCards();

@@ -54,7 +54,10 @@ const menuItems = computed(() => {
 <template>
   <UCard
     :ui="{
-      root: ['binder-tile transition overflow-hidden', active && 'binder-tile--active']
+      root: [
+        'binder-tile transition overflow-hidden',
+        active && 'binder-tile--active',
+      ]
         .filter(Boolean)
         .join(' '),
       body: 'p-0',
@@ -67,7 +70,7 @@ const menuItems = computed(() => {
     <div class="flex items-stretch min-h-28">
       <NuxtLink
         :to="`/binders/${binder.id}`"
-        class="shrink-0 w-24 sm:w-28 flex items-center justify-center"
+        class="shrink-0 w-24 sm:w-28 flex items-center justify-center rounded-md"
         :style="{ backgroundColor: 'var(--binder-accent-soft)' }"
         :aria-label="binder.name"
       >
@@ -75,7 +78,7 @@ const menuItems = computed(() => {
           v-if="iconUrl"
           :src="iconUrl"
           :alt="binder.iconPokemon"
-          class="size-16 sm:size-20 object-contain"
+          class="size-24 sm:size-24 object-contain"
         />
         <UIcon
           v-else
@@ -86,10 +89,7 @@ const menuItems = computed(() => {
 
       <div class="flex-1 min-w-0 flex flex-col gap-1.5 p-4">
         <div class="flex items-start justify-between gap-2 min-w-0">
-          <NuxtLink
-            :to="`/binders/${binder.id}`"
-            class="min-w-0 flex-1"
-          >
+          <NuxtLink :to="`/binders/${binder.id}`" class="min-w-0 flex-1">
             <h2 class="text-base font-semibold text-default truncate">
               {{ binder.name }}
             </h2>
@@ -137,12 +137,18 @@ const menuItems = computed(() => {
           </p>
           <UDropdownMenu :items="menuItems">
             <UButton
-              :icon="active ? 'i-lucide-bookmark-check' : 'i-lucide-ellipsis-vertical'"
+              :icon="
+                active
+                  ? 'i-lucide-bookmark-check'
+                  : 'i-lucide-ellipsis-vertical'
+              "
               :color="accent"
               variant="ghost"
               size="xs"
               square
-              :aria-label="active ? 'Active binder · actions' : 'Binder actions'"
+              :aria-label="
+                active ? 'Active binder · actions' : 'Binder actions'
+              "
               @click.prevent
             />
           </UDropdownMenu>
