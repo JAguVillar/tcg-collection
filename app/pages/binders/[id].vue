@@ -363,6 +363,11 @@ watch([ownedItems, totalItems], () => {
             :ui="{ label: 'hidden md:inline' }"
             @click="bulkAddOpen = true"
           />
+          <ExportMissingMenu
+            v-if="isCustom"
+            :binder="binder"
+            :items="items"
+          />
           <UButton
             :label="isActive ? 'Active binder' : 'Set as active'"
             :icon="isActive ? 'i-lucide-bookmark-check' : 'i-lucide-bookmark'"
