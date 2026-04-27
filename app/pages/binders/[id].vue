@@ -24,6 +24,22 @@ const deleteDialog = overlay.create(
 const isActive = computed(() => activeBinderId.value === binderId.value);
 const isCustom = computed(() => binder.value?.mode === "custom");
 
+function formatVariant(variant) {
+  if (!variant || variant === "normal") return null;
+  return variant.replace(/([A-Z])/g, " $1").trim();
+}
+
+function variantColor(variant) {
+  switch (variant) {
+    case "holofoil":
+      return "pink";
+    case "reverseHolofoil":
+      return "cyan";
+    default:
+      return "neutral";
+  }
+}
+
 const breadcrumbOverrides = computed(() => ({
   [`/binders/${binderId.value}`]: binder.value?.name ?? "Binder",
 }));
@@ -531,7 +547,18 @@ watch([ownedItems, totalItems], () => {
             :is-custom="isCustom"
           />
 
-          <CardMeta :card="item.card" :fallback-name="item.cardId" />
+          <div class="flex items-start justify-between gap-2 min-w-0">
+            <CardMeta :card="item.card" :fallback-name="item.cardId" />
+            <UBadge
+              v-if="formatVariant(item.variant)"
+              :color="variantColor(item.variant)"
+              variant="solid"
+              size="md"
+              class="capitalize shrink-0"
+            >
+              {{ formatVariant(item.variant) }}
+            </UBadge>
+          </div>
 
           <div v-if="isCustom" class="flex items-center gap-1.5">
             <UButton
@@ -613,7 +640,17 @@ watch([ownedItems, totalItems], () => {
                   :quantity="item.quantity"
                   :is-custom="isCustom"
                   shadow
-                />
+                >
+                  <UBadge
+                    v-if="formatVariant(item.variant)"
+                    :color="variantColor(item.variant)"
+                    variant="solid"
+                    size="sm"
+                    class="absolute bottom-1.5 left-1.5 capitalize shadow-md"
+                  >
+                    {{ formatVariant(item.variant) }}
+                  </UBadge>
+                </CardImage>
                 <div
                   v-else
                   class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
@@ -637,7 +674,17 @@ watch([ownedItems, totalItems], () => {
                   :quantity="item.quantity"
                   :is-custom="isCustom"
                   shadow
-                />
+                >
+                  <UBadge
+                    v-if="formatVariant(item.variant)"
+                    :color="variantColor(item.variant)"
+                    variant="solid"
+                    size="sm"
+                    class="absolute bottom-1.5 left-1.5 capitalize shadow-md"
+                  >
+                    {{ formatVariant(item.variant) }}
+                  </UBadge>
+                </CardImage>
                 <div
                   v-else
                   class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
