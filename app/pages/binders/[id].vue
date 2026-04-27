@@ -79,7 +79,8 @@ const pocketSize = ref(9);
 const currentPage = ref(1);
 
 const activePocket = computed(
-  () => POCKET_SIZES.find((p) => p.value === pocketSize.value) ?? POCKET_SIZES[1],
+  () =>
+    POCKET_SIZES.find((p) => p.value === pocketSize.value) ?? POCKET_SIZES[1],
 );
 
 const pocketGridClass = computed(() => {
@@ -111,7 +112,9 @@ function parseLeadingInt(s) {
 }
 
 function releaseSortKey(card) {
-  const direct = Number(card?.releaseDateSortKey ?? card?.release_date_sort_key);
+  const direct = Number(
+    card?.releaseDateSortKey ?? card?.release_date_sort_key,
+  );
   if (Number.isFinite(direct) && direct > 0) return direct;
 
   const parsed = Date.parse(card?.releaseDate ?? card?.release_date ?? "");
@@ -194,8 +197,12 @@ const spreadItems = computed(() => {
   return padded;
 });
 
-const leftPageItems = computed(() => spreadItems.value.slice(0, pocketSize.value));
-const rightPageItems = computed(() => spreadItems.value.slice(pocketSize.value));
+const leftPageItems = computed(() =>
+  spreadItems.value.slice(0, pocketSize.value),
+);
+const rightPageItems = computed(() =>
+  spreadItems.value.slice(pocketSize.value),
+);
 
 watch([pocketSize, filter, sortField, isAscending], () => {
   currentPage.value = 1;
@@ -363,11 +370,7 @@ watch([ownedItems, totalItems], () => {
             :ui="{ label: 'hidden md:inline' }"
             @click="bulkAddOpen = true"
           />
-          <ExportMissingMenu
-            v-if="isCustom"
-            :binder="binder"
-            :items="items"
-          />
+          <ExportMissingMenu v-if="isCustom" :binder="binder" :items="items" />
           <UButton
             :label="isActive ? 'Active binder' : 'Set as active'"
             :icon="isActive ? 'i-lucide-bookmark-check' : 'i-lucide-bookmark'"
@@ -390,7 +393,9 @@ watch([ownedItems, totalItems], () => {
         class="mb-4"
       />
 
-      <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div
+        class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+      >
         <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words">
           {{ binder?.name }}
         </h1>
@@ -407,24 +412,30 @@ watch([ownedItems, totalItems], () => {
           />
         </div>
       </div>
-      <p
-        v-if="binder?.description"
-        class="mb-4 text-sm text-muted"
-      >
+      <p v-if="binder?.description" class="mb-4 text-sm text-muted">
         {{ binder.description }}
       </p>
 
-      <div v-if="isCustom && totalItems" class="mb-4">
+      <div v-if="isCustom && totalItems" class="flex justify-between">
         <UTabs
           :items="FILTERS"
           v-model="filter"
           variant="link"
           :content="false"
+          class="flex-1/2"
+          size="xl"
+        />
+        <UTabs
+          :items="VIEW_MODES"
+          v-model="viewMode"
+          variant="pill"
+          size="md"
+          :content="false"
         />
       </div>
 
       <div v-if="items.length" class="mb-4 flex w-full flex-col gap-2">
-        <div class="flex w-full items-center gap-2">
+        <!-- <div class="flex w-full items-center gap-2">
           <div class="flex-1 overflow-x-auto">
             <UTabs
               :items="SORT_OPTIONS"
@@ -446,25 +457,17 @@ watch([ownedItems, totalItems], () => {
             :aria-label="isAscending ? 'Ascending' : 'Descending'"
             @click="setSort(sortField)"
           />
-        </div>
+        </div> -->
         <div class="flex w-full items-center gap-2">
           <UTabs
             v-if="viewMode === 'binder' && filteredItems.length"
             :items="POCKET_SIZES"
             v-model="pocketSize"
             variant="pill"
-            size="xs"
+            size="xl"
             :content="false"
           />
-          <div class="ml-auto">
-            <UTabs
-              :items="VIEW_MODES"
-              v-model="viewMode"
-              variant="pill"
-              size="xs"
-              :content="false"
-            />
-          </div>
+          <div class="ml-auto"></div>
         </div>
       </div>
 
@@ -480,7 +483,10 @@ watch([ownedItems, totalItems], () => {
         <p class="text-sm text-muted">
           {{ isCustom ? "This checklist is empty." : "This binder is empty." }}
         </p>
-        <div v-if="isCustom" class="flex flex-col sm:flex-row items-center gap-2">
+        <div
+          v-if="isCustom"
+          class="flex flex-col sm:flex-row items-center gap-2"
+        >
           <UButton
             icon="i-lucide-list-plus"
             label="Bulk add cards"
@@ -535,7 +541,7 @@ watch([ownedItems, totalItems], () => {
               "
               :color="item.quantity > 0 ? 'neutral' : 'success'"
               :variant="item.quantity > 0 ? 'outline' : 'soft'"
-              size="xs"
+              size="md"
               block
               class="flex-1 min-w-0"
               :ui="{ label: 'truncate' }"
@@ -545,7 +551,7 @@ watch([ownedItems, totalItems], () => {
               icon="i-lucide-trash-2"
               color="error"
               variant="soft"
-              size="xs"
+              size="md"
               square
               aria-label="Remove from checklist"
               @click="removeAll(item)"
@@ -592,7 +598,9 @@ watch([ownedItems, totalItems], () => {
         <div
           class="w-full max-w-7xl rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_top,_rgba(30,41,59,0.8),_rgba(2,6,23,0.95))] p-3 sm:p-6 shadow-xl"
         >
-          <div class="grid gap-4 md:gap-6 md:grid-cols-[1fr_auto_1fr] items-start">
+          <div
+            class="grid gap-4 md:gap-6 md:grid-cols-[1fr_auto_1fr] items-start"
+          >
             <div class="grid gap-2 sm:gap-3 md:gap-4" :class="pocketGridClass">
               <template
                 v-for="(item, idx) in leftPageItems"
@@ -613,7 +621,9 @@ watch([ownedItems, totalItems], () => {
               </template>
             </div>
 
-            <div class="hidden md:block w-3 rounded-full bg-gradient-to-b from-white/20 via-white/10 to-white/20 shadow-[inset_0_0_12px_rgba(255,255,255,0.2)]"></div>
+            <div
+              class="hidden md:block w-3 rounded-full bg-gradient-to-b from-white/20 via-white/10 to-white/20 shadow-[inset_0_0_12px_rgba(255,255,255,0.2)]"
+            ></div>
 
             <div class="grid gap-2 sm:gap-3 md:gap-4" :class="pocketGridClass">
               <template
