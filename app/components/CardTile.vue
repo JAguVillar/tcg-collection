@@ -18,8 +18,19 @@ const isCustomActive = computed(() => props.activeBinder?.mode === "custom");
 
 const formattedVariant = computed(() => {
   const v = props.card?.variant;
-  if (!v || v === "normal" || v === "holofoil") return null;
+  if (!v || v === "normal") return null;
   return v.replace(/([A-Z])/g, " $1").trim();
+});
+
+const variantColor = computed(() => {
+  switch (props.card?.variant) {
+    case "holofoil":
+      return "warning";
+    case "reverseHolofoil":
+      return "secondary";
+    default:
+      return "neutral";
+  }
 });
 
 const addLabel = computed(() => {
@@ -64,6 +75,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
         </span>
         <UBadge
           v-if="formattedVariant"
+          :color="variantColor"
           variant="solid"
           size="sm"
           class="capitalize"
