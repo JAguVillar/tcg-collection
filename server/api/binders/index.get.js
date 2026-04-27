@@ -2,7 +2,7 @@ import { serverSupabaseClient } from "#supabase/server";
 import { requireUser } from "~~/server/utils/auth";
 
 const BINDER_SELECT =
-  "id, name, description, is_default, icon_pokemon, mode, created_at, updated_at, binder_items(quantity)";
+  "id, name, description, is_default, icon_pokemon, color, mode, created_at, updated_at, binder_items(quantity)";
 
 function fetchBinders(supabase) {
   return supabase
@@ -56,6 +56,7 @@ export default defineEventHandler(async (event) => {
       description: b.description,
       isDefault: b.is_default,
       iconPokemon: b.icon_pokemon,
+      color: b.color,
       mode: b.mode,
       createdAt: b.created_at,
       updatedAt: b.updated_at,

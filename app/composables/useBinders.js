@@ -67,11 +67,12 @@ export function useBinders() {
     description = null,
     isDefault = false,
     iconPokemon = null,
+    color = null,
     mode = "collection",
   } = {}) {
     const created = await $fetch("/api/binders", {
       method: "POST",
-      body: { name, description, isDefault, iconPokemon, mode },
+      body: { name, description, isDefault, iconPokemon, color, mode },
     });
     // Refresh to keep `is_default` flags consistent across the list.
     await fetchBinders();

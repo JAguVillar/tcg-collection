@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
   const description = body?.description?.trim?.() || null;
   const isDefault = Boolean(body?.isDefault);
   const iconPokemon = body?.iconPokemon?.trim?.() || null;
+  const color = body?.color?.trim?.() || null;
   const mode = body?.mode === "custom" ? "custom" : "collection";
 
   const supabase = await serverSupabaseClient(event);
@@ -37,9 +38,10 @@ export default defineEventHandler(async (event) => {
       description,
       is_default: isDefault,
       icon_pokemon: iconPokemon,
+      color,
       mode,
     })
-    .select("id, name, description, is_default, icon_pokemon, mode, created_at, updated_at")
+    .select("id, name, description, is_default, icon_pokemon, color, mode, created_at, updated_at")
     .single();
 
   if (error) {
@@ -55,6 +57,7 @@ export default defineEventHandler(async (event) => {
     description: data.description,
     isDefault: data.is_default,
     iconPokemon: data.icon_pokemon,
+    color: data.color,
     mode: data.mode,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
