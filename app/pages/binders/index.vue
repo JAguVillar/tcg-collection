@@ -278,6 +278,7 @@ async function onDelete(binder) {
                 v-model="createState.mode"
                 :items="modeOptions"
                 value-key="value"
+                variant="table"
               />
             </UFormField>
 
