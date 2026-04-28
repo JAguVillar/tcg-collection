@@ -17,6 +17,7 @@ const SOURCE_MODES = [
 const sourceMode = ref("pokemon");
 const selectedPokemon = ref(null);
 const selectedArtist = ref(null);
+const selectedCategory = ref("EN");
 const separateVariants = ref(false);
 const preview = ref(null);
 const previewLoading = ref(false);
@@ -36,7 +37,10 @@ const sourceLabel = computed(() => {
 });
 
 function buildPayload() {
-  const base = { separateVariants: separateVariants.value };
+  const base = {
+    separateVariants: separateVariants.value,
+    category: selectedCategory.value,
+  };
   if (sourceMode.value === "artist") {
     return { ...base, mode: "artist", artist: selectedArtist.value?.value };
   }
@@ -51,6 +55,7 @@ function reset() {
   sourceMode.value = "pokemon";
   selectedPokemon.value = null;
   selectedArtist.value = null;
+  selectedCategory.value = "EN";
   separateVariants.value = false;
   preview.value = null;
   previewError.value = null;
@@ -86,7 +91,7 @@ async function refreshPreview() {
   }
 }
 
-watch([currentSelection, separateVariants], () => {
+watch([currentSelection, separateVariants, selectedCategory], () => {
   refreshPreview();
 });
 
@@ -102,6 +107,7 @@ async function onConfirm() {
         mode: sourceMode.value,
         label: currentSelection.value.label,
         value: currentSelection.value.value,
+        category: selectedCategory.value,
       },
     });
     emit("update:open", false);
@@ -134,57 +140,86 @@ function setOpen(value) {
           size="sm"
           :content="false"
         />
+        <div class="grid grid-cols-[1fr_10rem] gap-4">
+          <UFormField
+            :label="sourceMode === 'artist' ? 'Artist' : 'Pokémon'"
+            :name="sourceMode"
+            required
+            class="flex-1"
+          >
+            <div class="flex items-center gap-3">
+              <UInputMenu
+                v-if="sourceMode === 'pokemon'"
+                v-model="selectedPokemon"
+                :items="pokemonOptions"
+                :virtualize="true"
+                placeholder="Search a Pokémon…"
+                icon="i-lucide-search"
+                class="flex-1 min-w-0"
+              />
 
-        <UFormField
-          :label="sourceMode === 'artist' ? 'Artist' : 'Pokémon'"
-          :name="sourceMode"
-          required
+              <UInputMenu
+                v-else
+                v-model="selectedArtist"
+                :items="artistOptions"
+                :virtualize="true"
+                placeholder="Search an artist…"
+                icon="i-lucide-palette"
+                class="flex-1 min-w-0"
+              />
+
+              <img
+                v-if="sourceMode === 'pokemon' && selectedPokemon"
+                :src="pokemonSpriteUrl(selectedPokemon.value)"
+                :alt="selectedPokemon.label"
+                class="size-10 shrink-0 object-contain"
+              />
+            </div>
+          </UFormField>
+          <UFormField label="Language" name="language" required class="w-40">
+            <USelect
+              v-model="selectedCategory"
+              :items="[
+                { label: 'English (EN)', value: 'EN' },
+                { label: 'Japanese (JP)', value: 'JP' },
+              ]"
+              icon="i-lucide-languages"
+              placeholder="Select language"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
+
+        <UAlert
+          color="amber"
+          :variant="separateVariants ? 'subtle' : 'soft'"
+          icon="i-lucide-gem"
         >
-          <div class="flex items-center gap-3">
-            <UInputMenu
-              v-if="sourceMode === 'pokemon'"
-              v-model="selectedPokemon"
-              :items="pokemonOptions"
-              :virtualize="true"
-              placeholder="Search a Pokémon…"
-              icon="i-lucide-search"
-              class="flex-1 min-w-0"
-            />
+          <template #title> Master set </template>
+          <template #description>
+            <p>
+              {{
+                sourceMode === "artist"
+                  ? "Add every variant as a separate entry (normal, holofoil, reverse holo, etc.)"
+                  : "Add all variants of this Pokémon as separate entries (normal, holofoil, reverse holo, etc.)"
+              }}
+            </p>
+          </template>
+          <template #actions>
+            <UFormField>
+              <USwitch
+                v-model="separateVariants"
+                label="Add all variants"
+                color="amber"
+              />
+            </UFormField>
+          </template>
+        </UAlert>
 
-            <UInputMenu
-              v-else
-              v-model="selectedArtist"
-              :items="artistOptions"
-              :virtualize="true"
-              placeholder="Search an artist…"
-              icon="i-lucide-palette"
-              class="flex-1 min-w-0"
-            />
-
-            <img
-              v-if="sourceMode === 'pokemon' && selectedPokemon"
-              :src="pokemonSpriteUrl(selectedPokemon.value)"
-              :alt="selectedPokemon.label"
-              class="size-10 shrink-0 object-contain"
-            />
-          </div>
-        </UFormField>
-
-        <UFormField
-          label="Master set"
-          :description="
-            sourceMode === 'artist'
-              ? 'Add every variant as a separate entry (normal + holofoil + reverse holo + …).'
-              : 'Add every variant of this Pokémon as a separate entry (normal + holofoil + reverse holo + …).'
-          "
+        <div
+          v-if="previewLoading"
+          class="flex items-center gap-2 text-sm text-muted"
         >
-          <USwitch
-            v-model="separateVariants"
-            label="Include all variants"
-          />
-        </UFormField>
-
-        <div v-if="previewLoading" class="flex items-center gap-2 text-sm text-muted">
           <UIcon name="i-lucide-loader-circle" class="animate-spin" />
           Loading preview…
         </div>
@@ -222,7 +257,8 @@ function setOpen(value) {
             />
           </div>
           <p v-if="preview.count === 0" class="text-sm text-muted">
-            No cards found for this {{ sourceMode === "artist" ? "artist" : "Pokémon" }}.
+            No cards found for this
+            {{ sourceMode === "artist" ? "artist" : "Pokémon" }}.
           </p>
           <p v-else class="text-xs text-muted">
             Cards already in this binder will be skipped.

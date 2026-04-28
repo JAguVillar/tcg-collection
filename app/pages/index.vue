@@ -12,6 +12,7 @@ const {
   hasMore,
   separateVariants,
   selectedArtist,
+  selectedCategory,
   sortField,
   isAscending,
   searchCards,
@@ -29,9 +30,30 @@ const defaultAddStatus = ref({});
 
 const advancedFilters = ref(false);
 
+const languageItems = [
+  {
+    label: "English (EN)",
+    value: "EN",
+    avatar: {
+      src: "https://hatscripts.github.io/circle-flags/flags/us.svg",
+      alt: "English",
+      loading: "lazy",
+    },
+  },
+  {
+    label: "Japanese (JP)",
+    value: "JP",
+    avatar: {
+      src: "https://hatscripts.github.io/circle-flags/flags/jp.svg",
+      alt: "Japanese",
+      loading: "lazy",
+    },
+  },
+];
+
 searchCards({ query: "" });
 
-watch([separateVariants, selectedArtist], () => {
+watch([separateVariants, selectedArtist, selectedCategory], () => {
   searchCards();
 });
 
@@ -181,16 +203,29 @@ function quickAddToDefault(card) {
               />
             </form>
             <UCard variant="subtle" v-if="advancedFilters">
-              <UInputMenu
-                v-model="selectedArtistOption"
-                :items="artistOptions"
-                :virtualize="true"
-                placeholder="Filter by artist"
-                icon="i-lucide-palette"
-                clear
-                class="w-full sm:w-72 sm:ml-auto"
-                size="xl"
-              />
+              <div
+                class="flex w-full flex-col gap-3 sm:flex-row sm:items-center"
+              >
+                <USelect
+                  v-model="selectedCategory"
+                  :items="languageItems"
+                  icon="i-lucide-languages"
+                  placeholder="Language"
+                  class="w-full sm:w-56"
+                  size="xl"
+                  :icon="icon"
+                />
+                <UInputMenu
+                  v-model="selectedArtistOption"
+                  :items="artistOptions"
+                  :virtualize="true"
+                  placeholder="Filter by artist"
+                  icon="i-lucide-palette"
+                  clear
+                  class="w-full sm:w-72"
+                  size="xl"
+                />
+              </div>
             </UCard>
             <div class="flex w-full flex-col gap-2">
               <div class="flex w-full items-center gap-2">

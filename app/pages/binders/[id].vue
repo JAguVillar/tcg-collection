@@ -357,12 +357,13 @@ const addCardOpen = ref(false);
 
 function onBulkAdded(result) {
   const label = result.source?.label ?? "Selection";
+  const category = result.source?.category ? ` (${result.source.category})` : "";
   const parts = [`Added ${result.inserted}`];
   if (result.skipped) parts.push(`${result.skipped} already in binder`);
   toast.add({
     color: "success",
     icon: "i-lucide-check-circle",
-    title: `${label} added`,
+    title: `${label}${category} added`,
     description: parts.join(" · "),
   });
 }
