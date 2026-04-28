@@ -40,6 +40,17 @@ function variantColor(variant) {
   }
 }
 
+function ownedButtonColor(variant) {
+  switch (variant) {
+    case "holofoil":
+      return "pink";
+    case "reverseHolofoil":
+      return "cyan";
+    default:
+      return "success";
+  }
+}
+
 const breadcrumbOverrides = computed(() => ({
   [`/binders/${binderId.value}`]: binder.value?.name ?? "Binder",
 }));
@@ -270,7 +281,18 @@ async function bumpDown(item) {
   }
 }
 
+const pendingToggles = ref(new Set());
+
+function isToggling(item) {
+  return pendingToggles.value.has(`${item.cardId}:${item.variant}`);
+}
+
 async function toggleOwned(item) {
+  const key = `${item.cardId}:${item.variant}`;
+  if (pendingToggles.value.has(key)) return;
+  const next = new Set(pendingToggles.value);
+  next.add(key);
+  pendingToggles.value = next;
   try {
     await setOwned(item.cardId, item.variant, item.quantity === 0);
   } catch (err) {
@@ -279,6 +301,10 @@ async function toggleOwned(item) {
       title: "Failed",
       description: err?.data?.statusMessage ?? err?.message ?? "Error",
     });
+  } finally {
+    const after = new Set(pendingToggles.value);
+    after.delete(key);
+    pendingToggles.value = after;
   }
 }
 
@@ -676,10 +702,16 @@ watch([ownedItems, totalItems], () => {
                     :icon="
                       item.quantity > 0 ? 'i-lucide-check' : 'i-lucide-plus'
                     "
-                    :color="item.quantity > 0 ? 'success' : 'neutral'"
+                    :color="
+                      item.quantity > 0
+                        ? ownedButtonColor(item.variant)
+                        : 'neutral'
+                    "
                     :variant="item.quantity > 0 ? 'solid' : 'soft'"
                     size="xs"
                     square
+                    :loading="isToggling(item)"
+                    :disabled="isToggling(item)"
                     class="absolute bottom-1.5 right-1.5 shadow-md"
                     :aria-label="
                       item.quantity > 0
@@ -732,10 +764,16 @@ watch([ownedItems, totalItems], () => {
                     :icon="
                       item.quantity > 0 ? 'i-lucide-check' : 'i-lucide-plus'
                     "
-                    :color="item.quantity > 0 ? 'success' : 'neutral'"
+                    :color="
+                      item.quantity > 0
+                        ? ownedButtonColor(item.variant)
+                        : 'neutral'
+                    "
                     :variant="item.quantity > 0 ? 'solid' : 'soft'"
                     size="xs"
                     square
+                    :loading="isToggling(item)"
+                    :disabled="isToggling(item)"
                     class="absolute bottom-1.5 right-1.5 shadow-md"
                     :aria-label="
                       item.quantity > 0
