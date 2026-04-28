@@ -82,7 +82,7 @@ export function useBinder(binderId) {
     const body =
       source && typeof source === "object"
         ? { ...source, preview }
-        : { mode: "pokemon", pokedexNumber: source, preview };
+        : { mode: "query", query: String(source ?? ""), preview };
 
     const result = await $fetch(`/api/binders/${id.value}/items/bulk`, {
       method: "POST",

@@ -10,15 +10,15 @@ export default defineEventHandler(async (event) => {
 
   const mode = body?.mode === "artist" || (!body?.mode && body?.artist)
     ? "artist"
-    : "pokemon";
-  const pokedexNumber = Number(body?.pokedexNumber);
+    : "query";
+  const query = body?.query?.trim?.() ?? "";
   const artist = body?.artist?.trim?.() ?? "";
   const preview = Boolean(body?.preview);
   const separateVariants = Boolean(body?.separateVariants);
   const category = body?.category === "JP" ? "JP" : "EN";
 
-  if (mode === "pokemon" && (!Number.isInteger(pokedexNumber) || pokedexNumber <= 0)) {
-    throw createError({ statusCode: 400, statusMessage: "pokedexNumber required" });
+  if (mode === "query" && query.length < 2) {
+    throw createError({ statusCode: 400, statusMessage: "query must be at least 2 characters" });
   }
   if (mode === "artist" && !artist) {
     throw createError({ statusCode: 400, statusMessage: "artist required" });
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
   const searchOverrides =
     mode === "artist"
       ? { artists: [artist], separateVariants, category }
-      : { nationalPokedexNumbers: [pokedexNumber], separateVariants, category };
+      : { query, separateVariants, category };
 
   const { cards, hits } = await collectAllCards(searchOverrides);
 

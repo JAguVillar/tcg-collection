@@ -6,16 +6,15 @@ const props = defineProps({
 
 const emit = defineEmits(["update:open", "added"]);
 
-const { options: pokemonOptions, pokemonSpriteUrl } = usePokemonIcons();
 const { options: artistOptions } = useArtists();
 
 const SOURCE_MODES = [
-  { label: "By Pokémon", value: "pokemon" },
+  { label: "By search", value: "query" },
   { label: "By artist", value: "artist" },
 ];
 
-const sourceMode = ref("pokemon");
-const selectedPokemon = ref(null);
+const sourceMode = ref("query");
+const searchQuery = ref("");
 const selectedArtist = ref(null);
 const selectedCategory = ref("EN");
 const separateVariants = ref(false);
@@ -26,14 +25,18 @@ const submitting = ref(false);
 const submitError = ref(null);
 
 const currentSelection = computed(() =>
-  sourceMode.value === "artist" ? selectedArtist.value : selectedPokemon.value,
+  sourceMode.value === "artist"
+    ? selectedArtist.value
+    : searchQuery.value.trim(),
 );
 
 const sourceLabel = computed(() => {
   if (!currentSelection.value) {
-    return sourceMode.value === "artist" ? "this artist" : "this Pokémon";
+    return sourceMode.value === "artist" ? "this artist" : "this search";
   }
-  return currentSelection.value.label;
+  return sourceMode.value === "artist"
+    ? currentSelection.value.label
+    : currentSelection.value;
 });
 
 function buildPayload() {
@@ -44,16 +47,12 @@ function buildPayload() {
   if (sourceMode.value === "artist") {
     return { ...base, mode: "artist", artist: selectedArtist.value?.value };
   }
-  return {
-    ...base,
-    mode: "pokemon",
-    pokedexNumber: selectedPokemon.value?.value,
-  };
+  return { ...base, mode: "query", query: searchQuery.value.trim() };
 }
 
 function reset() {
-  sourceMode.value = "pokemon";
-  selectedPokemon.value = null;
+  sourceMode.value = "query";
+  searchQuery.value = "";
   selectedArtist.value = null;
   selectedCategory.value = "EN";
   separateVariants.value = false;
@@ -80,6 +79,7 @@ async function refreshPreview() {
   previewError.value = null;
   submitError.value = null;
   if (!currentSelection.value) return;
+  if (sourceMode.value === "query" && currentSelection.value.length < 2) return;
   previewLoading.value = true;
   try {
     preview.value = await props.bulkAdd(buildPayload(), { preview: true });
@@ -105,8 +105,14 @@ async function onConfirm() {
       ...result,
       source: {
         mode: sourceMode.value,
-        label: currentSelection.value.label,
-        value: currentSelection.value.value,
+        label:
+          sourceMode.value === "artist"
+            ? currentSelection.value.label
+            : currentSelection.value,
+        value:
+          sourceMode.value === "artist"
+            ? currentSelection.value.value
+            : currentSelection.value,
         category: selectedCategory.value,
       },
     });
@@ -128,7 +134,7 @@ function setOpen(value) {
   <UModal
     :open="open"
     title="Bulk add cards"
-    description="Fetches cards by Pokémon or artist and adds missing ones to this checklist."
+    description="Fetches cards by search or artist and adds missing ones to this checklist."
     @update:open="setOpen"
   >
     <template #body>
@@ -142,18 +148,16 @@ function setOpen(value) {
         />
         <div class="grid grid-cols-[1fr_10rem] gap-4">
           <UFormField
-            :label="sourceMode === 'artist' ? 'Artist' : 'Pokémon'"
+            :label="sourceMode === 'artist' ? 'Artist' : 'Search query'"
             :name="sourceMode"
             required
             class="flex-1"
           >
             <div class="flex items-center gap-3">
-              <UInputMenu
-                v-if="sourceMode === 'pokemon'"
-                v-model="selectedPokemon"
-                :items="pokemonOptions"
-                :virtualize="true"
-                placeholder="Search a Pokémon…"
+              <UInput
+                v-if="sourceMode === 'query'"
+                v-model="searchQuery"
+                placeholder="Search cards (e.g. pikachu, professor, energy)…"
                 icon="i-lucide-search"
                 class="flex-1 min-w-0"
               />
@@ -166,13 +170,6 @@ function setOpen(value) {
                 placeholder="Search an artist…"
                 icon="i-lucide-palette"
                 class="flex-1 min-w-0"
-              />
-
-              <img
-                v-if="sourceMode === 'pokemon' && selectedPokemon"
-                :src="pokemonSpriteUrl(selectedPokemon.value)"
-                :alt="selectedPokemon.label"
-                class="size-10 shrink-0 object-contain"
               />
             </div>
           </UFormField>
@@ -201,7 +198,7 @@ function setOpen(value) {
               {{
                 sourceMode === "artist"
                   ? "Add every variant as a separate entry (normal, holofoil, reverse holo, etc.)"
-                  : "Add all variants of this Pokémon as separate entries (normal, holofoil, reverse holo, etc.)"
+                  : "Add all variants of matching cards as separate entries (normal, holofoil, reverse holo, etc.)"
               }}
             </p>
           </template>
@@ -258,7 +255,7 @@ function setOpen(value) {
           </div>
           <p v-if="preview.count === 0" class="text-sm text-muted">
             No cards found for this
-            {{ sourceMode === "artist" ? "artist" : "Pokémon" }}.
+            {{ sourceMode === "artist" ? "artist" : "search" }}.
           </p>
           <p v-else class="text-xs text-muted">
             Cards already in this binder will be skipped.
