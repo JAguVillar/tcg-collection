@@ -47,7 +47,7 @@ function ownedButtonColor(variant) {
     case "reverseHolofoil":
       return "cyan";
     default:
-      return "success";
+      return "neutral";
   }
 }
 
@@ -239,10 +239,12 @@ const rightPageNumber = computed(() =>
 );
 
 const hasLeftPage = computed(
-  () => leftPageNumber.value >= 1 && leftPageNumber.value <= physicalPages.value,
+  () =>
+    leftPageNumber.value >= 1 && leftPageNumber.value <= physicalPages.value,
 );
 const hasRightPage = computed(
-  () => rightPageNumber.value >= 1 && rightPageNumber.value <= physicalPages.value,
+  () =>
+    rightPageNumber.value >= 1 && rightPageNumber.value <= physicalPages.value,
 );
 
 const leftPageItems = computed(() => pageSlice(leftPageNumber.value));
@@ -714,9 +716,7 @@ watch([ownedItems, totalItems], () => {
                     :disabled="isToggling(item)"
                     class="absolute bottom-1.5 right-1.5 shadow-md"
                     :aria-label="
-                      item.quantity > 0
-                        ? 'Mark as missing'
-                        : 'Mark as obtained'
+                      item.quantity > 0 ? 'Mark as missing' : 'Mark as obtained'
                     "
                     @click.stop.prevent="toggleOwned(item)"
                   />
@@ -770,15 +770,13 @@ watch([ownedItems, totalItems], () => {
                         : 'neutral'
                     "
                     :variant="item.quantity > 0 ? 'solid' : 'soft'"
-                    size="xs"
+                    size="sm"
                     square
                     :loading="isToggling(item)"
                     :disabled="isToggling(item)"
                     class="absolute bottom-1.5 right-1.5 shadow-md"
                     :aria-label="
-                      item.quantity > 0
-                        ? 'Mark as missing'
-                        : 'Mark as obtained'
+                      item.quantity > 0 ? 'Mark as missing' : 'Mark as obtained'
                     "
                     @click.stop.prevent="toggleOwned(item)"
                   />
