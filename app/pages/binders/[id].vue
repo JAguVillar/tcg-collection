@@ -83,6 +83,9 @@ const SORT_OPTIONS = [
   { label: "Set", value: "set", hasDirection: true },
   { label: "Released", value: "released", hasDirection: true },
   { label: "Quantity", value: "quantity", hasDirection: true },
+  { label: "Artist", value: "artist", hasDirection: true },
+  { label: "Price", value: "price", hasDirection: true },
+  { label: "Language", value: "language", hasDirection: true },
 ];
 const sortField = ref("added");
 const isAscending = ref(true);
@@ -138,6 +141,12 @@ function parseLeadingInt(s) {
   return m ? parseInt(m[0], 10) : null;
 }
 
+function parseFormattedPrice(str) {
+  if (!str || str === "N/A") return null;
+  const n = parseFloat(String(str).replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) ? n : null;
+}
+
 function releaseSortKey(card) {
   const direct = Number(
     card?.releaseDateSortKey ?? card?.release_date_sort_key,
@@ -174,6 +183,12 @@ function sortKey(item) {
       return releaseSortKey(c);
     case "quantity":
       return item.quantity ?? 0;
+    case "artist":
+      return (c.artist ?? "").toLowerCase();
+    case "price":
+      return parseFormattedPrice(c.formattedPrice);
+    case "language":
+      return (c.category ?? "EN").toLowerCase();
     case "added":
     default:
       return item.createdAt ?? "";
@@ -497,13 +512,14 @@ watch([ownedItems, totalItems], () => {
       </div>
 
       <div v-if="items.length" class="mb-4 flex w-full flex-col gap-2">
-        <!-- <div class="flex w-full items-center gap-2">
+        <div class="flex w-full items-center gap-2">
+          <span class="text-md font-semibold text-default">Ordenar por</span>
           <div class="flex-1 overflow-x-auto">
             <UTabs
               :items="SORT_OPTIONS"
               :model-value="sortField"
               variant="pill"
-              size="xs"
+              size="xl"
               :content="false"
               class="min-w-max"
               @update:model-value="setSort"
@@ -514,12 +530,12 @@ watch([ownedItems, totalItems], () => {
             :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
             color="neutral"
             variant="outline"
-            size="xs"
+            size="xl"
             square
             :aria-label="isAscending ? 'Ascending' : 'Descending'"
             @click="setSort(sortField)"
           />
-        </div> -->
+        </div>
         <div class="flex w-full items-center gap-2">
           <UTabs
             v-if="viewMode === 'binder' && filteredItems.length"

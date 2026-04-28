@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
       id, card_id, variant, quantity, notes, created_at, updated_at,
       card:cards(
         id, name, number_display, set_id, set_name, series, rarity, artist,
-        thumb_image_url, large_image_url, set_icon_url, release_date, raw
+        category, thumb_image_url, large_image_url, set_icon_url, release_date, raw
       )
     `)
     .eq("binder_id", binderId)
@@ -58,6 +58,7 @@ export default defineEventHandler(async (event) => {
         ? {
             ...row.card.raw,
             artist: row.card.artist ?? row.card.raw.artist ?? null,
+            category: row.card.category ?? row.card.raw.category ?? "EN",
           }
         : null,
     })),
