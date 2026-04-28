@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "session:branch": "bash scripts/new-session-branch.sh",
-    "scrape:cards": "node scripts/scrape-cards.mjs"
+    "scrape:cards:fetch": "node scripts/scrape-cards.mjs fetch",
+    "scrape:cards:load": "node scripts/scrape-cards.mjs load"
   },
   "dependencies": {
     "@nuxt/ui": "^4.6.1",

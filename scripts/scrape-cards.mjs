@@ -1,35 +1,52 @@
 #!/usr/bin/env node
 /**
- * Bulk-scrape every card from pkmn.gg into the Supabase `cards` table.
+ * Two-phase bulk scraper for the pkmn.gg card catalog.
+ *
+ * Phase 1 (fetch): pull every card from pkmn.gg and dump it to
+ *   data/cards-<CATEGORY>.ndjson (one raw card payload per line). This is
+ *   the slow, network-bound, rate-limited phase. Resumable via a checkpoint.
+ *
+ * Phase 2 (load): read those NDJSON files and upsert into the Supabase
+ *   `cards` table via the service role. Fast, offline, idempotent.
  *
  * Usage:
- *   node scripts/scrape-cards.mjs                  # scrape EN then JP
- *   node scripts/scrape-cards.mjs --category=EN    # only EN
- *   node scripts/scrape-cards.mjs --category=JP    # only JP
- *   node scripts/scrape-cards.mjs --reset          # ignore + clear checkpoint
- *   node scripts/scrape-cards.mjs --start-page=42  # override checkpoint for the run
+ *   node scripts/scrape-cards.mjs fetch                  # fetch EN + JP
+ *   node scripts/scrape-cards.mjs fetch --category=EN
+ *   node scripts/scrape-cards.mjs fetch --reset          # discard NDJSON + checkpoint
+ *   node scripts/scrape-cards.mjs fetch --start-page=42  # override checkpoint
  *
- * Requires SUPABASE_URL and SUPABASE_SERVICE_KEY in the environment (or in a
- * .env file at the repo root, which is auto-loaded).
+ *   node scripts/scrape-cards.mjs load                   # load EN + JP NDJSONs
+ *   node scripts/scrape-cards.mjs load --category=EN
+ *   node scripts/scrape-cards.mjs load --file=path/to/file.ndjson
+ *
+ * Requires SUPABASE_URL and SUPABASE_SERVICE_KEY in env (or .env at repo root)
+ * for the load phase only. Fetch needs no credentials.
  */
 
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from "node:fs";
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { createReadStream } from "node:fs";
+import { createInterface } from "node:readline";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { createClient } from "@supabase/supabase-js";
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..");
-const CHECKPOINT_PATH = resolve(__dirname, ".scrape-checkpoint.json");
+const DATA_DIR = resolve(REPO_ROOT, "data");
+const CHECKPOINT_PATH = resolve(DATA_DIR, ".fetch-checkpoint.json");
 
 const PKMN_API_URL = "https://www.pkmn.gg/api/search/advanced";
-
 const REQUEST_DELAY_MS = 500;
 const MAX_RETRIES = 4;
 const UPSERT_BATCH_SIZE = 100;
 
-// --- env loading (minimal, no dotenv dep) ---------------------------------
+// --- env loading (no dotenv dep) ------------------------------------------
 
 function loadDotEnv() {
   const envPath = resolve(REPO_ROOT, ".env");
@@ -52,27 +69,17 @@ function loadDotEnv() {
   }
 }
 
-// --- CLI parsing -----------------------------------------------------------
+// --- shared helpers --------------------------------------------------------
 
-function parseArgs(argv) {
-  const args = { category: "all", reset: false, startPage: null };
-  for (const a of argv.slice(2)) {
-    if (a === "--reset") args.reset = true;
-    else if (a.startsWith("--category=")) args.category = a.slice(11);
-    else if (a.startsWith("--start-page=")) args.startPage = Number(a.slice(13));
-    else throw new Error(`Unknown flag: ${a}`);
-  }
-  const allowed = new Set(["all", "EN", "JP"]);
-  if (!allowed.has(args.category)) {
-    throw new Error(`--category must be one of EN, JP, all (got "${args.category}")`);
-  }
-  if (args.startPage !== null && (!Number.isFinite(args.startPage) || args.startPage < 1)) {
-    throw new Error(`--start-page must be a positive integer`);
-  }
-  return args;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function ensureDataDir() {
+  if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
 }
 
-// --- checkpoint ------------------------------------------------------------
+function ndjsonPathFor(category) {
+  return resolve(DATA_DIR, `cards-${category}.ndjson`);
+}
 
 function loadCheckpoint() {
   if (!existsSync(CHECKPOINT_PATH)) return {};
@@ -84,36 +91,37 @@ function loadCheckpoint() {
 }
 
 function saveCheckpoint(state) {
+  ensureDataDir();
   writeFileSync(CHECKPOINT_PATH, JSON.stringify(state, null, 2));
 }
 
 function clearCheckpoint() {
-  if (existsSync(CHECKPOINT_PATH)) unlinkSync(CHECKPOINT_PATH);
+  if (existsSync(CHECKPOINT_PATH)) rmSync(CHECKPOINT_PATH);
 }
 
-// --- card mapping (mirrors server/utils/cards.js, no createError) ---------
-
-function cardToRow(card) {
-  if (!card || typeof card !== "object" || !card.id) return null;
-  return {
-    id: card.id,
-    name: card.name ?? "Unknown",
-    number_display: card.numberDisplay ?? null,
-    set_id: card.setId ?? null,
-    set_name: card.set ?? null,
-    series: card.series ?? null,
-    rarity: card.rarity ?? null,
-    artist: card.artist ?? null,
-    thumb_image_url: card.thumbImageUrl ?? null,
-    large_image_url: card.largeImageUrl ?? null,
-    set_icon_url: card.setIconUrl ?? null,
-    release_date: card.releaseDate ?? null,
-    category: card.category ?? "EN",
-    raw: card,
-  };
+function parseCommonFlags(rest) {
+  const flags = { category: "all", reset: false, startPage: null, file: null };
+  for (const a of rest) {
+    if (a === "--reset") flags.reset = true;
+    else if (a.startsWith("--category=")) flags.category = a.slice(11);
+    else if (a.startsWith("--start-page=")) flags.startPage = Number(a.slice(13));
+    else if (a.startsWith("--file=")) flags.file = a.slice(7);
+    else throw new Error(`Unknown flag: ${a}`);
+  }
+  if (!new Set(["all", "EN", "JP"]).has(flags.category)) {
+    throw new Error(`--category must be one of EN, JP, all (got "${flags.category}")`);
+  }
+  if (flags.startPage !== null && (!Number.isFinite(flags.startPage) || flags.startPage < 1)) {
+    throw new Error(`--start-page must be a positive integer`);
+  }
+  return flags;
 }
 
-// --- pkmn.gg fetch with retry ---------------------------------------------
+function categoriesFor(flag) {
+  return flag === "all" ? ["EN", "JP"] : [flag];
+}
+
+// === FETCH PHASE ===========================================================
 
 function buildPayload(category, page) {
   return {
@@ -143,8 +151,6 @@ function buildPayload(category, page) {
   };
 }
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
 async function fetchPage(category, page) {
   const payload = buildPayload(category, page);
   let lastError;
@@ -173,31 +179,22 @@ async function fetchPage(category, page) {
   );
 }
 
-// --- supabase upsert in batches -------------------------------------------
-
-async function upsertRows(supabase, rows) {
-  for (let i = 0; i < rows.length; i += UPSERT_BATCH_SIZE) {
-    const batch = rows.slice(i, i + UPSERT_BATCH_SIZE);
-    const { error } = await supabase
-      .from("cards")
-      .upsert(batch, { onConflict: "id" });
-    if (error) {
-      throw new Error(`Supabase upsert failed: ${error.message}`);
-    }
-  }
+function appendCardsToNdjson(category, cards) {
+  ensureDataDir();
+  const path = ndjsonPathFor(category);
+  const lines = cards.map((c) => JSON.stringify(c)).join("\n") + "\n";
+  appendFileSync(path, lines);
 }
 
-// --- per-category loop -----------------------------------------------------
-
-async function scrapeCategory(supabase, category, checkpoint, overrideStartPage) {
+async function fetchCategory(category, checkpoint, overrideStartPage) {
   const startPage =
     overrideStartPage ?? (checkpoint[category] ? checkpoint[category] + 1 : 1);
 
   let page = startPage;
-  let totalUpserted = 0;
+  let written = 0;
   let totalHits = null;
 
-  console.log(`\n=== Scraping category=${category} starting at page ${page} ===`);
+  console.log(`\n=== fetch category=${category} starting at page ${page} ===`);
 
   while (true) {
     const data = await fetchPage(category, page);
@@ -212,19 +209,17 @@ async function scrapeCategory(supabase, category, checkpoint, overrideStartPage)
       break;
     }
 
-    const rows = cards.map(cardToRow).filter(Boolean);
-    await upsertRows(supabase, rows);
-
-    totalUpserted += rows.length;
+    appendCardsToNdjson(category, cards);
+    written += cards.length;
     checkpoint[category] = page;
     saveCheckpoint(checkpoint);
 
     const totalLabel = totalHits !== null ? ` / ${totalHits}` : "";
     console.log(
-      `  [${category} p${page}] +${rows.length} cards (session total: ${totalUpserted}${totalLabel})`,
+      `  [${category} p${page}] +${cards.length} cards (session written: ${written}${totalLabel})`,
     );
 
-    if (totalHits !== null && totalUpserted >= totalHits) {
+    if (totalHits !== null && written >= totalHits) {
       console.log(`  ${category}: reached hits=${totalHits}, stopping.`);
       break;
     }
@@ -233,14 +228,114 @@ async function scrapeCategory(supabase, category, checkpoint, overrideStartPage)
     await sleep(REQUEST_DELAY_MS);
   }
 
-  return { totalUpserted, totalHits, lastPage: page };
+  return { written, totalHits, lastPage: page };
 }
 
-// --- main ------------------------------------------------------------------
+async function runFetch(rest) {
+  const flags = parseCommonFlags(rest);
 
-async function main() {
+  if (flags.reset) {
+    clearCheckpoint();
+    for (const c of categoriesFor(flags.category)) {
+      const p = ndjsonPathFor(c);
+      if (existsSync(p)) rmSync(p);
+    }
+    console.log("Reset: cleared checkpoint and target NDJSON files.");
+  }
+
+  const checkpoint = flags.reset ? {} : loadCheckpoint();
+
+  const summary = [];
+  for (const category of categoriesFor(flags.category)) {
+    const result = await fetchCategory(category, checkpoint, flags.startPage);
+    summary.push({ category, ...result });
+  }
+
+  console.log("\n=== fetch done ===");
+  for (const s of summary) {
+    console.log(
+      `  ${s.category}: ${s.written} cards written to ${ndjsonPathFor(s.category)} (hits reported: ${s.totalHits ?? "unknown"})`,
+    );
+  }
+  console.log("\nNext step: node scripts/scrape-cards.mjs load");
+}
+
+// === LOAD PHASE ============================================================
+
+function cardToRow(card) {
+  if (!card || typeof card !== "object" || !card.id) return null;
+  return {
+    id: card.id,
+    name: card.name ?? "Unknown",
+    number_display: card.numberDisplay ?? null,
+    set_id: card.setId ?? null,
+    set_name: card.set ?? null,
+    series: card.series ?? null,
+    rarity: card.rarity ?? null,
+    artist: card.artist ?? null,
+    thumb_image_url: card.thumbImageUrl ?? null,
+    large_image_url: card.largeImageUrl ?? null,
+    set_icon_url: card.setIconUrl ?? null,
+    release_date: card.releaseDate ?? null,
+    category: card.category ?? "EN",
+    raw: card,
+  };
+}
+
+async function upsertBatch(supabase, rows) {
+  const { error } = await supabase.from("cards").upsert(rows, { onConflict: "id" });
+  if (error) throw new Error(`Supabase upsert failed: ${error.message}`);
+}
+
+async function loadFile(supabase, path) {
+  if (!existsSync(path)) {
+    console.warn(`  skipping ${path}: file does not exist`);
+    return { read: 0, upserted: 0, skipped: 0 };
+  }
+
+  const stream = createReadStream(path, { encoding: "utf8" });
+  const rl = createInterface({ input: stream, crlfDelay: Infinity });
+
+  let read = 0;
+  let upserted = 0;
+  let skipped = 0;
+  let buffer = [];
+
+  const flush = async () => {
+    if (!buffer.length) return;
+    await upsertBatch(supabase, buffer);
+    upserted += buffer.length;
+    console.log(`  [${path}] upserted ${upserted} cards so far...`);
+    buffer = [];
+  };
+
+  for await (const line of rl) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    read += 1;
+    let card;
+    try {
+      card = JSON.parse(trimmed);
+    } catch {
+      skipped += 1;
+      continue;
+    }
+    const row = cardToRow(card);
+    if (!row) {
+      skipped += 1;
+      continue;
+    }
+    buffer.push(row);
+    if (buffer.length >= UPSERT_BATCH_SIZE) await flush();
+  }
+  await flush();
+
+  return { read, upserted, skipped };
+}
+
+async function runLoad(rest) {
+  const flags = parseCommonFlags(rest);
   loadDotEnv();
-  const args = parseArgs(process.argv);
 
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -251,35 +346,48 @@ async function main() {
     process.exit(1);
   }
 
-  if (args.reset) {
-    clearCheckpoint();
-    console.log("Checkpoint cleared.");
-  }
-  const checkpoint = args.reset ? {} : loadCheckpoint();
-
+  const { createClient } = await import("@supabase/supabase-js");
   const supabase = createClient(supabaseUrl, supabaseKey, {
     auth: { persistSession: false },
   });
 
-  const categories = args.category === "all" ? ["EN", "JP"] : [args.category];
+  const targets = flags.file
+    ? [flags.file]
+    : categoriesFor(flags.category).map(ndjsonPathFor);
 
   const summary = [];
-  for (const category of categories) {
-    const result = await scrapeCategory(
-      supabase,
-      category,
-      checkpoint,
-      args.startPage,
-    );
-    summary.push({ category, ...result });
+  for (const path of targets) {
+    console.log(`\n=== load ${path} ===`);
+    const result = await loadFile(supabase, path);
+    summary.push({ path, ...result });
   }
 
-  console.log("\n=== Done ===");
+  console.log("\n=== load done ===");
   for (const s of summary) {
     console.log(
-      `  ${s.category}: ${s.totalUpserted} cards upserted (hits reported: ${s.totalHits ?? "unknown"})`,
+      `  ${s.path}: read=${s.read} upserted=${s.upserted} skipped=${s.skipped}`,
     );
   }
+}
+
+// === entrypoint ============================================================
+
+async function main() {
+  const [subcommand, ...rest] = process.argv.slice(2);
+  if (!subcommand || subcommand === "--help" || subcommand === "-h") {
+    console.log(
+      "Usage:\n" +
+        "  node scripts/scrape-cards.mjs fetch [--category=EN|JP|all] [--reset] [--start-page=N]\n" +
+        "  node scripts/scrape-cards.mjs load  [--category=EN|JP|all] [--file=PATH]\n",
+    );
+    process.exit(subcommand ? 0 : 1);
+  }
+
+  if (subcommand === "fetch") return runFetch(rest);
+  if (subcommand === "load") return runLoad(rest);
+
+  console.error(`Unknown subcommand: ${subcommand}. Use "fetch" or "load".`);
+  process.exit(1);
 }
 
 main().catch((err) => {

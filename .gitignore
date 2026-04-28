@@ -23,5 +23,6 @@ logs
 .env.*
 !.env.example
 
-# Bulk scraper checkpoint
-scripts/.scrape-checkpoint.json
+# Scraped pkmn.gg dumps (large; back up out-of-band)
+data/cards-*.ndjson
+data/.fetch-checkpoint.json
