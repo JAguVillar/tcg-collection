@@ -8,7 +8,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "session:branch": "bash scripts/new-session-branch.sh"
+    "session:branch": "bash scripts/new-session-branch.sh",
+    "scrape:cards": "node scripts/scrape-cards.mjs"
   },
   "dependencies": {
     "@nuxt/ui": "^4.6.1",
