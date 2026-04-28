@@ -671,6 +671,23 @@ watch([ownedItems, totalItems], () => {
                   >
                     {{ formatVariant(item.variant) }}
                   </UBadge>
+                  <UButton
+                    v-if="isCustom"
+                    :icon="
+                      item.quantity > 0 ? 'i-lucide-check' : 'i-lucide-plus'
+                    "
+                    :color="item.quantity > 0 ? 'success' : 'neutral'"
+                    :variant="item.quantity > 0 ? 'solid' : 'soft'"
+                    size="xs"
+                    square
+                    class="absolute bottom-1.5 right-1.5 shadow-md"
+                    :aria-label="
+                      item.quantity > 0
+                        ? 'Mark as missing'
+                        : 'Mark as obtained'
+                    "
+                    @click.stop.prevent="toggleOwned(item)"
+                  />
                 </CardImage>
                 <div
                   v-else
@@ -710,6 +727,23 @@ watch([ownedItems, totalItems], () => {
                   >
                     {{ formatVariant(item.variant) }}
                   </UBadge>
+                  <UButton
+                    v-if="isCustom"
+                    :icon="
+                      item.quantity > 0 ? 'i-lucide-check' : 'i-lucide-plus'
+                    "
+                    :color="item.quantity > 0 ? 'success' : 'neutral'"
+                    :variant="item.quantity > 0 ? 'solid' : 'soft'"
+                    size="xs"
+                    square
+                    class="absolute bottom-1.5 right-1.5 shadow-md"
+                    :aria-label="
+                      item.quantity > 0
+                        ? 'Mark as missing'
+                        : 'Mark as obtained'
+                    "
+                    @click.stop.prevent="toggleOwned(item)"
+                  />
                 </CardImage>
                 <div
                   v-else
