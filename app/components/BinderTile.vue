@@ -67,12 +67,16 @@ const menuItems = computed(() => {
       '--binder-accent-soft': `var(--ui-color-${accent}-100)`,
     }"
   >
-    <div class="flex items-stretch min-h-28">
+    <div class="relative flex items-stretch min-h-28">
       <NuxtLink
         :to="`/binders/${binder.id}`"
+        class="absolute inset-0 z-0"
+        :aria-label="binder.name"
+      />
+
+      <div
         class="shrink-0 w-24 sm:w-28 flex items-center justify-center rounded-md"
         :style="{ backgroundColor: 'var(--binder-accent-soft)' }"
-        :aria-label="binder.name"
       >
         <img
           v-if="iconUrl"
@@ -85,11 +89,11 @@ const menuItems = computed(() => {
           name="i-lucide-folder"
           class="size-10 binder-tile__placeholder"
         />
-      </NuxtLink>
+      </div>
 
       <div class="flex-1 min-w-0 flex flex-col gap-1.5 p-4">
         <div class="flex items-start justify-between gap-2 min-w-0">
-          <NuxtLink :to="`/binders/${binder.id}`" class="min-w-0 flex-1">
+          <div class="min-w-0 flex-1">
             <h2 class="text-base font-semibold text-default truncate">
               {{ binder.name }}
             </h2>
@@ -99,7 +103,7 @@ const menuItems = computed(() => {
             >
               {{ binder.description }}
             </p>
-          </NuxtLink>
+          </div>
           <div class="flex items-center gap-1 shrink-0 binder-tile__indicators">
             <UBadge
               v-if="binder.isDefault"
@@ -141,23 +145,25 @@ const menuItems = computed(() => {
               {{ binder.itemCount === 1 ? "Card" : "Cards" }}
             </template>
           </p>
-          <UDropdownMenu :items="menuItems">
-            <UButton
-              :icon="
-                active
-                  ? 'i-lucide-bookmark-check'
-                  : 'i-lucide-ellipsis-vertical'
-              "
-              :color="accent"
-              variant="ghost"
-              size="xs"
-              square
-              :aria-label="
-                active ? 'Active binder · actions' : 'Binder actions'
-              "
-              @click.prevent
-            />
-          </UDropdownMenu>
+          <div class="relative z-20">
+            <UDropdownMenu :items="menuItems">
+              <UButton
+                :icon="
+                  active
+                    ? 'i-lucide-bookmark-check'
+                    : 'i-lucide-ellipsis-vertical'
+                "
+                :color="accent"
+                variant="ghost"
+                size="xs"
+                square
+                :aria-label="
+                  active ? 'Active binder · actions' : 'Binder actions'
+                "
+                @click.prevent
+              />
+            </UDropdownMenu>
+          </div>
         </div>
       </div>
     </div>
