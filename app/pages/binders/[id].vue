@@ -1,4 +1,12 @@
 <script setup>
+import {
+  buildMissingRows,
+  toCsv,
+  toPlainText,
+  triggerDownload,
+  slugifyBinderName,
+} from "~/utils/exportMissing";
+
 definePageMeta({ middleware: ["auth"] });
 
 const route = useRoute();
@@ -68,12 +76,23 @@ const progressPct = computed(() => {
   return Math.round((ownedItems.value / totalItems.value) * 100);
 });
 
-const FILTERS = [
-  { label: "All", value: "all" },
-  { label: "Missing", value: "missing" },
-  { label: "Owned", value: "owned" },
-];
 const filter = ref("all");
+
+const filterCounts = computed(() => {
+  let owned = 0;
+  for (const i of items.value) if (i.quantity > 0) owned++;
+  return {
+    all: items.value.length,
+    owned,
+    missing: items.value.length - owned,
+  };
+});
+
+const filterTabs = computed(() => [
+  { label: `All ${filterCounts.value.all}`, value: "all" },
+  { label: `Missing ${filterCounts.value.missing}`, value: "missing" },
+  { label: `Owned ${filterCounts.value.owned}`, value: "owned" },
+]);
 
 const SORT_OPTIONS = [
   { label: "Added", value: "added", hasDirection: true },
@@ -92,6 +111,23 @@ const isAscending = ref(true);
 const activeSort = computed(() =>
   SORT_OPTIONS.find((o) => o.value === sortField.value),
 );
+
+const sortMenuItems = computed(() => [
+  SORT_OPTIONS.map((o) => {
+    const active = sortField.value === o.value;
+    return {
+      label: o.label,
+      icon: active
+        ? o.hasDirection
+          ? isAscending.value
+            ? "i-lucide-arrow-up"
+            : "i-lucide-arrow-down"
+          : "i-lucide-check"
+        : undefined,
+      onSelect: () => setSort(o.value),
+    };
+  }),
+]);
 
 const VIEW_MODES = [
   { label: "Grid", value: "grid", icon: "i-lucide-grid-2x2" },
@@ -370,6 +406,104 @@ function onSetActive() {
 const bulkAddOpen = ref(false);
 const addCardOpen = ref(false);
 
+const missingRows = computed(() => buildMissingRows(items.value));
+const missingCount = computed(() => missingRows.value.length);
+const exportSlug = computed(() =>
+  slugifyBinderName(
+    binder.value?.name,
+    binder.value?.id ? `binder-${binder.value.id}` : "binder",
+  ),
+);
+
+function exportMissingCsv() {
+  if (!missingRows.value.length) return;
+  triggerDownload(
+    `${exportSlug.value}-missing.csv`,
+    toCsv(missingRows.value),
+    "text/csv;charset=utf-8",
+  );
+  toast.add({
+    color: "success",
+    icon: "i-lucide-file-spreadsheet",
+    title: "CSV downloaded",
+    description: `${missingRows.value.length} missing card${
+      missingRows.value.length === 1 ? "" : "s"
+    }`,
+  });
+}
+
+function exportMissingTxt() {
+  if (!missingRows.value.length) return;
+  triggerDownload(
+    `${exportSlug.value}-missing.txt`,
+    toPlainText(missingRows.value),
+    "text/plain;charset=utf-8",
+  );
+  toast.add({
+    color: "success",
+    icon: "i-lucide-file-text",
+    title: "TXT downloaded",
+    description: `${missingRows.value.length} missing card${
+      missingRows.value.length === 1 ? "" : "s"
+    }`,
+  });
+}
+
+async function exportMissingCopy() {
+  if (!missingRows.value.length) return;
+  try {
+    if (!navigator?.clipboard?.writeText) {
+      throw new Error("Clipboard API unavailable");
+    }
+    await navigator.clipboard.writeText(toPlainText(missingRows.value));
+    toast.add({
+      color: "success",
+      icon: "i-lucide-clipboard-check",
+      title: "Copied to clipboard",
+      description: `${missingRows.value.length} missing card${
+        missingRows.value.length === 1 ? "" : "s"
+      }`,
+    });
+  } catch (err) {
+    toast.add({
+      color: "error",
+      icon: "i-lucide-clipboard-x",
+      title: "Copy failed",
+      description: err?.message ?? "Unable to access clipboard",
+    });
+  }
+}
+
+const moreActions = computed(() => {
+  const groups = [];
+  const main = [];
+  if (isCustom.value && missingCount.value) {
+    main.push({
+      label: `Export missing (${missingCount.value})`,
+      icon: "i-lucide-download",
+      children: [
+        {
+          label: "Download CSV",
+          icon: "i-lucide-file-spreadsheet",
+          onSelect: exportMissingCsv,
+        },
+        {
+          label: "Download TXT",
+          icon: "i-lucide-file-text",
+          onSelect: exportMissingTxt,
+        },
+        {
+          label: "Copy to clipboard",
+          icon: "i-lucide-clipboard-copy",
+          onSelect: exportMissingCopy,
+        },
+      ],
+    });
+  }
+  if (main.length) groups.push(main);
+  return groups;
+});
+
 function onBulkAdded(result) {
   const label = result.source?.label ?? "Selection";
   const category = result.source?.category ? ` (${result.source.category})` : "";
@@ -426,37 +560,56 @@ watch([ownedItems, totalItems], () => {
             >
               Custom
             </UBadge>
+            <UBadge
+              v-if="isActive"
+              color="primary"
+              variant="soft"
+              icon="i-lucide-bookmark-check"
+              size="sm"
+            >
+              Active
+            </UBadge>
           </div>
         </template>
 
         <template #right>
           <UButton
-            icon="i-lucide-plus"
-            label="Add card"
+            v-if="!isActive"
+            icon="i-lucide-bookmark"
+            label="Set as active"
             color="neutral"
-            variant="outline"
-            :ui="{ label: 'hidden sm:inline' }"
-            @click="addCardOpen = true"
+            variant="ghost"
+            :ui="{ label: 'hidden lg:inline' }"
+            @click="onSetActive"
           />
           <UButton
             v-if="isCustom"
             icon="i-lucide-list-plus"
-            label="Bulk add cards"
+            label="Bulk add"
             color="neutral"
             variant="outline"
             :ui="{ label: 'hidden md:inline' }"
             @click="bulkAddOpen = true"
           />
-          <ExportMissingMenu v-if="isCustom" :binder="binder" :items="items" />
           <UButton
-            :label="isActive ? 'Active binder' : 'Set as active'"
-            :icon="isActive ? 'i-lucide-bookmark-check' : 'i-lucide-bookmark'"
-            :color="isActive ? 'primary' : 'neutral'"
-            :variant="isActive ? 'soft' : 'outline'"
-            :disabled="isActive"
-            :ui="{ label: 'hidden lg:inline' }"
-            @click="onSetActive"
+            icon="i-lucide-plus"
+            label="Add card"
+            :ui="{ label: 'hidden sm:inline' }"
+            @click="addCardOpen = true"
           />
+          <UDropdownMenu
+            v-if="moreActions.length"
+            :items="moreActions"
+            :content="{ align: 'end' }"
+          >
+            <UButton
+              icon="i-lucide-ellipsis"
+              color="neutral"
+              variant="ghost"
+              square
+              aria-label="More actions"
+            />
+          </UDropdownMenu>
         </template>
       </UDashboardNavbar>
     </template>
@@ -495,12 +648,12 @@ watch([ownedItems, totalItems], () => {
 
       <div v-if="isCustom && totalItems" class="flex justify-between">
         <UTabs
-          :items="FILTERS"
+          :items="filterTabs"
           v-model="filter"
           variant="link"
           :content="false"
           class="flex-1/2"
-          size="xl"
+          size="lg"
         />
         <UTabs
           :items="VIEW_MODES"
@@ -511,41 +664,39 @@ watch([ownedItems, totalItems], () => {
         />
       </div>
 
-      <div v-if="items.length" class="mb-4 flex w-full flex-col gap-2">
-        <div class="flex w-full items-center gap-2">
-          <span class="text-md font-semibold text-default">Ordenar por</span>
-          <div class="flex-1 overflow-x-auto">
-            <UTabs
-              :items="SORT_OPTIONS"
-              :model-value="sortField"
-              variant="pill"
-              size="xl"
-              :content="false"
-              class="min-w-max"
-              @update:model-value="setSort"
+      <div v-if="items.length" class="mb-4 flex w-full flex-wrap items-center gap-2">
+        <UTabs
+          v-if="viewMode === 'binder' && filteredItems.length"
+          :items="POCKET_SIZES"
+          v-model="pocketSize"
+          variant="pill"
+          size="sm"
+          :content="false"
+        />
+        <div class="ml-auto flex items-center gap-1.5">
+          <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
+            <UButton
+              :label="`Sort: ${activeSort?.label}`"
+              color="neutral"
+              variant="outline"
+              size="sm"
+              trailing-icon="i-lucide-chevron-down"
             />
-          </div>
+          </UDropdownMenu>
           <UButton
             v-if="activeSort?.hasDirection"
-            :icon="isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
+            :icon="
+              isAscending
+                ? 'i-lucide-arrow-up-narrow-wide'
+                : 'i-lucide-arrow-down-wide-narrow'
+            "
             color="neutral"
             variant="outline"
-            size="xl"
+            size="sm"
             square
             :aria-label="isAscending ? 'Ascending' : 'Descending'"
             @click="setSort(sortField)"
           />
-        </div>
-        <div class="flex w-full items-center gap-2">
-          <UTabs
-            v-if="viewMode === 'binder' && filteredItems.length"
-            :items="POCKET_SIZES"
-            v-model="pocketSize"
-            variant="pill"
-            size="xl"
-            :content="false"
-          />
-          <div class="ml-auto"></div>
         </div>
       </div>
 

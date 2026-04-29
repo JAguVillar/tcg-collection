@@ -71,16 +71,26 @@ function cardKey(card) {
   return `${card.id}:${card.variant ?? "normal"}`;
 }
 
-const sortItems = computed(() =>
-  SORT_OPTIONS.map((o) => ({
-    label: o.label,
-    value: o.value,
-  })),
-);
-
 const activeSort = computed(() =>
   SORT_OPTIONS.find((o) => o.value === sortField.value),
 );
+
+const sortMenuItems = computed(() => [
+  SORT_OPTIONS.map((o) => {
+    const active = sortField.value === o.value;
+    return {
+      label: o.label,
+      icon: active
+        ? o.hasDirection
+          ? isAscending.value
+            ? "i-lucide-arrow-up"
+            : "i-lucide-arrow-down"
+          : "i-lucide-check"
+        : undefined,
+      onSelect: () => setSort(o.value),
+    };
+  }),
+]);
 
 const binderItems = computed(() =>
   binders.value.map((b) => {
@@ -227,35 +237,30 @@ function quickAddToDefault(card) {
                 />
               </div>
             </UCard>
-            <div class="flex w-full flex-col gap-2">
-              <div class="flex w-full items-center gap-2">
-                <span class="text-md font-semibold text-default"
-                  >Ordenar por</span
-                >
-                <div class="flex-1 overflow-x-auto">
-                  <UTabs
-                    :items="sortItems"
-                    :model-value="sortField"
-                    variant="pill"
-                    size="xl"
-                    :content="false"
-                    class="min-w-max"
-                    @update:model-value="setSort"
-                  />
-                </div>
+            <div class="flex w-full items-center justify-end gap-1.5">
+              <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
                 <UButton
-                  v-if="activeSort?.hasDirection"
-                  :icon="
-                    isAscending ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'
-                  "
+                  :label="`Sort: ${activeSort?.label}`"
                   color="neutral"
                   variant="outline"
-                  size="xl"
-                  square
-                  :aria-label="isAscending ? 'Ascending' : 'Descending'"
-                  @click="setSort(sortField)"
+                  size="sm"
+                  trailing-icon="i-lucide-chevron-down"
                 />
-              </div>
+              </UDropdownMenu>
+              <UButton
+                v-if="activeSort?.hasDirection"
+                :icon="
+                  isAscending
+                    ? 'i-lucide-arrow-up-narrow-wide'
+                    : 'i-lucide-arrow-down-wide-narrow'
+                "
+                color="neutral"
+                variant="outline"
+                size="sm"
+                square
+                :aria-label="isAscending ? 'Ascending' : 'Descending'"
+                @click="setSort(sortField)"
+              />
             </div>
           </div>
         </template>
