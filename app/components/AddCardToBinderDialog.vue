@@ -99,6 +99,7 @@ function setOpen(value) {
             v-model="searchQuery"
             icon="i-lucide-search"
             placeholder="Search for a Pokémon card…"
+            aria-label="Search for a card"
             class="flex-1"
             size="md"
             autofocus

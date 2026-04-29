@@ -135,12 +135,15 @@ function quickAddToDefault(card) {
                 :variant="advancedFilters ? 'solid' : 'outline'"
                 class="sm:w-auto"
                 size="xl"
+                :aria-label="advancedFilters ? 'Hide advanced filters' : 'Show advanced filters'"
+                :aria-pressed="advancedFilters"
                 @click="advancedFilters = !advancedFilters"
               />
               <UInput
                 v-model="searchQuery"
                 icon="i-lucide-search"
                 placeholder="Search for a Pokémon card…"
+                aria-label="Search for a Pokémon card"
                 class="flex-1"
                 size="xl"
               />
