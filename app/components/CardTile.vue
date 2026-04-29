@@ -16,23 +16,6 @@ const justAdded = computed(() => props.addStatus === "added");
 
 const isCustomActive = computed(() => props.activeBinder?.mode === "custom");
 
-const formattedVariant = computed(() => {
-  const v = props.card?.variant;
-  if (!v || v === "normal") return null;
-  return v.replace(/([A-Z])/g, " $1").trim();
-});
-
-const variantColor = computed(() => {
-  switch (props.card?.variant) {
-    case "holofoil":
-      return "pink";
-    case "reverseHolofoil":
-      return "cyan";
-    default:
-      return "neutral";
-  }
-});
-
 const addLabel = computed(() => {
   if (justAdded.value) return isCustomActive.value ? "Added to list" : "Added";
   if (!props.activeBinder) return "No binder";
@@ -73,15 +56,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
         >
           {{ card.formattedPrice }}
         </span>
-        <UBadge
-          v-if="formattedVariant"
-          :color="variantColor"
-          variant="solid"
-          size="md"
-          class="capitalize"
-        >
-          {{ formattedVariant }}
-        </UBadge>
+        <CardVariantBadge :variant="card?.variant" />
       </div>
     </div>
 

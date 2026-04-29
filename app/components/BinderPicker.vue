@@ -1,4 +1,6 @@
 <script setup>
+import { binderToPickerItem } from "~/utils/menuItemFactories";
+
 const props = defineProps({
   card: { type: Object, required: true },
   variant: { type: String, default: "normal" },
@@ -6,7 +8,7 @@ const props = defineProps({
 
 const { binders, loaded, fetchBinders } = useBinders();
 const user = useSupabaseUser();
-const toast = useToast();
+const notify = useNotification();
 const busy = ref(false);
 
 async function ensureLoaded(open) {
@@ -30,19 +32,12 @@ async function addTo(binder) {
         card: props.card,
       },
     });
-    toast.add({
-      color: "success",
-      icon: "i-lucide-check-circle",
+    notify.success({
       title: "Card added",
       description: `${props.card.name} → ${binder.name}`,
     });
   } catch (err) {
-    toast.add({
-      color: "error",
-      icon: "i-lucide-triangle-alert",
-      title: "Failed to add",
-      description: err?.data?.statusMessage ?? err?.message ?? "Error",
-    });
+    notify.fromError(err, "Failed to add");
   } finally {
     busy.value = false;
   }
@@ -62,18 +57,7 @@ const items = computed(() => {
   }
   return [
     binders.value.map((b) => ({
-      label:
-        b.mode === "custom"
-          ? `${b.name} (checklist)`
-          : b.isDefault
-            ? `${b.name} (default)`
-            : b.name,
-      icon:
-        b.mode === "custom"
-          ? "i-lucide-list-checks"
-          : b.isDefault
-            ? "i-lucide-star"
-            : "i-lucide-folder",
+      ...binderToPickerItem(b),
       onSelect: () => addTo(b),
     })),
   ];

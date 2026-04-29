@@ -19,7 +19,6 @@ const {
   searchCards,
   loadMore,
 } = useCardSearch();
-const { options: artistOptions } = useArtists();
 
 const addStatus = ref({});
 const addedCount = ref(0);
@@ -36,16 +35,6 @@ function reset() {
   addStatus.value = {};
   addedCount.value = 0;
 }
-
-const selectedArtistOption = computed({
-  get() {
-    if (!selectedArtist.value) return null;
-    return artistOptions.find((o) => o.value === selectedArtist.value) ?? null;
-  },
-  set(option) {
-    selectedArtist.value = option?.value ?? null;
-  },
-});
 
 watch(
   () => props.open,
@@ -114,13 +103,8 @@ function setOpen(value) {
             size="md"
             autofocus
           />
-          <USelect
+          <CategorySelect
             v-model="selectedCategory"
-            :items="[
-              { label: 'English (EN)', value: 'EN' },
-              { label: 'Japanese (JP)', value: 'JP' },
-            ]"
-            icon="i-lucide-languages"
             class="sm:w-40"
           />
           <UButton
@@ -135,14 +119,7 @@ function setOpen(value) {
           />
         </form>
 
-        <UInputMenu
-          v-model="selectedArtistOption"
-          :items="artistOptions"
-          :virtualize="true"
-          placeholder="Filter by artist"
-          icon="i-lucide-palette"
-          clear
-        />
+        <ArtistSelect v-model="selectedArtist" />
 
         <div
           v-if="addedCount"

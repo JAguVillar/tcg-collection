@@ -1,4 +1,6 @@
 <script setup>
+import { createBinderActionItems } from "~/utils/menuItemFactories";
+
 const props = defineProps({
   binder: { type: Object, required: true },
   active: { type: Boolean, default: false },
@@ -21,34 +23,9 @@ const progressPct = computed(() => {
   return Math.round((ownedItems.value / totalItems.value) * 100);
 });
 
-const menuItems = computed(() => {
-  const groups = [];
-  const first = [];
-  if (!props.active) {
-    first.push({
-      label: "Set as active",
-      icon: "i-lucide-bookmark",
-      onSelect: () => emit("set-active", props.binder),
-    });
-  }
-  if (!props.binder.isDefault) {
-    first.push({
-      label: "Make default",
-      icon: "i-lucide-star",
-      onSelect: () => emit("make-default", props.binder),
-    });
-  }
-  if (first.length) groups.push(first);
-  groups.push([
-    {
-      label: "Delete",
-      icon: "i-lucide-trash-2",
-      color: "error",
-      onSelect: () => emit("delete", props.binder),
-    },
-  ]);
-  return groups;
-});
+const menuItems = computed(() =>
+  createBinderActionItems(props.binder, { active: props.active, emit }),
+);
 </script>
 
 <template>
@@ -105,24 +82,10 @@ const menuItems = computed(() => {
             </p>
           </div>
           <div class="flex items-center gap-1 shrink-0 binder-tile__indicators">
-            <UBadge
-              v-if="binder.isDefault"
-              trailing-icon="i-lucide-star"
-              variant="soft"
-              :aria-label="'Default'"
-              color="primary"
-            >
-              Default
-            </UBadge>
-            <UBadge
-              v-if="isCustom"
-              trailing-icon="i-lucide-list-checks"
-              variant="soft"
-              :aria-label="'Custom checklist'"
-              color="pink"
-            >
-              Custom
-            </UBadge>
+            <BinderModeBadge
+              :mode="binder.mode"
+              :is-default="binder.isDefault"
+            />
           </div>
         </div>
 
@@ -131,7 +94,8 @@ const menuItems = computed(() => {
           :model-value="progressPct"
           :max="100"
           size="xs"
-          :color="warning"
+          color="warning"
+          :aria-label="`${progressPct}% complete`"
           class="my-1"
         />
 

@@ -19,52 +19,20 @@ const {
   loadMore,
   setSort,
 } = useCardSearch();
-const { options: artistOptions } = useArtists();
 
 const user = useSupabaseUser();
 const { activeBinder, defaultBinder, binders, setActiveBinder } = useBinders();
-const toast = useToast();
+const notify = useNotification();
 
 const quickAddStatus = ref({});
 const defaultAddStatus = ref({});
 
 const advancedFilters = ref(false);
 
-const languageItems = [
-  {
-    label: "English (EN)",
-    value: "EN",
-    avatar: {
-      src: "https://hatscripts.github.io/circle-flags/flags/us.svg",
-      alt: "English",
-      loading: "lazy",
-    },
-  },
-  {
-    label: "Japanese (JP)",
-    value: "JP",
-    avatar: {
-      src: "https://hatscripts.github.io/circle-flags/flags/jp.svg",
-      alt: "Japanese",
-      loading: "lazy",
-    },
-  },
-];
-
 searchCards({ query: "" });
 
 watch([separateVariants, selectedArtist, selectedCategory], () => {
   searchCards();
-});
-
-const selectedArtistOption = computed({
-  get() {
-    if (!selectedArtist.value) return null;
-    return artistOptions.find((o) => o.value === selectedArtist.value) ?? null;
-  },
-  set(option) {
-    selectedArtist.value = option?.value ?? null;
-  },
 });
 
 function cardKey(card) {
@@ -109,9 +77,7 @@ async function addCardToBinder(card, binder, statusRef) {
     });
     statusRef.value = { ...statusRef.value, [key]: "added" };
     const isCustom = binder.mode === "custom";
-    toast.add({
-      color: "success",
-      icon: "i-lucide-check-circle",
+    notify.success({
       title: isCustom ? "Added to checklist" : "Card added",
       description: `${card.name} → ${binder.name}`,
     });
@@ -122,12 +88,7 @@ async function addCardToBinder(card, binder, statusRef) {
     }, 1500);
   } catch (err) {
     statusRef.value = { ...statusRef.value, [key]: "error" };
-    toast.add({
-      color: "error",
-      icon: "i-lucide-triangle-alert",
-      title: "Failed to add",
-      description: err?.data?.statusMessage ?? err?.message ?? "Error",
-    });
+    notify.fromError(err, "Failed to add");
   }
 }
 
@@ -206,24 +167,16 @@ function quickAddToDefault(card) {
               <div
                 class="flex w-full flex-col gap-3 sm:flex-row sm:items-center"
               >
-                <USelect
+                <CategorySelect
                   v-model="selectedCategory"
-                  :items="languageItems"
-                  icon="i-lucide-languages"
-                  placeholder="Language"
+                  with-flags
+                  size="xl"
                   class="w-full sm:w-56"
-                  size="xl"
-                  :icon="icon"
                 />
-                <UInputMenu
-                  v-model="selectedArtistOption"
-                  :items="artistOptions"
-                  :virtualize="true"
-                  placeholder="Filter by artist"
-                  icon="i-lucide-palette"
-                  clear
-                  class="w-full sm:w-72"
+                <ArtistSelect
+                  v-model="selectedArtist"
                   size="xl"
+                  class="w-full sm:w-72"
                 />
               </div>
             </UCard>

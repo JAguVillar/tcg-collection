@@ -6,8 +6,6 @@ const props = defineProps({
 
 const emit = defineEmits(["update:open", "added"]);
 
-const { options: artistOptions } = useArtists();
-
 const SOURCE_MODES = [
   { label: "By search", value: "query" },
   { label: "By artist", value: "artist" },
@@ -162,25 +160,18 @@ function setOpen(value) {
                 class="flex-1 min-w-0"
               />
 
-              <UInputMenu
+              <ArtistSelect
                 v-else
                 v-model="selectedArtist"
-                :items="artistOptions"
-                :virtualize="true"
                 placeholder="Search an artist…"
-                icon="i-lucide-palette"
+                as-object
                 class="flex-1 min-w-0"
               />
             </div>
           </UFormField>
           <UFormField label="Language" name="language" required class="w-40">
-            <USelect
+            <CategorySelect
               v-model="selectedCategory"
-              :items="[
-                { label: 'English (EN)', value: 'EN' },
-                { label: 'Japanese (JP)', value: 'JP' },
-              ]"
-              icon="i-lucide-languages"
               placeholder="Select language"
               class="w-full"
             />
