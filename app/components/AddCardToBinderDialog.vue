@@ -15,6 +15,7 @@ const {
   error,
   hasMore,
   selectedArtist,
+  selectedCategory,
   searchCards,
   loadMore,
 } = useCardSearch();
@@ -30,6 +31,7 @@ function cardKey(card) {
 function reset() {
   searchQuery.value = "";
   selectedArtist.value = null;
+  selectedCategory.value = "EN";
   cards.value = [];
   addStatus.value = {};
   addedCount.value = 0;
@@ -53,6 +55,10 @@ watch(
 );
 
 watch(selectedArtist, () => {
+  if (searchQuery.value.trim()) searchCards();
+});
+
+watch(selectedCategory, () => {
   if (searchQuery.value.trim()) searchCards();
 });
 
@@ -107,6 +113,15 @@ function setOpen(value) {
             class="flex-1"
             size="md"
             autofocus
+          />
+          <USelect
+            v-model="selectedCategory"
+            :items="[
+              { label: 'English (EN)', value: 'EN' },
+              { label: 'Japanese (JP)', value: 'JP' },
+            ]"
+            icon="i-lucide-languages"
+            class="sm:w-40"
           />
           <UButton
             type="submit"
