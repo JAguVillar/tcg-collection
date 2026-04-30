@@ -763,10 +763,10 @@ watch([ownedItems, totalItems], () => {
       />
 
       <div v-else-if="viewMode === 'grid'" class="cards-grid">
-        <UCard
+        <article
           v-for="item in filteredItems"
           :key="item.id"
-          :ui="{ body: 'p-2.5 sm:p-3 flex flex-col gap-2' }"
+          class="flex flex-col gap-2 min-w-0"
         >
           <CardImage
             :card="item.card"
@@ -775,28 +775,30 @@ watch([ownedItems, totalItems], () => {
             :is-custom="isCustom"
           />
 
-          <div class="flex items-start justify-between gap-2 min-w-0">
-            <CardMeta :card="item.card" :fallback-name="item.cardId" />
+          <div class="flex flex-col gap-1 min-w-0 px-0.5">
+            <div class="flex items-start justify-between gap-2 min-w-0">
+              <CardMeta :card="item.card" :fallback-name="item.cardId" />
+            </div>
             <UBadge
               v-if="formatVariant(item.variant)"
               :color="variantColor(item.variant)"
-              variant="solid"
-              size="md"
-              class="capitalize shrink-0"
+              variant="subtle"
+              size="xs"
+              class="self-start capitalize"
             >
               {{ formatVariant(item.variant) }}
             </UBadge>
           </div>
 
-          <div v-if="isCustom" class="flex items-center gap-1.5">
+          <div v-if="isCustom" class="flex items-center gap-1 px-0.5">
             <UButton
-              :label="item.quantity > 0 ? 'Mark as missing' : 'Got it'"
+              :label="item.quantity > 0 ? 'Mark missing' : 'Mark owned'"
               :icon="
                 item.quantity > 0 ? 'i-lucide-circle-dashed' : 'i-lucide-check'
               "
               :color="item.quantity > 0 ? 'neutral' : 'success'"
               :variant="item.quantity > 0 ? 'outline' : 'soft'"
-              size="md"
+              size="sm"
               block
               class="flex-1 min-w-0"
               :ui="{ label: 'truncate' }"
@@ -806,15 +808,15 @@ watch([ownedItems, totalItems], () => {
               icon="i-lucide-trash-2"
               color="error"
               variant="soft"
-              size="md"
+              size="sm"
               square
               aria-label="Remove from checklist"
               @click="removeAll(item)"
             />
           </div>
 
-          <div v-else class="flex items-center gap-1.5">
-            <UButtonGroup size="xs" class="flex-1">
+          <div v-else class="flex items-center gap-1 px-0.5">
+            <UButtonGroup size="sm" class="flex-1">
               <UButton
                 icon="i-lucide-plus"
                 color="neutral"
@@ -837,13 +839,13 @@ watch([ownedItems, totalItems], () => {
               icon="i-lucide-trash-2"
               color="error"
               variant="soft"
-              size="xs"
+              size="sm"
               square
               aria-label="Remove all"
               @click="removeAll(item)"
             />
           </div>
-        </UCard>
+        </article>
       </div>
 
       <div

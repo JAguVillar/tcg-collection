@@ -44,19 +44,14 @@ const addIcon = computed(() => {
 </script>
 
 <template>
-  <UCard
-    :ui="{
-      root: 'cursor-pointer overflow-hidden transition hover:ring-primary/60 hover:-translate-y-0.5',
-      body: 'p-2.5 sm:p-3 flex flex-col gap-2',
-    }"
-  >
+  <article class="flex flex-col gap-2 min-w-0">
     <CardImage :card="card" :show-status-badge="false" />
 
-    <div class="flex items-start justify-between gap-2 min-w-0">
-      <CardMeta :card="card" />
-      <div class="flex flex-col items-end gap-1">
+    <div class="flex flex-col gap-1 min-w-0 px-0.5">
+      <div class="flex items-start justify-between gap-2 min-w-0">
+        <CardMeta :card="card" />
         <span
-          class="text-md font-bold shrink-0"
+          class="text-sm font-semibold shrink-0 tabular-nums"
           :class="
             card.formattedPrice === 'N/A'
               ? 'text-dimmed font-normal'
@@ -65,19 +60,19 @@ const addIcon = computed(() => {
         >
           {{ card.formattedPrice }}
         </span>
-        <UBadge
-          v-if="formattedVariant"
-          :color="variantColor"
-          variant="solid"
-          size="md"
-          class="capitalize"
-        >
-          {{ formattedVariant }}
-        </UBadge>
       </div>
+      <UBadge
+        v-if="formattedVariant"
+        :color="variantColor"
+        variant="subtle"
+        size="xs"
+        class="self-start capitalize"
+      >
+        {{ formattedVariant }}
+      </UBadge>
     </div>
 
-    <div v-if="user" class="flex items-center gap-1.5">
+    <div v-if="user" class="flex items-stretch gap-1 px-0.5">
       <UButton
         :label="addLabel"
         :icon="addIcon"
@@ -91,7 +86,11 @@ const addIcon = computed(() => {
         class="flex-1 min-w-0"
         @click="emit('add', card)"
       />
-      <BinderPicker :card="card" :variant="card.variant ?? 'normal'" />
+      <BinderPicker
+        :card="card"
+        :variant="card.variant ?? 'normal'"
+        :active-binder-id="activeBinder?.id ?? null"
+      />
     </div>
     <UButton
       v-else
@@ -102,6 +101,7 @@ const addIcon = computed(() => {
       variant="ghost"
       size="md"
       block
+      class="px-0.5"
     />
-  </UCard>
+  </article>
 </template>

@@ -2,6 +2,7 @@
 const props = defineProps({
   card: { type: Object, required: true },
   variant: { type: String, default: "normal" },
+  activeBinderId: { type: String, default: null },
 });
 
 const { binders, loaded, fetchBinders } = useBinders();
@@ -48,6 +49,10 @@ async function addTo(binder) {
   }
 }
 
+const otherBinders = computed(() =>
+  binders.value.filter((b) => b.id !== props.activeBinderId),
+);
+
 const items = computed(() => {
   if (!binders.value.length) {
     return [
@@ -60,13 +65,21 @@ const items = computed(() => {
       ],
     ];
   }
+  if (!otherBinders.value.length) {
+    return [
+      [
+        {
+          label: "Manage binders",
+          icon: "i-lucide-settings-2",
+          to: "/binders",
+        },
+      ],
+    ];
+  }
   return [
-    binders.value.map((b) => ({
+    otherBinders.value.map((b) => ({
       label: b.mode === "custom" ? `${b.name} (checklist)` : b.name,
-      icon:
-        b.mode === "custom"
-          ? "i-lucide-list-checks"
-          : "i-lucide-folder",
+      icon: b.mode === "custom" ? "i-lucide-list-checks" : "i-lucide-folder",
       onSelect: () => addTo(b),
     })),
   ];
@@ -77,18 +90,17 @@ const items = computed(() => {
   <UDropdownMenu
     :items="items"
     :disabled="!user || busy"
+    :content="{ align: 'end' }"
     @update:open="ensureLoaded"
   >
-    <UTooltip :text="user ? 'Add to binder…' : 'Sign in to add cards'">
-      <UButton
-        icon="i-lucide-folder-plus"
-        color="neutral"
-        variant="outline"
-        size="xs"
-        square
-        :disabled="!user || busy"
-        aria-label="Add to binder"
-      />
-    </UTooltip>
+    <UButton
+      icon="i-lucide-chevron-down"
+      color="primary"
+      variant="soft"
+      size="md"
+      square
+      :disabled="!user || busy"
+      aria-label="Add to another binder"
+    />
   </UDropdownMenu>
 </template>
