@@ -64,8 +64,8 @@ const addIcon = computed(() => {
       <UBadge
         v-if="formattedVariant"
         :color="variantColor"
-        variant="subtle"
-        size="xs"
+        variant="soft"
+        size="sm"
         class="self-start capitalize"
       >
         {{ formattedVariant }}

@@ -782,8 +782,8 @@ watch([ownedItems, totalItems], () => {
             <UBadge
               v-if="formatVariant(item.variant)"
               :color="variantColor(item.variant)"
-              variant="subtle"
-              size="xs"
+              variant="soft"
+              size="sm"
               class="self-start capitalize"
             >
               {{ formatVariant(item.variant) }}
