@@ -62,6 +62,7 @@ const menuItems = computed(() => {
         .join(' '),
       body: 'p-0',
     }"
+    variant="outline"
     :style="{
       '--binder-accent': `var(--ui-color-${accent}-500)`,
       '--binder-accent-soft': `var(--ui-color-${accent}-100)`,
@@ -172,13 +173,16 @@ const menuItems = computed(() => {
 
 <style scoped>
 .binder-tile {
-  transition: box-shadow 150ms ease;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
 }
 .binder-tile:hover {
-  box-shadow: 0 0 0 1px var(--binder-accent);
+  border-color: var(--binder-accent);
 }
 .binder-tile--active {
-  box-shadow: 0 0 0 2px var(--binder-accent);
+  border-color: var(--binder-accent);
+  background-color: color-mix(in oklch, var(--binder-accent) 6%, transparent);
 }
 .binder-tile__indicators {
   color: var(--binder-accent);

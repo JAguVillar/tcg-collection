@@ -704,48 +704,54 @@ watch([ownedItems, totalItems], () => {
         <USkeleton v-for="n in 10" :key="n" class="aspect-[5/7] rounded-lg" />
       </div>
 
-      <div
-        v-else-if="!items.length"
-        class="flex flex-col items-center justify-center py-16 gap-3 text-center"
-      >
-        <UIcon name="i-lucide-folder-open" class="size-10 text-muted" />
-        <p class="text-sm text-muted">
-          {{ isCustom ? "This checklist is empty." : "This binder is empty." }}
-        </p>
-        <div
-          v-if="isCustom"
-          class="flex flex-col sm:flex-row items-center gap-2"
-        >
-          <UButton
-            icon="i-lucide-list-plus"
-            label="Bulk add cards"
-            block
-            class="sm:w-auto"
-            @click="bulkAddOpen = true"
-          />
-          <UButton
-            to="/"
-            icon="i-lucide-search"
-            label="Search cards"
-            color="neutral"
-            variant="outline"
-            block
-            class="sm:w-auto"
-          />
-        </div>
-        <p v-else class="text-sm text-muted">
-          <ULink to="/" class="text-primary">Search cards</ULink>
-          to start filling it.
-        </p>
-      </div>
+      <EmptyState
+        v-else-if="!items.length && isCustom"
+        icon="i-lucide-folder-open"
+        title="This checklist is empty"
+        description="Add cards in bulk by search or artist, or pick them one by one."
+        :actions="[
+          {
+            label: 'Bulk add cards',
+            icon: 'i-lucide-list-plus',
+            onClick: () => (bulkAddOpen = true),
+          },
+          {
+            label: 'Search cards',
+            icon: 'i-lucide-search',
+            color: 'neutral',
+            variant: 'outline',
+            to: '/',
+          },
+        ]"
+      />
 
-      <div
+      <EmptyState
+        v-else-if="!items.length"
+        icon="i-lucide-folder-open"
+        title="This binder is empty"
+        description="Find cards on the search page and add them here."
+        :actions="[
+          {
+            label: 'Search cards',
+            icon: 'i-lucide-search',
+            to: '/',
+          },
+        ]"
+      />
+
+      <EmptyState
         v-else-if="!filteredItems.length"
-        class="flex flex-col items-center justify-center py-16 gap-3 text-center"
-      >
-        <UIcon name="i-lucide-filter" class="size-10 text-muted" />
-        <p class="text-sm text-muted">No cards match this filter.</p>
-      </div>
+        icon="i-lucide-filter"
+        title="No cards match this filter"
+        :actions="[
+          {
+            label: 'Show all',
+            color: 'neutral',
+            variant: 'outline',
+            onClick: () => (filter = 'all'),
+          },
+        ]"
+      />
 
       <div v-else-if="viewMode === 'grid'" class="cards-grid">
         <UCard
@@ -836,14 +842,14 @@ watch([ownedItems, totalItems], () => {
         class="flex flex-col items-center gap-4"
       >
         <div
-          class="w-full max-w-7xl rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_top,_rgba(30,41,59,0.8),_rgba(2,6,23,0.95))] p-3 sm:p-6 shadow-xl"
+          class="w-full max-w-7xl rounded-xl border border-default bg-elevated/30 p-3 sm:p-6"
         >
           <div
-            class="grid gap-4 md:gap-6 md:grid-cols-[1fr_auto_1fr] items-start"
+            class="grid gap-4 md:gap-6 md:grid-cols-2 md:divide-x md:divide-default items-start"
           >
             <div
               v-if="hasLeftPage"
-              class="grid gap-2 sm:gap-3 md:gap-4"
+              class="grid gap-2 sm:gap-3 md:gap-4 md:pr-4 lg:pr-6"
               :class="pocketGridClass"
             >
               <template
@@ -856,14 +862,13 @@ watch([ownedItems, totalItems], () => {
                   :variant="item.variant"
                   :quantity="item.quantity"
                   :is-custom="isCustom"
-                  shadow
                 >
                   <UBadge
                     v-if="formatVariant(item.variant)"
                     :color="variantColor(item.variant)"
                     variant="solid"
                     size="sm"
-                    class="absolute bottom-1.5 left-1.5 capitalize shadow-md"
+                    class="absolute bottom-1.5 left-1.5 capitalize"
                   >
                     {{ formatVariant(item.variant) }}
                   </UBadge>
@@ -882,7 +887,7 @@ watch([ownedItems, totalItems], () => {
                     square
                     :loading="isToggling(item)"
                     :disabled="isToggling(item)"
-                    class="absolute bottom-1.5 right-1.5 shadow-md"
+                    class="absolute bottom-1.5 right-1.5"
                     :aria-label="
                       item.quantity > 0 ? 'Mark as missing' : 'Mark as obtained'
                     "
@@ -891,19 +896,15 @@ watch([ownedItems, totalItems], () => {
                 </CardImage>
                 <div
                   v-else
-                  class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
+                  class="aspect-[5/7] rounded-md bg-muted/10"
                 ></div>
               </template>
             </div>
             <div v-else aria-hidden="true"></div>
 
             <div
-              class="hidden md:block w-3 rounded-full bg-gradient-to-b from-white/20 via-white/10 to-white/20 shadow-[inset_0_0_12px_rgba(255,255,255,0.2)]"
-            ></div>
-
-            <div
               v-if="hasRightPage"
-              class="grid gap-2 sm:gap-3 md:gap-4"
+              class="grid gap-2 sm:gap-3 md:gap-4 md:pl-4 lg:pl-6"
               :class="pocketGridClass"
             >
               <template
@@ -916,14 +917,13 @@ watch([ownedItems, totalItems], () => {
                   :variant="item.variant"
                   :quantity="item.quantity"
                   :is-custom="isCustom"
-                  shadow
                 >
                   <UBadge
                     v-if="formatVariant(item.variant)"
                     :color="variantColor(item.variant)"
                     variant="solid"
                     size="sm"
-                    class="absolute bottom-1.5 left-1.5 capitalize shadow-md"
+                    class="absolute bottom-1.5 left-1.5 capitalize"
                   >
                     {{ formatVariant(item.variant) }}
                   </UBadge>
@@ -942,7 +942,7 @@ watch([ownedItems, totalItems], () => {
                     square
                     :loading="isToggling(item)"
                     :disabled="isToggling(item)"
-                    class="absolute bottom-1.5 right-1.5 shadow-md"
+                    class="absolute bottom-1.5 right-1.5"
                     :aria-label="
                       item.quantity > 0 ? 'Mark as missing' : 'Mark as obtained'
                     "
@@ -951,7 +951,7 @@ watch([ownedItems, totalItems], () => {
                 </CardImage>
                 <div
                   v-else
-                  class="aspect-[5/7] rounded-md border-2 border-dashed border-muted/30 bg-muted/5"
+                  class="aspect-[5/7] rounded-md bg-muted/10"
                 ></div>
               </template>
             </div>

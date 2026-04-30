@@ -229,21 +229,19 @@ async function onDelete(binder) {
         <USkeleton v-for="n in 3" :key="n" class="h-40 rounded-lg" />
       </div>
 
-      <div
+      <EmptyState
         v-else-if="!binders.length"
-        class="flex flex-col items-center justify-center py-16 gap-3 text-center"
-      >
-        <UIcon name="i-lucide-library" class="size-10 text-muted" />
-        <p class="text-sm text-muted max-w-xs">
-          You don't have any binders yet. Create your first one to start
-          tracking your collection.
-        </p>
-        <UButton
-          icon="i-lucide-plus"
-          label="Create binder"
-          @click="createOpen = true"
-        />
-      </div>
+        icon="i-lucide-library"
+        title="No binders yet"
+        description="Create your first one to start tracking your collection."
+        :actions="[
+          {
+            label: 'Create binder',
+            icon: 'i-lucide-plus',
+            onClick: () => (createOpen = true),
+          },
+        ]"
+      />
 
       <div
         v-else

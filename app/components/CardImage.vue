@@ -5,7 +5,6 @@ const props = defineProps({
   quantity: { type: Number, default: null },
   isCustom: { type: Boolean, default: false },
   showStatusBadge: { type: Boolean, default: true },
-  shadow: { type: Boolean, default: false },
 });
 
 const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
@@ -22,10 +21,7 @@ const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
       :alt="card.name"
       loading="lazy"
       class="w-full h-full object-cover rounded-md block transition"
-      :class="[
-        shadow ? 'shadow-md' : '',
-        isMissing ? 'grayscale group-hover:grayscale-0' : '',
-      ]"
+      :class="isMissing ? 'grayscale group-hover:grayscale-0' : ''"
     />
     <div
       v-else
@@ -40,7 +36,7 @@ const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
         color="primary"
         variant="solid"
         size="sm"
-        class="absolute top-1.5 right-1.5 shadow-md"
+        class="absolute top-1.5 right-1.5"
       >
         x{{ quantity }}
       </UBadge>
@@ -50,7 +46,7 @@ const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
         variant="solid"
         size="sm"
         icon="i-lucide-check"
-        class="absolute top-1.5 right-1.5 shadow-md"
+        class="absolute top-1.5 right-1.5"
       />
       <UBadge
         v-else-if="isCustom"
@@ -58,7 +54,7 @@ const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
         variant="solid"
         size="sm"
         icon="i-lucide-circle-dashed"
-        class="absolute top-1.5 right-1.5 shadow-md"
+        class="absolute top-1.5 right-1.5"
       />
     </template>
 

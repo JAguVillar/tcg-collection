@@ -1,8 +1,6 @@
 <script setup>
 import { SORT_OPTIONS } from "~/composables/useCardSearch";
 
-definePageMeta({ middleware: ["auth"] });
-
 const {
   searchQuery,
   cards,
@@ -22,11 +20,10 @@ const {
 const { options: artistOptions } = useArtists();
 
 const user = useSupabaseUser();
-const { activeBinder, defaultBinder, binders, setActiveBinder } = useBinders();
+const { activeBinder, binders, setActiveBinder } = useBinders();
 const toast = useToast();
 
 const quickAddStatus = ref({});
-const defaultAddStatus = ref({});
 
 const advancedFilters = ref(false);
 
@@ -143,10 +140,6 @@ async function addCardToBinder(card, binder, statusRef) {
 
 function quickAdd(card) {
   return addCardToBinder(card, activeBinder.value, quickAddStatus);
-}
-
-function quickAddToDefault(card) {
-  return addCardToBinder(card, defaultBinder.value, defaultAddStatus);
 }
 </script>
 
@@ -269,6 +262,18 @@ function quickAddToDefault(card) {
 
     <template #body>
       <UAlert
+        v-if="!user && cards.length"
+        color="primary"
+        variant="soft"
+        icon="i-lucide-sparkles"
+        title="Sign in to track cards"
+        description="Save the cards you own and build checklists for the sets you’re chasing."
+        :actions="[{ label: 'Sign in', to: '/login', color: 'primary' }]"
+        class="mb-4"
+        close
+      />
+
+      <UAlert
         v-if="error"
         color="error"
         icon="i-lucide-triangle-alert"
@@ -286,11 +291,8 @@ function quickAddToDefault(card) {
           :key="`${card.id}-${card.variant}-${index}`"
           :card="card"
           :active-binder="activeBinder"
-          :default-binder="defaultBinder"
           :add-status="quickAddStatus[cardKey(card)]"
-          :add-to-default-status="defaultAddStatus[cardKey(card)]"
           @add="quickAdd"
-          @add-default="quickAddToDefault"
         />
       </div>
 
@@ -315,13 +317,23 @@ function quickAddToDefault(card) {
         No more cards to show
       </p>
 
-      <div
+      <EmptyState
         v-if="!loading && !cards.length && searchQuery"
-        class="flex flex-col items-center justify-center py-16 text-muted gap-2"
-      >
-        <UIcon name="i-lucide-search-x" class="size-10" />
-        <p class="text-sm">No cards found for "{{ searchQuery }}"</p>
-      </div>
+        icon="i-lucide-search-x"
+        :title="`No cards found for &quot;${searchQuery}&quot;`"
+        description="Try a different name, set, or artist."
+        :actions="[
+          {
+            label: 'Clear search',
+            color: 'neutral',
+            variant: 'outline',
+            onClick: () => {
+              searchQuery = '';
+              searchCards({ query: '' });
+            },
+          },
+        ]"
+      />
     </template>
   </UDashboardPanel>
 </template>

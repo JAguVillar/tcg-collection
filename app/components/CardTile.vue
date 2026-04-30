@@ -2,12 +2,10 @@
 const props = defineProps({
   card: { type: Object, required: true },
   activeBinder: { type: Object, default: null },
-  defaultBinder: { type: Object, default: null },
   addStatus: { type: String, default: null },
-  addToDefaultStatus: { type: String, default: null },
 });
 
-const emit = defineEmits(["add", "add-default"]);
+const emit = defineEmits(["add"]);
 
 const user = useSupabaseUser();
 
@@ -34,21 +32,15 @@ const variantColor = computed(() => {
 });
 
 const addLabel = computed(() => {
-  if (justAdded.value) return isCustomActive.value ? "Added to list" : "Added";
-  if (!props.activeBinder) return "No binder";
-  return isCustomActive.value
-    ? `+ ${props.activeBinder.name} (want)`
-    : `+ ${props.activeBinder.name}`;
+  if (justAdded.value) return "Added";
+  if (!props.activeBinder) return "Pick a binder";
+  return isCustomActive.value ? "Mark wanted" : "Add";
 });
 
-const showDefaultAdd = computed(
-  () =>
-    !!props.defaultBinder &&
-    !!props.activeBinder &&
-    props.defaultBinder.id !== props.activeBinder.id,
-);
-const isAddingDefault = computed(() => props.addToDefaultStatus === "pending");
-const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
+const addIcon = computed(() => {
+  if (justAdded.value) return "i-lucide-check";
+  return isCustomActive.value ? "i-lucide-list-plus" : "i-lucide-plus";
+});
 </script>
 
 <template>
@@ -88,14 +80,8 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
     <div v-if="user" class="flex items-center gap-1.5">
       <UButton
         :label="addLabel"
-        :icon="
-          justAdded
-            ? 'i-lucide-check'
-            : isCustomActive
-              ? 'i-lucide-list-plus'
-              : undefined
-        "
-        color="primary"
+        :icon="addIcon"
+        :color="justAdded ? 'success' : 'primary'"
         variant="soft"
         size="md"
         block
@@ -105,20 +91,17 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
         class="flex-1 min-w-0"
         @click="emit('add', card)"
       />
-      <UTooltip v-if="showDefaultAdd" :text="`Add to ${defaultBinder.name}`">
-        <UButton
-          :icon="justAddedDefault ? 'i-lucide-check' : 'i-lucide-library'"
-          color="primary"
-          variant="outline"
-          size="md"
-          square
-          :loading="isAddingDefault"
-          :disabled="isAddingDefault"
-          :aria-label="`Add to ${defaultBinder.name}`"
-          @click="emit('add-default', card)"
-        />
-      </UTooltip>
       <BinderPicker :card="card" :variant="card.variant ?? 'normal'" />
     </div>
+    <UButton
+      v-else
+      to="/login"
+      icon="i-lucide-log-in"
+      label="Sign in to track"
+      color="neutral"
+      variant="ghost"
+      size="md"
+      block
+    />
   </UCard>
 </template>
