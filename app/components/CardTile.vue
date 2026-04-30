@@ -22,17 +22,6 @@ const formattedVariant = computed(() => {
   return v.replace(/([A-Z])/g, " $1").trim();
 });
 
-const variantColor = computed(() => {
-  switch (props.card?.variant) {
-    case "holofoil":
-      return "pink";
-    case "reverseHolofoil":
-      return "cyan";
-    default:
-      return "neutral";
-  }
-});
-
 const addLabel = computed(() => {
   if (justAdded.value) return isCustomActive.value ? "Added to list" : "Added";
   if (!props.activeBinder) return "No binder";
@@ -52,7 +41,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
 </script>
 
 <template>
-  <UCard
+  <BaseTile
     :ui="{
       root: 'cursor-pointer overflow-hidden transition hover:ring-primary/60 hover:-translate-y-0.5',
       body: 'p-2.5 sm:p-3 flex flex-col gap-2',
@@ -73,15 +62,7 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
         >
           {{ card.formattedPrice }}
         </span>
-        <UBadge
-          v-if="formattedVariant"
-          :color="variantColor"
-          variant="solid"
-          size="md"
-          class="capitalize"
-        >
-          {{ formattedVariant }}
-        </UBadge>
+        <CardVariantBadge v-if="formattedVariant" :variant="card.variant" />
       </div>
     </div>
 
@@ -120,5 +101,5 @@ const justAddedDefault = computed(() => props.addToDefaultStatus === "added");
       </UTooltip>
       <BinderPicker :card="card" :variant="card.variant ?? 'normal'" />
     </div>
-  </UCard>
+  </BaseTile>
 </template>

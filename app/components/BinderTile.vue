@@ -52,7 +52,7 @@ const menuItems = computed(() => {
 </script>
 
 <template>
-  <UCard
+  <BaseTile
     :ui="{
       root: [
         'binder-tile transition overflow-hidden',
@@ -114,15 +114,7 @@ const menuItems = computed(() => {
             >
               Default
             </UBadge>
-            <UBadge
-              v-if="isCustom"
-              trailing-icon="i-lucide-list-checks"
-              variant="soft"
-              :aria-label="'Custom checklist'"
-              color="pink"
-            >
-              Custom
-            </UBadge>
+            <BinderModeBadge v-if="isCustom" :mode="binder.mode" />
           </div>
         </div>
 
@@ -131,9 +123,9 @@ const menuItems = computed(() => {
           :model-value="progressPct"
           :max="100"
           size="xs"
-          :color="warning"
-          class="my-1"
-        />
+            color="warning"
+            class="my-1"
+          />
 
         <div class="mt-auto flex items-center justify-between gap-2">
           <p class="text-xs text-muted truncate">
@@ -167,7 +159,7 @@ const menuItems = computed(() => {
         </div>
       </div>
     </div>
-  </UCard>
+  </BaseTile>
 </template>
 
 <style scoped>

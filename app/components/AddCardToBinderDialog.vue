@@ -23,6 +23,11 @@ const { options: artistOptions } = useArtists();
 
 const addStatus = ref({});
 const addedCount = ref(0);
+const { onOpenChange } = useDialogState();
+const { execute: executeAddCard } = useAsyncState(
+  ({ card, variant }) => props.addCard(card, variant, 1),
+  { errorMessage: "Could not add card" },
+);
 
 function cardKey(card) {
   return `${card.id}:${card.variant ?? "normal"}`;
@@ -50,6 +55,7 @@ const selectedArtistOption = computed({
 watch(
   () => props.open,
   (open) => {
+    onOpenChange(open);
     if (!open) reset();
   },
 );
@@ -69,9 +75,10 @@ function submitSearch() {
 
 async function addToBinder(card) {
   const key = cardKey(card);
+  const variant = card.variant ?? "normal";
   addStatus.value = { ...addStatus.value, [key]: "pending" };
   try {
-    await props.addCard(card, card.variant ?? "normal", 1);
+    await executeAddCard({ card, variant });
     addStatus.value = { ...addStatus.value, [key]: "added" };
     addedCount.value += 1;
     emit("added", card);
@@ -114,14 +121,10 @@ function setOpen(value) {
             size="md"
             autofocus
           />
-          <USelect
+          <CategorySelect
             v-model="selectedCategory"
-            :items="[
-              { label: 'English (EN)', value: 'EN' },
-              { label: 'Japanese (JP)', value: 'JP' },
-            ]"
-            icon="i-lucide-languages"
             class="sm:w-40"
+            aria-label="Select language"
           />
           <UButton
             type="submit"
@@ -135,12 +138,10 @@ function setOpen(value) {
           />
         </form>
 
-        <UInputMenu
+        <ArtistSelect
           v-model="selectedArtistOption"
-          :items="artistOptions"
-          :virtualize="true"
           placeholder="Filter by artist"
-          icon="i-lucide-palette"
+          aria-label="Filter by artist"
           clear
         />
 

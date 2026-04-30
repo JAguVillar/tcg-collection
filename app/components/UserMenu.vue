@@ -42,6 +42,7 @@ const items = computed(() => [
       variant="ghost"
       :block="!collapsed"
       :square="collapsed"
+      :aria-label="collapsed ? `User menu for ${user.email}` : undefined"
       class="justify-start"
     >
       <UAvatar
@@ -60,6 +61,7 @@ const items = computed(() => [
     to="/login"
     icon="i-lucide-log-in"
     :label="collapsed ? undefined : 'Sign in'"
+    :aria-label="collapsed ? 'Sign in' : undefined"
     color="primary"
     variant="soft"
     :block="!collapsed"

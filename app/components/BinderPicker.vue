@@ -1,4 +1,6 @@
 <script setup>
+import { createBinderMenuItems } from "~/utils/menuItemFactories";
+
 const props = defineProps({
   card: { type: Object, required: true },
   variant: { type: String, default: "normal" },
@@ -6,8 +8,17 @@ const props = defineProps({
 
 const { binders, loaded, fetchBinders } = useBinders();
 const user = useSupabaseUser();
-const toast = useToast();
-const busy = ref(false);
+const { notify } = useNotification();
+const { loading: busy, execute: executeAdd } = useAsyncState(async (binder) => {
+  await $fetch(`/api/binders/${binder.id}/items`, {
+    method: "POST",
+    body: {
+      cardId: props.card.id,
+      variant: props.variant,
+      card: props.card,
+    },
+  });
+});
 
 async function ensureLoaded(open) {
   if (open && user.value && !loaded.value) {
@@ -20,64 +31,19 @@ async function ensureLoaded(open) {
 }
 
 async function addTo(binder) {
-  busy.value = true;
   try {
-    await $fetch(`/api/binders/${binder.id}/items`, {
-      method: "POST",
-      body: {
-        cardId: props.card.id,
-        variant: props.variant,
-        card: props.card,
-      },
-    });
-    toast.add({
-      color: "success",
-      icon: "i-lucide-check-circle",
+    await executeAdd(binder);
+    notify.success(`${props.card.name} → ${binder.name}`, {
       title: "Card added",
-      description: `${props.card.name} → ${binder.name}`,
     });
   } catch (err) {
-    toast.add({
-      color: "error",
-      icon: "i-lucide-triangle-alert",
+    notify.error(err?.data?.statusMessage ?? err?.message ?? "Error", {
       title: "Failed to add",
-      description: err?.data?.statusMessage ?? err?.message ?? "Error",
     });
-  } finally {
-    busy.value = false;
   }
 }
 
-const items = computed(() => {
-  if (!binders.value.length) {
-    return [
-      [
-        {
-          label: "No binders yet",
-          icon: "i-lucide-plus",
-          to: "/binders",
-        },
-      ],
-    ];
-  }
-  return [
-    binders.value.map((b) => ({
-      label:
-        b.mode === "custom"
-          ? `${b.name} (checklist)`
-          : b.isDefault
-            ? `${b.name} (default)`
-            : b.name,
-      icon:
-        b.mode === "custom"
-          ? "i-lucide-list-checks"
-          : b.isDefault
-            ? "i-lucide-star"
-            : "i-lucide-folder",
-      onSelect: () => addTo(b),
-    })),
-  ];
-});
+const items = computed(() => createBinderMenuItems(binders.value, addTo));
 </script>
 
 <template>

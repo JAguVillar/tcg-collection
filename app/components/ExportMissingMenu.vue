@@ -6,13 +6,14 @@ import {
   triggerDownload,
   slugifyBinderName,
 } from "~/utils/exportMissing";
+import { createExportMenuItems } from "~/utils/menuItemFactories";
 
 const props = defineProps({
   binder: { type: Object, default: null },
   items: { type: Array, default: () => [] },
 });
 
-const toast = useToast();
+const { notify } = useNotification();
 
 const missingRows = computed(() => buildMissingRows(props.items));
 const missingCount = computed(() => missingRows.value.length);
@@ -32,11 +33,9 @@ function downloadCsv() {
     toCsv(rows),
     "text/csv;charset=utf-8",
   );
-  toast.add({
-    color: "success",
-    icon: "i-lucide-file-spreadsheet",
+  notify.success(`${rows.length} missing card${rows.length === 1 ? "" : "s"}`, {
     title: "CSV downloaded",
-    description: `${rows.length} missing card${rows.length === 1 ? "" : "s"}`,
+    icon: "i-lucide-file-spreadsheet",
   });
 }
 
@@ -48,11 +47,9 @@ function downloadTxt() {
     toPlainText(rows),
     "text/plain;charset=utf-8",
   );
-  toast.add({
-    color: "success",
-    icon: "i-lucide-file-text",
+  notify.success(`${rows.length} missing card${rows.length === 1 ? "" : "s"}`, {
     title: "TXT downloaded",
-    description: `${rows.length} missing card${rows.length === 1 ? "" : "s"}`,
+    icon: "i-lucide-file-text",
   });
 }
 
@@ -65,41 +62,25 @@ async function copyToClipboard() {
       throw new Error("Clipboard API unavailable");
     }
     await navigator.clipboard.writeText(text);
-    toast.add({
-      color: "success",
-      icon: "i-lucide-clipboard-check",
+    notify.success(`${rows.length} missing card${rows.length === 1 ? "" : "s"}`, {
       title: "Copied to clipboard",
-      description: `${rows.length} missing card${rows.length === 1 ? "" : "s"}`,
+      icon: "i-lucide-clipboard-check",
     });
   } catch (err) {
-    toast.add({
-      color: "error",
-      icon: "i-lucide-clipboard-x",
+    notify.error(err?.message ?? "Unable to access clipboard", {
       title: "Copy failed",
-      description: err?.message ?? "Unable to access clipboard",
+      icon: "i-lucide-clipboard-x",
     });
   }
 }
 
-const menuItems = computed(() => [
-  [
-    {
-      label: "Download CSV",
-      icon: "i-lucide-file-spreadsheet",
-      onSelect: downloadCsv,
-    },
-    {
-      label: "Download TXT",
-      icon: "i-lucide-file-text",
-      onSelect: downloadTxt,
-    },
-    {
-      label: "Copy to clipboard",
-      icon: "i-lucide-clipboard-copy",
-      onSelect: copyToClipboard,
-    },
-  ],
-]);
+const menuItems = computed(() =>
+  createExportMenuItems({
+    onDownloadCsv: downloadCsv,
+    onDownloadTxt: downloadTxt,
+    onCopyToClipboard: copyToClipboard,
+  }),
+);
 </script>
 
 <template>
@@ -114,6 +95,7 @@ const menuItems = computed(() => [
       color="neutral"
       variant="outline"
       :disabled="!missingCount"
+      aria-label="Export missing cards"
       :ui="{ label: 'hidden md:inline' }"
     />
   </UDropdownMenu>

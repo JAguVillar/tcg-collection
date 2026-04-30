@@ -6,7 +6,7 @@ const props = defineProps({
 
 const emit = defineEmits(["update:open", "added"]);
 
-const { options: artistOptions } = useArtists();
+const { onOpenChange } = useDialogState();
 
 const SOURCE_MODES = [
   { label: "By search", value: "query" },
@@ -19,10 +19,25 @@ const selectedArtist = ref(null);
 const selectedCategory = ref("EN");
 const separateVariants = ref(false);
 const preview = ref(null);
-const previewLoading = ref(false);
-const previewError = ref(null);
-const submitting = ref(false);
 const submitError = ref(null);
+
+const {
+  loading: previewLoading,
+  error: previewError,
+  execute: executePreview,
+  clearError: clearPreviewError,
+} = useAsyncState(
+  (payload) => props.bulkAdd(payload, { preview: true }),
+  { initialData: null, errorMessage: "Could not load preview" },
+);
+
+const {
+  loading: submitting,
+  execute: executeSubmit,
+} = useAsyncState(
+  (payload) => props.bulkAdd(payload, { preview: false }),
+  { initialData: null, errorMessage: "Could not add cards" },
+);
 
 const currentSelection = computed(() =>
   sourceMode.value === "artist"
@@ -57,38 +72,33 @@ function reset() {
   selectedCategory.value = "EN";
   separateVariants.value = false;
   preview.value = null;
-  previewError.value = null;
   submitError.value = null;
+  clearPreviewError();
 }
 
 watch(
   () => props.open,
   (open) => {
+    onOpenChange(open);
     if (!open) reset();
   },
 );
 
 watch(sourceMode, () => {
   preview.value = null;
-  previewError.value = null;
   submitError.value = null;
+  clearPreviewError();
 });
 
 async function refreshPreview() {
   preview.value = null;
-  previewError.value = null;
   submitError.value = null;
+  clearPreviewError();
   if (!currentSelection.value) return;
   if (sourceMode.value === "query" && currentSelection.value.length < 2) return;
-  previewLoading.value = true;
   try {
-    preview.value = await props.bulkAdd(buildPayload(), { preview: true });
-  } catch (err) {
-    previewError.value =
-      err?.data?.statusMessage ?? err?.message ?? "Could not load preview";
-  } finally {
-    previewLoading.value = false;
-  }
+    preview.value = await executePreview(buildPayload());
+  } catch {}
 }
 
 watch([currentSelection, separateVariants, selectedCategory], () => {
@@ -97,10 +107,9 @@ watch([currentSelection, separateVariants, selectedCategory], () => {
 
 async function onConfirm() {
   if (!currentSelection.value) return;
-  submitting.value = true;
   submitError.value = null;
   try {
-    const result = await props.bulkAdd(buildPayload(), { preview: false });
+    const result = await executeSubmit(buildPayload());
     emit("added", {
       ...result,
       source: {
@@ -120,8 +129,6 @@ async function onConfirm() {
   } catch (err) {
     submitError.value =
       err?.data?.statusMessage ?? err?.message ?? "Could not add cards";
-  } finally {
-    submitting.value = false;
   }
 }
 
@@ -146,7 +153,7 @@ function setOpen(value) {
           size="sm"
           :content="false"
         />
-        <div class="grid grid-cols-[1fr_10rem] gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-[1fr_10rem] gap-4">
           <UFormField
             :label="sourceMode === 'artist' ? 'Artist' : 'Search query'"
             :name="sourceMode"
@@ -159,29 +166,29 @@ function setOpen(value) {
                 v-model="searchQuery"
                 placeholder="Search cards (e.g. pikachu, professor, energy)…"
                 icon="i-lucide-search"
+                aria-label="Search cards"
                 class="flex-1 min-w-0"
               />
 
-              <UInputMenu
+              <ArtistSelect
                 v-else
                 v-model="selectedArtist"
-                :items="artistOptions"
-                :virtualize="true"
                 placeholder="Search an artist…"
-                icon="i-lucide-palette"
+                aria-label="Search an artist"
                 class="flex-1 min-w-0"
               />
             </div>
           </UFormField>
-          <UFormField label="Language" name="language" required class="w-40">
-            <USelect
+          <UFormField
+            label="Language"
+            name="language"
+            required
+            class="w-full sm:w-40"
+          >
+            <CategorySelect
               v-model="selectedCategory"
-              :items="[
-                { label: 'English (EN)', value: 'EN' },
-                { label: 'Japanese (JP)', value: 'JP' },
-              ]"
-              icon="i-lucide-languages"
               placeholder="Select language"
+              aria-label="Select language"
               class="w-full"
             />
           </UFormField>
