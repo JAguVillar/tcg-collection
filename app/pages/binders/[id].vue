@@ -131,7 +131,6 @@ const sortMenuItems = computed(() => [
 
 const VIEW_MODES = [
   { label: "Grid", value: "grid", icon: "i-lucide-grid-2x2" },
-  { label: "Table", value: "table", icon: "i-lucide-table-2" },
   { label: "Binder", value: "binder", icon: "i-lucide-book-open" },
 ];
 const viewMode = ref("grid");
@@ -140,7 +139,11 @@ const tableColumns = computed(() => {
   const cols = [
     { accessorKey: "thumb", header: "", meta: { class: { td: "w-14" } } },
     { accessorKey: "name", header: "Name" },
-    { accessorKey: "number", header: "#", meta: { class: { td: "tabular-nums text-muted" } } },
+    {
+      accessorKey: "number",
+      header: "#",
+      meta: { class: { td: "tabular-nums text-muted" } },
+    },
     { accessorKey: "set", header: "Set" },
     { accessorKey: "rarity", header: "Rarity" },
     { accessorKey: "variant", header: "Variant" },
@@ -547,7 +550,9 @@ const moreActions = computed(() => {
 
 function onBulkAdded(result) {
   const label = result.source?.label ?? "Selection";
-  const category = result.source?.category ? ` (${result.source.category})` : "";
+  const category = result.source?.category
+    ? ` (${result.source.category})`
+    : "";
   const parts = [`Added ${result.inserted}`];
   if (result.skipped) parts.push(`${result.skipped} already in binder`);
   toast.add({
@@ -705,7 +710,10 @@ watch([ownedItems, totalItems], () => {
         />
       </div>
 
-      <div v-if="items.length" class="mb-4 flex w-full flex-wrap items-center gap-2">
+      <div
+        v-if="items.length"
+        class="mb-4 flex w-full flex-wrap items-center gap-2"
+      >
         <UTabs
           v-if="viewMode === 'binder' && filteredItems.length"
           :items="POCKET_SIZES"
@@ -878,15 +886,15 @@ watch([ownedItems, totalItems], () => {
         </article>
       </div>
 
-      <div
-        v-else-if="viewMode === 'table'"
-        class="overflow-x-auto"
-      >
+      <div v-else-if="viewMode === 'table'" class="overflow-x-auto">
         <UTable
           :data="filteredItems"
           :columns="tableColumns"
           class="rounded-lg border border-default min-w-[640px]"
-          :ui="{ td: 'py-2', th: 'py-2 text-xs font-medium text-muted uppercase tracking-wide' }"
+          :ui="{
+            td: 'py-2',
+            th: 'py-2 text-xs font-medium text-muted uppercase tracking-wide',
+          }"
         >
           <template #thumb-cell="{ row }">
             <div class="w-10 aspect-[5/7]">
@@ -1096,10 +1104,7 @@ watch([ownedItems, totalItems], () => {
                     @click.stop.prevent="toggleOwned(item)"
                   />
                 </CardImage>
-                <div
-                  v-else
-                  class="aspect-[5/7] rounded-md bg-muted/10"
-                ></div>
+                <div v-else class="aspect-[5/7] rounded-md bg-muted/10"></div>
               </template>
             </div>
             <div v-else aria-hidden="true"></div>
@@ -1151,10 +1156,7 @@ watch([ownedItems, totalItems], () => {
                     @click.stop.prevent="toggleOwned(item)"
                   />
                 </CardImage>
-                <div
-                  v-else
-                  class="aspect-[5/7] rounded-md bg-muted/10"
-                ></div>
+                <div v-else class="aspect-[5/7] rounded-md bg-muted/10"></div>
               </template>
             </div>
             <div v-else aria-hidden="true"></div>
