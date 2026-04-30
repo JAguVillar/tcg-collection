@@ -196,16 +196,32 @@ function quickAdd(card) {
                         class="w-full"
                       />
                     </UFormField>
-                    <USeparator />
-                    <USwitch
-                      v-model="separateVariants"
-                      label="Show variants separately"
-                      description="Holo, reverse, etc. as different cards"
-                      color="purple"
-                    />
                   </div>
                 </template>
               </UPopover>
+
+              <UTooltip
+                :text="
+                  separateVariants
+                    ? 'Variants shown as separate cards'
+                    : 'Show variants as separate cards (holo, reverse, etc.)'
+                "
+              >
+                <UButton
+                  icon="i-lucide-sparkles"
+                  :color="separateVariants ? 'purple' : 'neutral'"
+                  :variant="separateVariants ? 'solid' : 'outline'"
+                  size="lg"
+                  square
+                  :aria-label="
+                    separateVariants
+                      ? 'Hide variants (combine into one card)'
+                      : 'Show variants as separate cards'
+                  "
+                  :aria-pressed="separateVariants"
+                  @click="separateVariants = !separateVariants"
+                />
+              </UTooltip>
 
               <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
                 <UButton
