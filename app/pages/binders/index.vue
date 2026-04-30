@@ -94,6 +94,31 @@ onMounted(() => {
   fetchBinders().catch(() => {});
 });
 
+const stats = computed(() => {
+  let totalCards = 0;
+  let totalChecklist = 0;
+  let ownedChecklist = 0;
+  let checklistCount = 0;
+  for (const b of binders.value) {
+    totalCards += b.itemCount ?? b.totalItems ?? 0;
+    if (b.mode === "custom") {
+      checklistCount++;
+      totalChecklist += b.totalItems ?? b.itemCount ?? 0;
+      ownedChecklist += b.ownedItems ?? 0;
+    }
+  }
+  const completion =
+    totalChecklist > 0
+      ? Math.round((ownedChecklist / totalChecklist) * 100)
+      : null;
+  return {
+    binders: binders.value.length,
+    totalCards,
+    checklistCount,
+    completion,
+  };
+});
+
 function validateCreate(values) {
   const errors = [];
   if (!values.name || !values.name.trim()) {
@@ -223,6 +248,34 @@ async function onDelete(binder) {
       />
 
       <div
+        v-if="binders.length"
+        class="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-3"
+      >
+        <UCard variant="outline" :ui="{ body: 'py-3 px-4' }">
+          <p class="text-xs text-muted">Binders</p>
+          <p class="text-2xl font-semibold tabular-nums">{{ stats.binders }}</p>
+        </UCard>
+        <UCard variant="outline" :ui="{ body: 'py-3 px-4' }">
+          <p class="text-xs text-muted">Cards tracked</p>
+          <p class="text-2xl font-semibold tabular-nums">
+            {{ stats.totalCards }}
+          </p>
+        </UCard>
+        <UCard variant="outline" :ui="{ body: 'py-3 px-4' }">
+          <p class="text-xs text-muted">Checklists</p>
+          <p class="text-2xl font-semibold tabular-nums">
+            {{ stats.checklistCount }}
+          </p>
+        </UCard>
+        <UCard variant="outline" :ui="{ body: 'py-3 px-4' }">
+          <p class="text-xs text-muted">Avg. completion</p>
+          <p class="text-2xl font-semibold tabular-nums">
+            {{ stats.completion === null ? "—" : `${stats.completion}%` }}
+          </p>
+        </UCard>
+      </div>
+
+      <div
         v-if="loading && !binders.length"
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
       >
@@ -258,10 +311,11 @@ async function onDelete(binder) {
         />
       </div>
 
-      <UModal
+      <USlideover
         v-model:open="createOpen"
         title="New binder"
         description="Organize your cards into a themed binder."
+        :ui="{ content: 'max-w-md' }"
       >
         <template #body>
           <UForm
@@ -363,26 +417,23 @@ async function onDelete(binder) {
         </template>
 
         <template #footer>
-          <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+          <div class="flex w-full gap-2">
             <UButton
               color="neutral"
               variant="outline"
               label="Cancel"
-              block
-              class="sm:w-auto"
               @click="createOpen = false"
             />
             <UButton
               type="submit"
               form="create-binder-form"
-              label="Create"
+              label="Create binder"
               :loading="createLoading"
-              block
-              class="sm:w-auto"
+              class="ml-auto"
             />
           </div>
         </template>
-      </UModal>
+      </USlideover>
     </template>
   </UDashboardPanel>
 </template>

@@ -20,12 +20,10 @@ const {
 const { options: artistOptions } = useArtists();
 
 const user = useSupabaseUser();
-const { activeBinder, binders, setActiveBinder } = useBinders();
+const { activeBinder } = useBinders();
 const toast = useToast();
 
 const quickAddStatus = ref({});
-
-const advancedFilters = ref(false);
 
 const languageItems = [
   {
@@ -72,6 +70,17 @@ const activeSort = computed(() =>
   SORT_OPTIONS.find((o) => o.value === sortField.value),
 );
 
+const activeFilterCount = computed(
+  () =>
+    (selectedArtist.value ? 1 : 0) +
+    (separateVariants.value ? 1 : 0) +
+    (selectedCategory.value !== "EN" ? 1 : 0),
+);
+
+const selectedLanguage = computed(() =>
+  languageItems.find((l) => l.value === selectedCategory.value),
+);
+
 const sortMenuItems = computed(() => [
   SORT_OPTIONS.map((o) => {
     const active = sortField.value === o.value;
@@ -88,18 +97,6 @@ const sortMenuItems = computed(() => [
     };
   }),
 ]);
-
-const binderItems = computed(() =>
-  binders.value.map((b) => {
-    let suffix = "";
-    if (b.mode === "custom") suffix = " (checklist)";
-    else if (b.isDefault) suffix = " (default)";
-    return {
-      label: `${b.name}${suffix}`,
-      value: b.id,
-    };
-  }),
-);
 
 async function addCardToBinder(card, binder, statusRef) {
   if (!binder) return;
@@ -150,94 +147,81 @@ function quickAdd(card) {
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
-
-        <template #right>
-          <USelect
-            v-if="user && binderItems.length"
-            :model-value="activeBinder?.id"
-            :items="binderItems"
-            icon="i-lucide-library"
-            placeholder="Active binder"
-            class="w-full sm:w-56"
-            @update:model-value="setActiveBinder"
-          />
-        </template>
       </UDashboardNavbar>
 
       <UDashboardToolbar>
         <template #default>
-          <div class="flex flex-col w-full py-4 gap-4">
+          <div class="flex flex-col w-full py-3 gap-3">
             <form
-              class="flex w-full flex-col gap-4 sm:flex-row sm:items-center"
+              class="flex w-full items-center gap-2"
               @submit.prevent="searchCards()"
             >
-              <UButton
-                icon="i-lucide-sliders-horizontal"
-                block
-                :variant="advancedFilters ? 'solid' : 'outline'"
-                class="sm:w-auto"
-                size="xl"
-                @click="advancedFilters = !advancedFilters"
-              />
               <UInput
                 v-model="searchQuery"
                 icon="i-lucide-search"
-                placeholder="Search for a Pokémon card…"
+                placeholder="Search Pokémon, set, artist…"
                 class="flex-1"
-                size="xl"
-              />
-              <UButton
-                type="submit"
-                icon="i-lucide-search"
-                label="Search"
+                size="lg"
                 :loading="loading"
-                block
-                class="sm:w-auto"
-                size="xl"
               />
-              <USeparator orientation="vertical" class="h-8" />
 
-              <USwitch
-                v-model="separateVariants"
-                label="Separate variants"
-                size="xl"
-                checked-icon="i-lucide-sparkles"
-                color="purple"
-              />
-            </form>
-            <UCard variant="subtle" v-if="advancedFilters">
-              <div
-                class="flex w-full flex-col gap-3 sm:flex-row sm:items-center"
-              >
-                <USelect
-                  v-model="selectedCategory"
-                  :items="languageItems"
-                  icon="i-lucide-languages"
-                  placeholder="Language"
-                  class="w-full sm:w-56"
-                  size="xl"
-                  :icon="icon"
-                />
-                <UInputMenu
-                  v-model="selectedArtistOption"
-                  :items="artistOptions"
-                  :virtualize="true"
-                  placeholder="Filter by artist"
-                  icon="i-lucide-palette"
-                  clear
-                  class="w-full sm:w-72"
-                  size="xl"
-                />
-              </div>
-            </UCard>
-            <div class="flex w-full items-center justify-end gap-1.5">
-              <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
+              <UPopover :content="{ align: 'end' }">
                 <UButton
-                  :label="`Sort: ${activeSort?.label}`"
+                  icon="i-lucide-sliders-horizontal"
                   color="neutral"
                   variant="outline"
-                  size="sm"
+                  size="lg"
+                  square
+                  :aria-label="`Filters${activeFilterCount ? ` (${activeFilterCount} active)` : ''}`"
+                >
+                  <UChip
+                    v-if="activeFilterCount"
+                    :text="activeFilterCount"
+                    size="sm"
+                    color="primary"
+                  />
+                </UButton>
+                <template #content>
+                  <div class="p-4 w-80 flex flex-col gap-4">
+                    <UFormField label="Language">
+                      <USelect
+                        v-model="selectedCategory"
+                        :items="languageItems"
+                        icon="i-lucide-languages"
+                        class="w-full"
+                      />
+                    </UFormField>
+                    <UFormField label="Artist">
+                      <UInputMenu
+                        v-model="selectedArtistOption"
+                        :items="artistOptions"
+                        :virtualize="true"
+                        placeholder="Any artist"
+                        icon="i-lucide-palette"
+                        clear
+                        class="w-full"
+                      />
+                    </UFormField>
+                    <USeparator />
+                    <USwitch
+                      v-model="separateVariants"
+                      label="Show variants separately"
+                      description="Holo, reverse, etc. as different cards"
+                      color="purple"
+                    />
+                  </div>
+                </template>
+              </UPopover>
+
+              <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
+                <UButton
+                  :label="activeSort?.label"
+                  color="neutral"
+                  variant="outline"
+                  size="lg"
+                  icon="i-lucide-arrow-up-down"
                   trailing-icon="i-lucide-chevron-down"
+                  :ui="{ label: 'hidden md:inline' }"
                 />
               </UDropdownMenu>
               <UButton
@@ -249,11 +233,78 @@ function quickAdd(card) {
                 "
                 color="neutral"
                 variant="outline"
-                size="sm"
+                size="lg"
                 square
                 :aria-label="isAscending ? 'Ascending' : 'Descending'"
                 @click="setSort(sortField)"
               />
+
+              <UButton
+                type="submit"
+                icon="i-lucide-search"
+                label="Search"
+                :loading="loading"
+                size="lg"
+                :ui="{ label: 'hidden sm:inline' }"
+              />
+            </form>
+
+            <div
+              v-if="activeFilterCount"
+              class="flex flex-wrap items-center gap-1.5"
+            >
+              <span class="text-xs text-muted">Filters:</span>
+              <UBadge
+                v-if="selectedCategory !== 'EN'"
+                color="neutral"
+                variant="soft"
+                :ui="{ base: 'pr-0.5 gap-1' }"
+              >
+                {{ selectedLanguage?.label }}
+                <UButton
+                  icon="i-lucide-x"
+                  size="xs"
+                  square
+                  variant="ghost"
+                  color="neutral"
+                  aria-label="Clear language"
+                  @click="selectedCategory = 'EN'"
+                />
+              </UBadge>
+              <UBadge
+                v-if="selectedArtist"
+                color="neutral"
+                variant="soft"
+                :ui="{ base: 'pr-0.5 gap-1' }"
+              >
+                {{ selectedArtistOption?.label ?? selectedArtist }}
+                <UButton
+                  icon="i-lucide-x"
+                  size="xs"
+                  square
+                  variant="ghost"
+                  color="neutral"
+                  aria-label="Clear artist"
+                  @click="selectedArtist = null"
+                />
+              </UBadge>
+              <UBadge
+                v-if="separateVariants"
+                color="purple"
+                variant="soft"
+                :ui="{ base: 'pr-0.5 gap-1' }"
+              >
+                Variants split
+                <UButton
+                  icon="i-lucide-x"
+                  size="xs"
+                  square
+                  variant="ghost"
+                  color="neutral"
+                  aria-label="Disable variant split"
+                  @click="separateVariants = false"
+                />
+              </UBadge>
             </div>
           </div>
         </template>
