@@ -47,11 +47,11 @@ const addIcon = computed(() => {
   <article class="flex flex-col gap-2 min-w-0">
     <CardImage :card="card" :show-status-badge="false" />
 
-    <div class="flex flex-col gap-1 min-w-0 px-0.5">
-      <div class="flex items-start justify-between gap-2 min-w-0">
-        <CardMeta :card="card" />
+    <div class="flex items-start justify-between gap-2 min-w-0 px-0.5">
+      <CardMeta :card="card" />
+      <div class="flex flex-col items-end gap-1 shrink-0">
         <span
-          class="text-sm font-semibold shrink-0 tabular-nums"
+          class="text-sm font-semibold tabular-nums"
           :class="
             card.formattedPrice === 'N/A'
               ? 'text-dimmed font-normal'
@@ -60,16 +60,16 @@ const addIcon = computed(() => {
         >
           {{ card.formattedPrice }}
         </span>
+        <UBadge
+          v-if="formattedVariant"
+          :color="variantColor"
+          variant="soft"
+          size="sm"
+          class="capitalize"
+        >
+          {{ formattedVariant }}
+        </UBadge>
       </div>
-      <UBadge
-        v-if="formattedVariant"
-        :color="variantColor"
-        variant="soft"
-        size="sm"
-        class="self-start capitalize"
-      >
-        {{ formattedVariant }}
-      </UBadge>
     </div>
 
     <div v-if="user" class="flex items-stretch gap-1 px-0.5">

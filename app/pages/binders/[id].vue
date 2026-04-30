@@ -807,16 +807,14 @@ watch([ownedItems, totalItems], () => {
             :is-custom="isCustom"
           />
 
-          <div class="flex flex-col gap-1 min-w-0 px-0.5">
-            <div class="flex items-start justify-between gap-2 min-w-0">
-              <CardMeta :card="item.card" :fallback-name="item.cardId" />
-            </div>
+          <div class="flex items-start justify-between gap-2 min-w-0 px-0.5">
+            <CardMeta :card="item.card" :fallback-name="item.cardId" />
             <UBadge
               v-if="formatVariant(item.variant)"
               :color="variantColor(item.variant)"
               variant="soft"
               size="sm"
-              class="self-start capitalize"
+              class="capitalize shrink-0"
             >
               {{ formatVariant(item.variant) }}
             </UBadge>
@@ -882,11 +880,12 @@ watch([ownedItems, totalItems], () => {
 
       <div
         v-else-if="viewMode === 'table'"
-        class="rounded-lg border border-default overflow-hidden"
+        class="overflow-x-auto"
       >
         <UTable
           :data="filteredItems"
           :columns="tableColumns"
+          class="rounded-lg border border-default min-w-[640px]"
           :ui="{ td: 'py-2', th: 'py-2 text-xs font-medium text-muted uppercase tracking-wide' }"
         >
           <template #thumb-cell="{ row }">
