@@ -169,17 +169,11 @@ function quickAdd(card) {
                 <UButton
                   icon="i-lucide-sliders-horizontal"
                   color="neutral"
-                  variant="outline"
+                  :variant="activeFilterCount ? 'solid' : 'outline'"
                   size="lg"
                   square
                   :aria-label="`Filters${activeFilterCount ? ` (${activeFilterCount} active)` : ''}`"
                 >
-                  <UChip
-                    v-if="activeFilterCount"
-                    :text="activeFilterCount"
-                    size="sm"
-                    color="primary"
-                  />
                 </UButton>
                 <template #content>
                   <div class="p-4 w-80 flex flex-col gap-4">
