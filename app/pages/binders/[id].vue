@@ -393,8 +393,17 @@ async function removeAll(item) {
   }
 }
 
-function onSetActive() {
-  setActiveBinder(binderId.value);
+async function onSetActive() {
+  try {
+    await setActiveBinder(binderId.value);
+  } catch (err) {
+    toast.add({
+      color: "error",
+      title: "Failed",
+      description: err?.data?.statusMessage ?? err?.message ?? "Error",
+    });
+    return;
+  }
   toast.add({
     color: "success",
     icon: "i-lucide-bookmark-check",

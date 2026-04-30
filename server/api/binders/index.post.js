@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const description = body?.description?.trim?.() || null;
-  const isDefault = Boolean(body?.isDefault);
+  const isActive = Boolean(body?.isActive);
   const iconPokemon =
     body?.iconPokemon != null && body.iconPokemon !== ""
       ? String(body.iconPokemon).trim() || null
@@ -21,13 +21,12 @@ export default defineEventHandler(async (event) => {
 
   const supabase = await serverSupabaseClient(event);
 
-  if (isDefault) {
-    // Only one default per user. Clear any existing default first.
+  if (isActive) {
     const { error: clearErr } = await supabase
       .from("binders")
-      .update({ is_default: false })
+      .update({ is_active: false })
       .eq("user_id", user.id)
-      .eq("is_default", true);
+      .eq("is_active", true);
     if (clearErr) {
       throw createError({ statusCode: 500, statusMessage: clearErr.message });
     }
@@ -39,12 +38,12 @@ export default defineEventHandler(async (event) => {
       user_id: user.id,
       name,
       description,
-      is_default: isDefault,
+      is_active: isActive,
       icon_pokemon: iconPokemon,
       color,
       mode,
     })
-    .select("id, name, description, is_default, icon_pokemon, color, mode, created_at, updated_at")
+    .select("id, name, description, is_active, icon_pokemon, color, mode, created_at, updated_at")
     .single();
 
   if (error) {
@@ -58,7 +57,7 @@ export default defineEventHandler(async (event) => {
     id: data.id,
     name: data.name,
     description: data.description,
-    isDefault: data.is_default,
+    isActive: data.is_active,
     iconPokemon: data.icon_pokemon,
     color: data.color,
     mode: data.mode,

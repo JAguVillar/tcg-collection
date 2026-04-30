@@ -2,13 +2,13 @@ import { serverSupabaseClient } from "#supabase/server";
 import { requireUser } from "~~/server/utils/auth";
 
 const BINDER_SELECT =
-  "id, name, description, is_default, icon_pokemon, color, mode, created_at, updated_at, binder_items(quantity)";
+  "id, name, description, is_active, icon_pokemon, color, mode, created_at, updated_at, binder_items(quantity)";
 
 function fetchBinders(supabase) {
   return supabase
     .from("binders")
     .select(BINDER_SELECT)
-    .order("is_default", { ascending: false })
+    .order("is_active", { ascending: false })
     .order("created_at", { ascending: true });
 }
 
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
         {
           user_id: user.id,
           name: "My Collection",
-          is_default: true,
+          is_active: true,
           mode: "collection",
         },
         { onConflict: "user_id,name", ignoreDuplicates: true },
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
       id: b.id,
       name: b.name,
       description: b.description,
-      isDefault: b.is_default,
+      isActive: b.is_active,
       iconPokemon: b.icon_pokemon,
       color: b.color,
       mode: b.mode,
