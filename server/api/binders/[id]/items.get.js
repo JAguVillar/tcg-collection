@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   // returning a proper 404 is nicer than a silent empty list).
   const { data: binder, error: binderErr } = await supabase
     .from("binders")
-    .select("id, name, description, is_default, icon_pokemon, mode")
+    .select("id, name, description, is_active, icon_pokemon, mode")
     .eq("id", binderId)
     .maybeSingle();
 
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
       id: binder.id,
       name: binder.name,
       description: binder.description,
-      isDefault: binder.is_default,
+      isActive: binder.is_active,
       iconPokemon: binder.icon_pokemon,
       mode: binder.mode,
     },

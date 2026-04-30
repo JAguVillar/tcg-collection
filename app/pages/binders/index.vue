@@ -158,26 +158,17 @@ async function onCreate() {
   }
 }
 
-async function onMakeDefault(binder) {
+async function onSetActive(binder) {
   try {
-    await updateBinder(binder.id, { isDefault: true });
-    toast.add({
-      color: "success",
-      icon: "i-lucide-star",
-      title: "Default binder updated",
-      description: binder.name,
-    });
+    await setActiveBinder(binder.id);
   } catch (err) {
     toast.add({
       color: "error",
       title: "Failed",
       description: err?.data?.statusMessage ?? err?.message ?? "Error",
     });
+    return;
   }
-}
-
-function onSetActive(binder) {
-  setActiveBinder(binder.id);
   toast.add({
     color: "success",
     icon: "i-lucide-bookmark-check",
@@ -306,7 +297,6 @@ async function onDelete(binder) {
           :binder="b"
           :active="activeBinder?.id === b.id"
           @set-active="onSetActive"
-          @make-default="onMakeDefault"
           @delete="onDelete"
         />
       </div>

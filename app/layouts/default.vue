@@ -5,6 +5,7 @@ const open = ref(false);
 const { activeBinder, binders, loaded, fetchBinders, setActiveBinder } =
   useBinders();
 const { pokemonSpriteUrl } = usePokemonIcons();
+const toast = useToast();
 
 if (user.value && !loaded.value) {
   fetchBinders().catch(() => {});
@@ -13,6 +14,20 @@ if (user.value && !loaded.value) {
 watch(user, (next) => {
   if (next && !loaded.value) fetchBinders().catch(() => {});
 });
+
+async function selectBinder(b) {
+  if (activeBinder.value?.id === b.id) return;
+  try {
+    await setActiveBinder(b.id);
+  } catch (err) {
+    toast.add({
+      color: "error",
+      icon: "i-lucide-triangle-alert",
+      title: "Could not set active binder",
+      description: err?.data?.statusMessage ?? err?.message ?? "Error",
+    });
+  }
+}
 
 const navItems = computed(() => [
   [
@@ -42,7 +57,7 @@ const binderMenuItems = computed(() => {
         b.mode === "custom" ? "i-lucide-list-checks" : "i-lucide-folder",
       checked: activeBinder.value?.id === b.id,
       type: "checkbox",
-      onSelect: () => setActiveBinder(b.id),
+      onSelect: () => selectBinder(b),
     })),
     [
       {

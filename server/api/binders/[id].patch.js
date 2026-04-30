@@ -48,19 +48,19 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (body?.isDefault === true) {
+  if (body?.isActive === true) {
     const { error: clearErr } = await supabase
       .from("binders")
-      .update({ is_default: false })
+      .update({ is_active: false })
       .eq("user_id", user.id)
-      .eq("is_default", true)
+      .eq("is_active", true)
       .neq("id", id);
     if (clearErr) {
       throw createError({ statusCode: 500, statusMessage: clearErr.message });
     }
-    patch.is_default = true;
-  } else if (body?.isDefault === false) {
-    patch.is_default = false;
+    patch.is_active = true;
+  } else if (body?.isActive === false) {
+    patch.is_active = false;
   }
 
   if (Object.keys(patch).length === 0) {
@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
     .from("binders")
     .update(patch)
     .eq("id", id)
-    .select("id, name, description, is_default, icon_pokemon, color, mode, created_at, updated_at")
+    .select("id, name, description, is_active, icon_pokemon, color, mode, created_at, updated_at")
     .single();
 
   if (error) {
@@ -85,7 +85,7 @@ export default defineEventHandler(async (event) => {
     id: data.id,
     name: data.name,
     description: data.description,
-    isDefault: data.is_default,
+    isActive: data.is_active,
     iconPokemon: data.icon_pokemon,
     color: data.color,
     mode: data.mode,

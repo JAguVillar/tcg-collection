@@ -8,6 +8,9 @@ export function useBinders() {
   const loaded = useState("binders-loaded", () => false);
   const error = useState("binders-error", () => null);
 
+  // Hint used during first paint (before binders load) so the sidebar
+  // switcher can show the right binder immediately. The server is the
+  // source of truth; this just speeds up boot.
   const activeBinderId = useState("active-binder-id", () => {
     if (import.meta.client) {
       return localStorage.getItem(ACTIVE_BINDER_STORAGE_KEY) ?? null;
@@ -22,18 +25,27 @@ export function useBinders() {
     }
   });
 
-  const defaultBinder = computed(
-    () => binders.value.find((b) => b.isDefault) ?? null,
-  );
-
   const activeBinder = computed(() => {
-    const id = activeBinderId.value;
-    if (id) {
-      const match = binders.value.find((b) => b.id === id);
+    const byFlag = binders.value.find((b) => b.isActive);
+    if (byFlag) return byFlag;
+    if (activeBinderId.value) {
+      const match = binders.value.find((b) => b.id === activeBinderId.value);
       if (match) return match;
     }
-    return defaultBinder.value ?? binders.value[0] ?? null;
+    return binders.value[0] ?? null;
   });
+
+  // Mirror the server's active binder into the local hint so a reload
+  // restores immediately even before the binders request finishes.
+  watch(
+    activeBinder,
+    (b) => {
+      if (b?.id && b.id !== activeBinderId.value) {
+        activeBinderId.value = b.id;
+      }
+    },
+    { immediate: true },
+  );
 
   async function fetchBinders() {
     if (!user.value) {
@@ -55,7 +67,8 @@ export function useBinders() {
         error.value = null;
         return [];
       }
-      error.value = err?.data?.statusMessage ?? err?.message ?? "Error loading binders";
+      error.value =
+        err?.data?.statusMessage ?? err?.message ?? "Error loading binders";
       throw err;
     } finally {
       loading.value = false;
@@ -65,18 +78,16 @@ export function useBinders() {
   async function createBinder({
     name,
     description = null,
-    isDefault = false,
     iconPokemon = null,
     color = null,
     mode = "collection",
+    isActive = true,
   } = {}) {
     const created = await $fetch("/api/binders", {
       method: "POST",
-      body: { name, description, isDefault, iconPokemon, color, mode },
+      body: { name, description, iconPokemon, color, mode, isActive },
     });
-    // Refresh to keep `is_default` flags consistent across the list.
     await fetchBinders();
-    activeBinderId.value = created.id;
     return created;
   }
 
@@ -95,11 +106,28 @@ export function useBinders() {
     await fetchBinders();
   }
 
-  function setActiveBinder(id) {
-    activeBinderId.value = id ?? null;
+  async function setActiveBinder(id) {
+    if (!id) {
+      activeBinderId.value = null;
+      return;
+    }
+    const previous = binders.value.map((b) => ({ ...b }));
+    binders.value = binders.value.map((b) => ({
+      ...b,
+      isActive: b.id === id,
+    }));
+    activeBinderId.value = id;
+    try {
+      await $fetch(`/api/binders/${id}`, {
+        method: "PATCH",
+        body: { isActive: true },
+      });
+    } catch (err) {
+      binders.value = previous;
+      throw err;
+    }
   }
 
-  // Keep the list in sync with auth state automatically.
   watch(
     user,
     (u) => {
@@ -121,7 +149,6 @@ export function useBinders() {
     error,
     activeBinderId,
     activeBinder,
-    defaultBinder,
     fetchBinders,
     createBinder,
     updateBinder,

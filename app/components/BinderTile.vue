@@ -4,7 +4,7 @@ const props = defineProps({
   active: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(["set-active", "make-default", "delete"]);
+const emit = defineEmits(["set-active", "delete"]);
 
 const { pokemonSpriteUrl } = usePokemonIcons();
 const iconUrl = computed(() => pokemonSpriteUrl(props.binder.iconPokemon));
@@ -23,22 +23,15 @@ const progressPct = computed(() => {
 
 const menuItems = computed(() => {
   const groups = [];
-  const first = [];
   if (!props.active) {
-    first.push({
-      label: "Set as active",
-      icon: "i-lucide-bookmark",
-      onSelect: () => emit("set-active", props.binder),
-    });
+    groups.push([
+      {
+        label: "Set as active",
+        icon: "i-lucide-bookmark",
+        onSelect: () => emit("set-active", props.binder),
+      },
+    ]);
   }
-  if (!props.binder.isDefault) {
-    first.push({
-      label: "Make default",
-      icon: "i-lucide-star",
-      onSelect: () => emit("make-default", props.binder),
-    });
-  }
-  if (first.length) groups.push(first);
   groups.push([
     {
       label: "Delete",
@@ -107,19 +100,19 @@ const menuItems = computed(() => {
           </div>
           <div class="flex items-center gap-1 shrink-0 binder-tile__indicators">
             <UBadge
-              v-if="binder.isDefault"
-              trailing-icon="i-lucide-star"
+              v-if="active"
+              trailing-icon="i-lucide-bookmark-check"
               variant="soft"
-              :aria-label="'Default'"
+              aria-label="Active binder"
               color="primary"
             >
-              Default
+              Active
             </UBadge>
             <UBadge
               v-if="isCustom"
               trailing-icon="i-lucide-list-checks"
               variant="soft"
-              :aria-label="'Custom checklist'"
+              aria-label="Custom checklist"
               color="pink"
             >
               Custom
