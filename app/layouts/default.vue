@@ -1,4 +1,6 @@
 <script setup>
+const ONBOARDING_DONE_KEY = "tcg-onboarding-done";
+
 const user = useSupabaseUser();
 const open = ref(false);
 
@@ -7,12 +9,29 @@ const { activeBinder, binders, loaded, fetchBinders, setActiveBinder } =
 const { pokemonSpriteUrl } = usePokemonIcons();
 const toast = useToast();
 
+const onboardingOpen = useState("onboarding-open", () => false);
+
+function maybeShowOnboarding() {
+  if (!import.meta.client) return;
+  if (!user.value) return;
+  if (localStorage.getItem(ONBOARDING_DONE_KEY)) return;
+  onboardingOpen.value = true;
+}
+
+function finishOnboarding() {
+  if (import.meta.client) {
+    localStorage.setItem(ONBOARDING_DONE_KEY, "1");
+  }
+}
+
 if (user.value && !loaded.value) {
   fetchBinders().catch(() => {});
 }
+maybeShowOnboarding();
 
 watch(user, (next) => {
   if (next && !loaded.value) fetchBinders().catch(() => {});
+  if (next) maybeShowOnboarding();
 });
 
 async function selectBinder(b) {
@@ -150,5 +169,10 @@ const binderMenuItems = computed(() => {
     </UDashboardSidebar>
 
     <slot />
+
+    <OnboardingDialog
+      v-model:open="onboardingOpen"
+      @done="finishOnboarding"
+    />
   </UDashboardGroup>
 </template>

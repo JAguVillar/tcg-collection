@@ -6,6 +6,7 @@ defineProps({
 const user = useSupabaseUser();
 const supabase = useSupabaseClient();
 const router = useRouter();
+const onboardingOpen = useState("onboarding-open", () => false);
 
 async function signOut() {
   await supabase.auth.signOut();
@@ -18,6 +19,11 @@ const items = computed(() => [
       label: "Binders",
       icon: "i-lucide-library",
       to: "/binders",
+    },
+    {
+      label: "Take the tour",
+      icon: "i-lucide-sparkles",
+      onSelect: () => (onboardingOpen.value = true),
     },
   ],
   [

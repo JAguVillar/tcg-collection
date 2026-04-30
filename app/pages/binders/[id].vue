@@ -131,9 +131,41 @@ const sortMenuItems = computed(() => [
 
 const VIEW_MODES = [
   { label: "Grid", value: "grid", icon: "i-lucide-grid-2x2" },
+  { label: "Table", value: "table", icon: "i-lucide-table-2" },
   { label: "Binder", value: "binder", icon: "i-lucide-book-open" },
 ];
 const viewMode = ref("grid");
+
+const tableColumns = computed(() => {
+  const cols = [
+    { accessorKey: "thumb", header: "", meta: { class: { td: "w-14" } } },
+    { accessorKey: "name", header: "Name" },
+    { accessorKey: "number", header: "#", meta: { class: { td: "tabular-nums text-muted" } } },
+    { accessorKey: "set", header: "Set" },
+    { accessorKey: "rarity", header: "Rarity" },
+    { accessorKey: "variant", header: "Variant" },
+  ];
+  if (isCustom.value) {
+    cols.push({ accessorKey: "owned", header: "Status" });
+  } else {
+    cols.push({
+      accessorKey: "quantity",
+      header: "Qty",
+      meta: { class: { td: "tabular-nums" } },
+    });
+  }
+  cols.push({
+    accessorKey: "price",
+    header: "Price",
+    meta: { class: { td: "tabular-nums text-right" } },
+  });
+  cols.push({
+    accessorKey: "actions",
+    header: "",
+    meta: { class: { td: "w-px text-right" } },
+  });
+  return cols;
+});
 
 const POCKET_SIZES = [
   { label: "4-Pocket", value: 4, cols: 2 },
@@ -846,6 +878,166 @@ watch([ownedItems, totalItems], () => {
             />
           </div>
         </article>
+      </div>
+
+      <div
+        v-else-if="viewMode === 'table'"
+        class="rounded-lg border border-default overflow-hidden"
+      >
+        <UTable
+          :data="filteredItems"
+          :columns="tableColumns"
+          :ui="{ td: 'py-2', th: 'py-2 text-xs font-medium text-muted uppercase tracking-wide' }"
+        >
+          <template #thumb-cell="{ row }">
+            <div class="w-10 aspect-[5/7]">
+              <CardImage
+                :card="row.original.card"
+                :variant="row.original.variant"
+                :quantity="row.original.quantity"
+                :is-custom="isCustom"
+                :show-status-badge="false"
+              />
+            </div>
+          </template>
+
+          <template #name-cell="{ row }">
+            <div class="flex items-center gap-2 min-w-0">
+              <img
+                v-if="row.original.card?.setIconUrl"
+                :src="row.original.card.setIconUrl"
+                :alt="row.original.card.set"
+                class="size-5 shrink-0 object-contain bg-white rounded"
+              />
+              <span class="font-medium text-default truncate">
+                {{ row.original.card?.name ?? row.original.cardId }}
+              </span>
+            </div>
+          </template>
+
+          <template #number-cell="{ row }">
+            <span v-if="row.original.card?.numberDisplay">
+              #{{ row.original.card.numberDisplay }}
+            </span>
+            <span v-else class="text-dimmed">—</span>
+          </template>
+
+          <template #set-cell="{ row }">
+            <span class="text-sm text-muted truncate">
+              {{ row.original.card?.set ?? row.original.card?.setName ?? "—" }}
+            </span>
+          </template>
+
+          <template #rarity-cell="{ row }">
+            <span class="text-sm text-muted">
+              {{ row.original.card?.rarity ?? "—" }}
+            </span>
+          </template>
+
+          <template #variant-cell="{ row }">
+            <UBadge
+              v-if="formatVariant(row.original.variant)"
+              :color="variantColor(row.original.variant)"
+              variant="soft"
+              size="sm"
+              class="capitalize"
+            >
+              {{ formatVariant(row.original.variant) }}
+            </UBadge>
+            <span v-else class="text-dimmed text-sm">Normal</span>
+          </template>
+
+          <template #owned-cell="{ row }">
+            <UBadge
+              v-if="row.original.quantity > 0"
+              color="success"
+              variant="soft"
+              size="sm"
+              icon="i-lucide-check"
+            >
+              Owned
+            </UBadge>
+            <UBadge
+              v-else
+              color="neutral"
+              variant="soft"
+              size="sm"
+              icon="i-lucide-circle-dashed"
+            >
+              Missing
+            </UBadge>
+          </template>
+
+          <template #quantity-cell="{ row }">
+            <span class="text-sm">{{ row.original.quantity }}</span>
+          </template>
+
+          <template #price-cell="{ row }">
+            <span
+              class="text-sm font-medium"
+              :class="
+                row.original.card?.formattedPrice === 'N/A'
+                  ? 'text-dimmed font-normal'
+                  : 'text-success'
+              "
+            >
+              {{ row.original.card?.formattedPrice ?? "—" }}
+            </span>
+          </template>
+
+          <template #actions-cell="{ row }">
+            <div class="flex items-center justify-end gap-1">
+              <template v-if="isCustom">
+                <UButton
+                  :icon="
+                    row.original.quantity > 0
+                      ? 'i-lucide-circle-dashed'
+                      : 'i-lucide-check'
+                  "
+                  :color="row.original.quantity > 0 ? 'neutral' : 'success'"
+                  variant="ghost"
+                  size="xs"
+                  square
+                  :loading="isToggling(row.original)"
+                  :aria-label="
+                    row.original.quantity > 0 ? 'Mark missing' : 'Mark owned'
+                  "
+                  @click="toggleOwned(row.original)"
+                />
+              </template>
+              <template v-else>
+                <UButton
+                  icon="i-lucide-plus"
+                  color="neutral"
+                  variant="ghost"
+                  size="xs"
+                  square
+                  :disabled="!row.original.card"
+                  aria-label="Add one"
+                  @click="bumpUp(row.original)"
+                />
+                <UButton
+                  icon="i-lucide-minus"
+                  color="neutral"
+                  variant="ghost"
+                  size="xs"
+                  square
+                  aria-label="Remove one"
+                  @click="bumpDown(row.original)"
+                />
+              </template>
+              <UButton
+                icon="i-lucide-trash-2"
+                color="error"
+                variant="ghost"
+                size="xs"
+                square
+                aria-label="Remove all"
+                @click="removeAll(row.original)"
+              />
+            </div>
+          </template>
+        </UTable>
       </div>
 
       <div
