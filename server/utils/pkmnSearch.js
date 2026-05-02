@@ -1,4 +1,4 @@
-export const PKMN_API_URL = "https://www.pkmn.gg/api/search/advanced";
+export const PKMN_API_URL = "https://api.tcg.gg/pkmn/v1/search/advanced";
 
 export const DEFAULT_SEARCH_BODY = {
   query: "",
