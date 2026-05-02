@@ -1,0 +1,8 @@
+{
+  "id": "pokedex-master",
+  "name": "Pokédex Master",
+  "description": "Pokédex plus alternate forms (regionals, megas, GMax, Origin/Therian, etc.). Generate the raw list with `node scripts/fetch-pokemon-forms.mjs` and curate it into this file.",
+  "iconPokemon": 25,
+  "color": "amber",
+  "slots": []
+}

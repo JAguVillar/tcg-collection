@@ -1,0 +1,7184 @@
+{
+  "id": "pokedex",
+  "name": "Pokédex",
+  "description": "One slot for each of the 1025 Pokémon in the National Dex.",
+  "iconPokemon": 25,
+  "color": "red",
+  "slots": [
+    {
+      "dexNumber": 1,
+      "formSlug": null,
+      "displayName": "Bulbasaur",
+      "searchQuery": "bulbasaur",
+      "spriteId": 1
+    },
+    {
+      "dexNumber": 2,
+      "formSlug": null,
+      "displayName": "Ivysaur",
+      "searchQuery": "ivysaur",
+      "spriteId": 2
+    },
+    {
+      "dexNumber": 3,
+      "formSlug": null,
+      "displayName": "Venusaur",
+      "searchQuery": "venusaur",
+      "spriteId": 3
+    },
+    {
+      "dexNumber": 4,
+      "formSlug": null,
+      "displayName": "Charmander",
+      "searchQuery": "charmander",
+      "spriteId": 4
+    },
+    {
+      "dexNumber": 5,
+      "formSlug": null,
+      "displayName": "Charmeleon",
+      "searchQuery": "charmeleon",
+      "spriteId": 5
+    },
+    {
+      "dexNumber": 6,
+      "formSlug": null,
+      "displayName": "Charizard",
+      "searchQuery": "charizard",
+      "spriteId": 6
+    },
+    {
+      "dexNumber": 7,
+      "formSlug": null,
+      "displayName": "Squirtle",
+      "searchQuery": "squirtle",
+      "spriteId": 7
+    },
+    {
+      "dexNumber": 8,
+      "formSlug": null,
+      "displayName": "Wartortle",
+      "searchQuery": "wartortle",
+      "spriteId": 8
+    },
+    {
+      "dexNumber": 9,
+      "formSlug": null,
+      "displayName": "Blastoise",
+      "searchQuery": "blastoise",
+      "spriteId": 9
+    },
+    {
+      "dexNumber": 10,
+      "formSlug": null,
+      "displayName": "Caterpie",
+      "searchQuery": "caterpie",
+      "spriteId": 10
+    },
+    {
+      "dexNumber": 11,
+      "formSlug": null,
+      "displayName": "Metapod",
+      "searchQuery": "metapod",
+      "spriteId": 11
+    },
+    {
+      "dexNumber": 12,
+      "formSlug": null,
+      "displayName": "Butterfree",
+      "searchQuery": "butterfree",
+      "spriteId": 12
+    },
+    {
+      "dexNumber": 13,
+      "formSlug": null,
+      "displayName": "Weedle",
+      "searchQuery": "weedle",
+      "spriteId": 13
+    },
+    {
+      "dexNumber": 14,
+      "formSlug": null,
+      "displayName": "Kakuna",
+      "searchQuery": "kakuna",
+      "spriteId": 14
+    },
+    {
+      "dexNumber": 15,
+      "formSlug": null,
+      "displayName": "Beedrill",
+      "searchQuery": "beedrill",
+      "spriteId": 15
+    },
+    {
+      "dexNumber": 16,
+      "formSlug": null,
+      "displayName": "Pidgey",
+      "searchQuery": "pidgey",
+      "spriteId": 16
+    },
+    {
+      "dexNumber": 17,
+      "formSlug": null,
+      "displayName": "Pidgeotto",
+      "searchQuery": "pidgeotto",
+      "spriteId": 17
+    },
+    {
+      "dexNumber": 18,
+      "formSlug": null,
+      "displayName": "Pidgeot",
+      "searchQuery": "pidgeot",
+      "spriteId": 18
+    },
+    {
+      "dexNumber": 19,
+      "formSlug": null,
+      "displayName": "Rattata",
+      "searchQuery": "rattata",
+      "spriteId": 19
+    },
+    {
+      "dexNumber": 20,
+      "formSlug": null,
+      "displayName": "Raticate",
+      "searchQuery": "raticate",
+      "spriteId": 20
+    },
+    {
+      "dexNumber": 21,
+      "formSlug": null,
+      "displayName": "Spearow",
+      "searchQuery": "spearow",
+      "spriteId": 21
+    },
+    {
+      "dexNumber": 22,
+      "formSlug": null,
+      "displayName": "Fearow",
+      "searchQuery": "fearow",
+      "spriteId": 22
+    },
+    {
+      "dexNumber": 23,
+      "formSlug": null,
+      "displayName": "Ekans",
+      "searchQuery": "ekans",
+      "spriteId": 23
+    },
+    {
+      "dexNumber": 24,
+      "formSlug": null,
+      "displayName": "Arbok",
+      "searchQuery": "arbok",
+      "spriteId": 24
+    },
+    {
+      "dexNumber": 25,
+      "formSlug": null,
+      "displayName": "Pikachu",
+      "searchQuery": "pikachu",
+      "spriteId": 25
+    },
+    {
+      "dexNumber": 26,
+      "formSlug": null,
+      "displayName": "Raichu",
+      "searchQuery": "raichu",
+      "spriteId": 26
+    },
+    {
+      "dexNumber": 27,
+      "formSlug": null,
+      "displayName": "Sandshrew",
+      "searchQuery": "sandshrew",
+      "spriteId": 27
+    },
+    {
+      "dexNumber": 28,
+      "formSlug": null,
+      "displayName": "Sandslash",
+      "searchQuery": "sandslash",
+      "spriteId": 28
+    },
+    {
+      "dexNumber": 29,
+      "formSlug": null,
+      "displayName": "Nidoran F",
+      "searchQuery": "nidoran",
+      "spriteId": 29
+    },
+    {
+      "dexNumber": 30,
+      "formSlug": null,
+      "displayName": "Nidorina",
+      "searchQuery": "nidorina",
+      "spriteId": 30
+    },
+    {
+      "dexNumber": 31,
+      "formSlug": null,
+      "displayName": "Nidoqueen",
+      "searchQuery": "nidoqueen",
+      "spriteId": 31
+    },
+    {
+      "dexNumber": 32,
+      "formSlug": null,
+      "displayName": "Nidoran M",
+      "searchQuery": "nidoran",
+      "spriteId": 32
+    },
+    {
+      "dexNumber": 33,
+      "formSlug": null,
+      "displayName": "Nidorino",
+      "searchQuery": "nidorino",
+      "spriteId": 33
+    },
+    {
+      "dexNumber": 34,
+      "formSlug": null,
+      "displayName": "Nidoking",
+      "searchQuery": "nidoking",
+      "spriteId": 34
+    },
+    {
+      "dexNumber": 35,
+      "formSlug": null,
+      "displayName": "Clefairy",
+      "searchQuery": "clefairy",
+      "spriteId": 35
+    },
+    {
+      "dexNumber": 36,
+      "formSlug": null,
+      "displayName": "Clefable",
+      "searchQuery": "clefable",
+      "spriteId": 36
+    },
+    {
+      "dexNumber": 37,
+      "formSlug": null,
+      "displayName": "Vulpix",
+      "searchQuery": "vulpix",
+      "spriteId": 37
+    },
+    {
+      "dexNumber": 38,
+      "formSlug": null,
+      "displayName": "Ninetales",
+      "searchQuery": "ninetales",
+      "spriteId": 38
+    },
+    {
+      "dexNumber": 39,
+      "formSlug": null,
+      "displayName": "Jigglypuff",
+      "searchQuery": "jigglypuff",
+      "spriteId": 39
+    },
+    {
+      "dexNumber": 40,
+      "formSlug": null,
+      "displayName": "Wigglytuff",
+      "searchQuery": "wigglytuff",
+      "spriteId": 40
+    },
+    {
+      "dexNumber": 41,
+      "formSlug": null,
+      "displayName": "Zubat",
+      "searchQuery": "zubat",
+      "spriteId": 41
+    },
+    {
+      "dexNumber": 42,
+      "formSlug": null,
+      "displayName": "Golbat",
+      "searchQuery": "golbat",
+      "spriteId": 42
+    },
+    {
+      "dexNumber": 43,
+      "formSlug": null,
+      "displayName": "Oddish",
+      "searchQuery": "oddish",
+      "spriteId": 43
+    },
+    {
+      "dexNumber": 44,
+      "formSlug": null,
+      "displayName": "Gloom",
+      "searchQuery": "gloom",
+      "spriteId": 44
+    },
+    {
+      "dexNumber": 45,
+      "formSlug": null,
+      "displayName": "Vileplume",
+      "searchQuery": "vileplume",
+      "spriteId": 45
+    },
+    {
+      "dexNumber": 46,
+      "formSlug": null,
+      "displayName": "Paras",
+      "searchQuery": "paras",
+      "spriteId": 46
+    },
+    {
+      "dexNumber": 47,
+      "formSlug": null,
+      "displayName": "Parasect",
+      "searchQuery": "parasect",
+      "spriteId": 47
+    },
+    {
+      "dexNumber": 48,
+      "formSlug": null,
+      "displayName": "Venonat",
+      "searchQuery": "venonat",
+      "spriteId": 48
+    },
+    {
+      "dexNumber": 49,
+      "formSlug": null,
+      "displayName": "Venomoth",
+      "searchQuery": "venomoth",
+      "spriteId": 49
+    },
+    {
+      "dexNumber": 50,
+      "formSlug": null,
+      "displayName": "Diglett",
+      "searchQuery": "diglett",
+      "spriteId": 50
+    },
+    {
+      "dexNumber": 51,
+      "formSlug": null,
+      "displayName": "Dugtrio",
+      "searchQuery": "dugtrio",
+      "spriteId": 51
+    },
+    {
+      "dexNumber": 52,
+      "formSlug": null,
+      "displayName": "Meowth",
+      "searchQuery": "meowth",
+      "spriteId": 52
+    },
+    {
+      "dexNumber": 53,
+      "formSlug": null,
+      "displayName": "Persian",
+      "searchQuery": "persian",
+      "spriteId": 53
+    },
+    {
+      "dexNumber": 54,
+      "formSlug": null,
+      "displayName": "Psyduck",
+      "searchQuery": "psyduck",
+      "spriteId": 54
+    },
+    {
+      "dexNumber": 55,
+      "formSlug": null,
+      "displayName": "Golduck",
+      "searchQuery": "golduck",
+      "spriteId": 55
+    },
+    {
+      "dexNumber": 56,
+      "formSlug": null,
+      "displayName": "Mankey",
+      "searchQuery": "mankey",
+      "spriteId": 56
+    },
+    {
+      "dexNumber": 57,
+      "formSlug": null,
+      "displayName": "Primeape",
+      "searchQuery": "primeape",
+      "spriteId": 57
+    },
+    {
+      "dexNumber": 58,
+      "formSlug": null,
+      "displayName": "Growlithe",
+      "searchQuery": "growlithe",
+      "spriteId": 58
+    },
+    {
+      "dexNumber": 59,
+      "formSlug": null,
+      "displayName": "Arcanine",
+      "searchQuery": "arcanine",
+      "spriteId": 59
+    },
+    {
+      "dexNumber": 60,
+      "formSlug": null,
+      "displayName": "Poliwag",
+      "searchQuery": "poliwag",
+      "spriteId": 60
+    },
+    {
+      "dexNumber": 61,
+      "formSlug": null,
+      "displayName": "Poliwhirl",
+      "searchQuery": "poliwhirl",
+      "spriteId": 61
+    },
+    {
+      "dexNumber": 62,
+      "formSlug": null,
+      "displayName": "Poliwrath",
+      "searchQuery": "poliwrath",
+      "spriteId": 62
+    },
+    {
+      "dexNumber": 63,
+      "formSlug": null,
+      "displayName": "Abra",
+      "searchQuery": "abra",
+      "spriteId": 63
+    },
+    {
+      "dexNumber": 64,
+      "formSlug": null,
+      "displayName": "Kadabra",
+      "searchQuery": "kadabra",
+      "spriteId": 64
+    },
+    {
+      "dexNumber": 65,
+      "formSlug": null,
+      "displayName": "Alakazam",
+      "searchQuery": "alakazam",
+      "spriteId": 65
+    },
+    {
+      "dexNumber": 66,
+      "formSlug": null,
+      "displayName": "Machop",
+      "searchQuery": "machop",
+      "spriteId": 66
+    },
+    {
+      "dexNumber": 67,
+      "formSlug": null,
+      "displayName": "Machoke",
+      "searchQuery": "machoke",
+      "spriteId": 67
+    },
+    {
+      "dexNumber": 68,
+      "formSlug": null,
+      "displayName": "Machamp",
+      "searchQuery": "machamp",
+      "spriteId": 68
+    },
+    {
+      "dexNumber": 69,
+      "formSlug": null,
+      "displayName": "Bellsprout",
+      "searchQuery": "bellsprout",
+      "spriteId": 69
+    },
+    {
+      "dexNumber": 70,
+      "formSlug": null,
+      "displayName": "Weepinbell",
+      "searchQuery": "weepinbell",
+      "spriteId": 70
+    },
+    {
+      "dexNumber": 71,
+      "formSlug": null,
+      "displayName": "Victreebel",
+      "searchQuery": "victreebel",
+      "spriteId": 71
+    },
+    {
+      "dexNumber": 72,
+      "formSlug": null,
+      "displayName": "Tentacool",
+      "searchQuery": "tentacool",
+      "spriteId": 72
+    },
+    {
+      "dexNumber": 73,
+      "formSlug": null,
+      "displayName": "Tentacruel",
+      "searchQuery": "tentacruel",
+      "spriteId": 73
+    },
+    {
+      "dexNumber": 74,
+      "formSlug": null,
+      "displayName": "Geodude",
+      "searchQuery": "geodude",
+      "spriteId": 74
+    },
+    {
+      "dexNumber": 75,
+      "formSlug": null,
+      "displayName": "Graveler",
+      "searchQuery": "graveler",
+      "spriteId": 75
+    },
+    {
+      "dexNumber": 76,
+      "formSlug": null,
+      "displayName": "Golem",
+      "searchQuery": "golem",
+      "spriteId": 76
+    },
+    {
+      "dexNumber": 77,
+      "formSlug": null,
+      "displayName": "Ponyta",
+      "searchQuery": "ponyta",
+      "spriteId": 77
+    },
+    {
+      "dexNumber": 78,
+      "formSlug": null,
+      "displayName": "Rapidash",
+      "searchQuery": "rapidash",
+      "spriteId": 78
+    },
+    {
+      "dexNumber": 79,
+      "formSlug": null,
+      "displayName": "Slowpoke",
+      "searchQuery": "slowpoke",
+      "spriteId": 79
+    },
+    {
+      "dexNumber": 80,
+      "formSlug": null,
+      "displayName": "Slowbro",
+      "searchQuery": "slowbro",
+      "spriteId": 80
+    },
+    {
+      "dexNumber": 81,
+      "formSlug": null,
+      "displayName": "Magnemite",
+      "searchQuery": "magnemite",
+      "spriteId": 81
+    },
+    {
+      "dexNumber": 82,
+      "formSlug": null,
+      "displayName": "Magneton",
+      "searchQuery": "magneton",
+      "spriteId": 82
+    },
+    {
+      "dexNumber": 83,
+      "formSlug": null,
+      "displayName": "Farfetchd",
+      "searchQuery": "farfetchd",
+      "spriteId": 83
+    },
+    {
+      "dexNumber": 84,
+      "formSlug": null,
+      "displayName": "Doduo",
+      "searchQuery": "doduo",
+      "spriteId": 84
+    },
+    {
+      "dexNumber": 85,
+      "formSlug": null,
+      "displayName": "Dodrio",
+      "searchQuery": "dodrio",
+      "spriteId": 85
+    },
+    {
+      "dexNumber": 86,
+      "formSlug": null,
+      "displayName": "Seel",
+      "searchQuery": "seel",
+      "spriteId": 86
+    },
+    {
+      "dexNumber": 87,
+      "formSlug": null,
+      "displayName": "Dewgong",
+      "searchQuery": "dewgong",
+      "spriteId": 87
+    },
+    {
+      "dexNumber": 88,
+      "formSlug": null,
+      "displayName": "Grimer",
+      "searchQuery": "grimer",
+      "spriteId": 88
+    },
+    {
+      "dexNumber": 89,
+      "formSlug": null,
+      "displayName": "Muk",
+      "searchQuery": "muk",
+      "spriteId": 89
+    },
+    {
+      "dexNumber": 90,
+      "formSlug": null,
+      "displayName": "Shellder",
+      "searchQuery": "shellder",
+      "spriteId": 90
+    },
+    {
+      "dexNumber": 91,
+      "formSlug": null,
+      "displayName": "Cloyster",
+      "searchQuery": "cloyster",
+      "spriteId": 91
+    },
+    {
+      "dexNumber": 92,
+      "formSlug": null,
+      "displayName": "Gastly",
+      "searchQuery": "gastly",
+      "spriteId": 92
+    },
+    {
+      "dexNumber": 93,
+      "formSlug": null,
+      "displayName": "Haunter",
+      "searchQuery": "haunter",
+      "spriteId": 93
+    },
+    {
+      "dexNumber": 94,
+      "formSlug": null,
+      "displayName": "Gengar",
+      "searchQuery": "gengar",
+      "spriteId": 94
+    },
+    {
+      "dexNumber": 95,
+      "formSlug": null,
+      "displayName": "Onix",
+      "searchQuery": "onix",
+      "spriteId": 95
+    },
+    {
+      "dexNumber": 96,
+      "formSlug": null,
+      "displayName": "Drowzee",
+      "searchQuery": "drowzee",
+      "spriteId": 96
+    },
+    {
+      "dexNumber": 97,
+      "formSlug": null,
+      "displayName": "Hypno",
+      "searchQuery": "hypno",
+      "spriteId": 97
+    },
+    {
+      "dexNumber": 98,
+      "formSlug": null,
+      "displayName": "Krabby",
+      "searchQuery": "krabby",
+      "spriteId": 98
+    },
+    {
+      "dexNumber": 99,
+      "formSlug": null,
+      "displayName": "Kingler",
+      "searchQuery": "kingler",
+      "spriteId": 99
+    },
+    {
+      "dexNumber": 100,
+      "formSlug": null,
+      "displayName": "Voltorb",
+      "searchQuery": "voltorb",
+      "spriteId": 100
+    },
+    {
+      "dexNumber": 101,
+      "formSlug": null,
+      "displayName": "Electrode",
+      "searchQuery": "electrode",
+      "spriteId": 101
+    },
+    {
+      "dexNumber": 102,
+      "formSlug": null,
+      "displayName": "Exeggcute",
+      "searchQuery": "exeggcute",
+      "spriteId": 102
+    },
+    {
+      "dexNumber": 103,
+      "formSlug": null,
+      "displayName": "Exeggutor",
+      "searchQuery": "exeggutor",
+      "spriteId": 103
+    },
+    {
+      "dexNumber": 104,
+      "formSlug": null,
+      "displayName": "Cubone",
+      "searchQuery": "cubone",
+      "spriteId": 104
+    },
+    {
+      "dexNumber": 105,
+      "formSlug": null,
+      "displayName": "Marowak",
+      "searchQuery": "marowak",
+      "spriteId": 105
+    },
+    {
+      "dexNumber": 106,
+      "formSlug": null,
+      "displayName": "Hitmonlee",
+      "searchQuery": "hitmonlee",
+      "spriteId": 106
+    },
+    {
+      "dexNumber": 107,
+      "formSlug": null,
+      "displayName": "Hitmonchan",
+      "searchQuery": "hitmonchan",
+      "spriteId": 107
+    },
+    {
+      "dexNumber": 108,
+      "formSlug": null,
+      "displayName": "Lickitung",
+      "searchQuery": "lickitung",
+      "spriteId": 108
+    },
+    {
+      "dexNumber": 109,
+      "formSlug": null,
+      "displayName": "Koffing",
+      "searchQuery": "koffing",
+      "spriteId": 109
+    },
+    {
+      "dexNumber": 110,
+      "formSlug": null,
+      "displayName": "Weezing",
+      "searchQuery": "weezing",
+      "spriteId": 110
+    },
+    {
+      "dexNumber": 111,
+      "formSlug": null,
+      "displayName": "Rhyhorn",
+      "searchQuery": "rhyhorn",
+      "spriteId": 111
+    },
+    {
+      "dexNumber": 112,
+      "formSlug": null,
+      "displayName": "Rhydon",
+      "searchQuery": "rhydon",
+      "spriteId": 112
+    },
+    {
+      "dexNumber": 113,
+      "formSlug": null,
+      "displayName": "Chansey",
+      "searchQuery": "chansey",
+      "spriteId": 113
+    },
+    {
+      "dexNumber": 114,
+      "formSlug": null,
+      "displayName": "Tangela",
+      "searchQuery": "tangela",
+      "spriteId": 114
+    },
+    {
+      "dexNumber": 115,
+      "formSlug": null,
+      "displayName": "Kangaskhan",
+      "searchQuery": "kangaskhan",
+      "spriteId": 115
+    },
+    {
+      "dexNumber": 116,
+      "formSlug": null,
+      "displayName": "Horsea",
+      "searchQuery": "horsea",
+      "spriteId": 116
+    },
+    {
+      "dexNumber": 117,
+      "formSlug": null,
+      "displayName": "Seadra",
+      "searchQuery": "seadra",
+      "spriteId": 117
+    },
+    {
+      "dexNumber": 118,
+      "formSlug": null,
+      "displayName": "Goldeen",
+      "searchQuery": "goldeen",
+      "spriteId": 118
+    },
+    {
+      "dexNumber": 119,
+      "formSlug": null,
+      "displayName": "Seaking",
+      "searchQuery": "seaking",
+      "spriteId": 119
+    },
+    {
+      "dexNumber": 120,
+      "formSlug": null,
+      "displayName": "Staryu",
+      "searchQuery": "staryu",
+      "spriteId": 120
+    },
+    {
+      "dexNumber": 121,
+      "formSlug": null,
+      "displayName": "Starmie",
+      "searchQuery": "starmie",
+      "spriteId": 121
+    },
+    {
+      "dexNumber": 122,
+      "formSlug": null,
+      "displayName": "Mr Mime",
+      "searchQuery": "mr",
+      "spriteId": 122
+    },
+    {
+      "dexNumber": 123,
+      "formSlug": null,
+      "displayName": "Scyther",
+      "searchQuery": "scyther",
+      "spriteId": 123
+    },
+    {
+      "dexNumber": 124,
+      "formSlug": null,
+      "displayName": "Jynx",
+      "searchQuery": "jynx",
+      "spriteId": 124
+    },
+    {
+      "dexNumber": 125,
+      "formSlug": null,
+      "displayName": "Electabuzz",
+      "searchQuery": "electabuzz",
+      "spriteId": 125
+    },
+    {
+      "dexNumber": 126,
+      "formSlug": null,
+      "displayName": "Magmar",
+      "searchQuery": "magmar",
+      "spriteId": 126
+    },
+    {
+      "dexNumber": 127,
+      "formSlug": null,
+      "displayName": "Pinsir",
+      "searchQuery": "pinsir",
+      "spriteId": 127
+    },
+    {
+      "dexNumber": 128,
+      "formSlug": null,
+      "displayName": "Tauros",
+      "searchQuery": "tauros",
+      "spriteId": 128
+    },
+    {
+      "dexNumber": 129,
+      "formSlug": null,
+      "displayName": "Magikarp",
+      "searchQuery": "magikarp",
+      "spriteId": 129
+    },
+    {
+      "dexNumber": 130,
+      "formSlug": null,
+      "displayName": "Gyarados",
+      "searchQuery": "gyarados",
+      "spriteId": 130
+    },
+    {
+      "dexNumber": 131,
+      "formSlug": null,
+      "displayName": "Lapras",
+      "searchQuery": "lapras",
+      "spriteId": 131
+    },
+    {
+      "dexNumber": 132,
+      "formSlug": null,
+      "displayName": "Ditto",
+      "searchQuery": "ditto",
+      "spriteId": 132
+    },
+    {
+      "dexNumber": 133,
+      "formSlug": null,
+      "displayName": "Eevee",
+      "searchQuery": "eevee",
+      "spriteId": 133
+    },
+    {
+      "dexNumber": 134,
+      "formSlug": null,
+      "displayName": "Vaporeon",
+      "searchQuery": "vaporeon",
+      "spriteId": 134
+    },
+    {
+      "dexNumber": 135,
+      "formSlug": null,
+      "displayName": "Jolteon",
+      "searchQuery": "jolteon",
+      "spriteId": 135
+    },
+    {
+      "dexNumber": 136,
+      "formSlug": null,
+      "displayName": "Flareon",
+      "searchQuery": "flareon",
+      "spriteId": 136
+    },
+    {
+      "dexNumber": 137,
+      "formSlug": null,
+      "displayName": "Porygon",
+      "searchQuery": "porygon",
+      "spriteId": 137
+    },
+    {
+      "dexNumber": 138,
+      "formSlug": null,
+      "displayName": "Omanyte",
+      "searchQuery": "omanyte",
+      "spriteId": 138
+    },
+    {
+      "dexNumber": 139,
+      "formSlug": null,
+      "displayName": "Omastar",
+      "searchQuery": "omastar",
+      "spriteId": 139
+    },
+    {
+      "dexNumber": 140,
+      "formSlug": null,
+      "displayName": "Kabuto",
+      "searchQuery": "kabuto",
+      "spriteId": 140
+    },
+    {
+      "dexNumber": 141,
+      "formSlug": null,
+      "displayName": "Kabutops",
+      "searchQuery": "kabutops",
+      "spriteId": 141
+    },
+    {
+      "dexNumber": 142,
+      "formSlug": null,
+      "displayName": "Aerodactyl",
+      "searchQuery": "aerodactyl",
+      "spriteId": 142
+    },
+    {
+      "dexNumber": 143,
+      "formSlug": null,
+      "displayName": "Snorlax",
+      "searchQuery": "snorlax",
+      "spriteId": 143
+    },
+    {
+      "dexNumber": 144,
+      "formSlug": null,
+      "displayName": "Articuno",
+      "searchQuery": "articuno",
+      "spriteId": 144
+    },
+    {
+      "dexNumber": 145,
+      "formSlug": null,
+      "displayName": "Zapdos",
+      "searchQuery": "zapdos",
+      "spriteId": 145
+    },
+    {
+      "dexNumber": 146,
+      "formSlug": null,
+      "displayName": "Moltres",
+      "searchQuery": "moltres",
+      "spriteId": 146
+    },
+    {
+      "dexNumber": 147,
+      "formSlug": null,
+      "displayName": "Dratini",
+      "searchQuery": "dratini",
+      "spriteId": 147
+    },
+    {
+      "dexNumber": 148,
+      "formSlug": null,
+      "displayName": "Dragonair",
+      "searchQuery": "dragonair",
+      "spriteId": 148
+    },
+    {
+      "dexNumber": 149,
+      "formSlug": null,
+      "displayName": "Dragonite",
+      "searchQuery": "dragonite",
+      "spriteId": 149
+    },
+    {
+      "dexNumber": 150,
+      "formSlug": null,
+      "displayName": "Mewtwo",
+      "searchQuery": "mewtwo",
+      "spriteId": 150
+    },
+    {
+      "dexNumber": 151,
+      "formSlug": null,
+      "displayName": "Mew",
+      "searchQuery": "mew",
+      "spriteId": 151
+    },
+    {
+      "dexNumber": 152,
+      "formSlug": null,
+      "displayName": "Chikorita",
+      "searchQuery": "chikorita",
+      "spriteId": 152
+    },
+    {
+      "dexNumber": 153,
+      "formSlug": null,
+      "displayName": "Bayleef",
+      "searchQuery": "bayleef",
+      "spriteId": 153
+    },
+    {
+      "dexNumber": 154,
+      "formSlug": null,
+      "displayName": "Meganium",
+      "searchQuery": "meganium",
+      "spriteId": 154
+    },
+    {
+      "dexNumber": 155,
+      "formSlug": null,
+      "displayName": "Cyndaquil",
+      "searchQuery": "cyndaquil",
+      "spriteId": 155
+    },
+    {
+      "dexNumber": 156,
+      "formSlug": null,
+      "displayName": "Quilava",
+      "searchQuery": "quilava",
+      "spriteId": 156
+    },
+    {
+      "dexNumber": 157,
+      "formSlug": null,
+      "displayName": "Typhlosion",
+      "searchQuery": "typhlosion",
+      "spriteId": 157
+    },
+    {
+      "dexNumber": 158,
+      "formSlug": null,
+      "displayName": "Totodile",
+      "searchQuery": "totodile",
+      "spriteId": 158
+    },
+    {
+      "dexNumber": 159,
+      "formSlug": null,
+      "displayName": "Croconaw",
+      "searchQuery": "croconaw",
+      "spriteId": 159
+    },
+    {
+      "dexNumber": 160,
+      "formSlug": null,
+      "displayName": "Feraligatr",
+      "searchQuery": "feraligatr",
+      "spriteId": 160
+    },
+    {
+      "dexNumber": 161,
+      "formSlug": null,
+      "displayName": "Sentret",
+      "searchQuery": "sentret",
+      "spriteId": 161
+    },
+    {
+      "dexNumber": 162,
+      "formSlug": null,
+      "displayName": "Furret",
+      "searchQuery": "furret",
+      "spriteId": 162
+    },
+    {
+      "dexNumber": 163,
+      "formSlug": null,
+      "displayName": "Hoothoot",
+      "searchQuery": "hoothoot",
+      "spriteId": 163
+    },
+    {
+      "dexNumber": 164,
+      "formSlug": null,
+      "displayName": "Noctowl",
+      "searchQuery": "noctowl",
+      "spriteId": 164
+    },
+    {
+      "dexNumber": 165,
+      "formSlug": null,
+      "displayName": "Ledyba",
+      "searchQuery": "ledyba",
+      "spriteId": 165
+    },
+    {
+      "dexNumber": 166,
+      "formSlug": null,
+      "displayName": "Ledian",
+      "searchQuery": "ledian",
+      "spriteId": 166
+    },
+    {
+      "dexNumber": 167,
+      "formSlug": null,
+      "displayName": "Spinarak",
+      "searchQuery": "spinarak",
+      "spriteId": 167
+    },
+    {
+      "dexNumber": 168,
+      "formSlug": null,
+      "displayName": "Ariados",
+      "searchQuery": "ariados",
+      "spriteId": 168
+    },
+    {
+      "dexNumber": 169,
+      "formSlug": null,
+      "displayName": "Crobat",
+      "searchQuery": "crobat",
+      "spriteId": 169
+    },
+    {
+      "dexNumber": 170,
+      "formSlug": null,
+      "displayName": "Chinchou",
+      "searchQuery": "chinchou",
+      "spriteId": 170
+    },
+    {
+      "dexNumber": 171,
+      "formSlug": null,
+      "displayName": "Lanturn",
+      "searchQuery": "lanturn",
+      "spriteId": 171
+    },
+    {
+      "dexNumber": 172,
+      "formSlug": null,
+      "displayName": "Pichu",
+      "searchQuery": "pichu",
+      "spriteId": 172
+    },
+    {
+      "dexNumber": 173,
+      "formSlug": null,
+      "displayName": "Cleffa",
+      "searchQuery": "cleffa",
+      "spriteId": 173
+    },
+    {
+      "dexNumber": 174,
+      "formSlug": null,
+      "displayName": "Igglybuff",
+      "searchQuery": "igglybuff",
+      "spriteId": 174
+    },
+    {
+      "dexNumber": 175,
+      "formSlug": null,
+      "displayName": "Togepi",
+      "searchQuery": "togepi",
+      "spriteId": 175
+    },
+    {
+      "dexNumber": 176,
+      "formSlug": null,
+      "displayName": "Togetic",
+      "searchQuery": "togetic",
+      "spriteId": 176
+    },
+    {
+      "dexNumber": 177,
+      "formSlug": null,
+      "displayName": "Natu",
+      "searchQuery": "natu",
+      "spriteId": 177
+    },
+    {
+      "dexNumber": 178,
+      "formSlug": null,
+      "displayName": "Xatu",
+      "searchQuery": "xatu",
+      "spriteId": 178
+    },
+    {
+      "dexNumber": 179,
+      "formSlug": null,
+      "displayName": "Mareep",
+      "searchQuery": "mareep",
+      "spriteId": 179
+    },
+    {
+      "dexNumber": 180,
+      "formSlug": null,
+      "displayName": "Flaaffy",
+      "searchQuery": "flaaffy",
+      "spriteId": 180
+    },
+    {
+      "dexNumber": 181,
+      "formSlug": null,
+      "displayName": "Ampharos",
+      "searchQuery": "ampharos",
+      "spriteId": 181
+    },
+    {
+      "dexNumber": 182,
+      "formSlug": null,
+      "displayName": "Bellossom",
+      "searchQuery": "bellossom",
+      "spriteId": 182
+    },
+    {
+      "dexNumber": 183,
+      "formSlug": null,
+      "displayName": "Marill",
+      "searchQuery": "marill",
+      "spriteId": 183
+    },
+    {
+      "dexNumber": 184,
+      "formSlug": null,
+      "displayName": "Azumarill",
+      "searchQuery": "azumarill",
+      "spriteId": 184
+    },
+    {
+      "dexNumber": 185,
+      "formSlug": null,
+      "displayName": "Sudowoodo",
+      "searchQuery": "sudowoodo",
+      "spriteId": 185
+    },
+    {
+      "dexNumber": 186,
+      "formSlug": null,
+      "displayName": "Politoed",
+      "searchQuery": "politoed",
+      "spriteId": 186
+    },
+    {
+      "dexNumber": 187,
+      "formSlug": null,
+      "displayName": "Hoppip",
+      "searchQuery": "hoppip",
+      "spriteId": 187
+    },
+    {
+      "dexNumber": 188,
+      "formSlug": null,
+      "displayName": "Skiploom",
+      "searchQuery": "skiploom",
+      "spriteId": 188
+    },
+    {
+      "dexNumber": 189,
+      "formSlug": null,
+      "displayName": "Jumpluff",
+      "searchQuery": "jumpluff",
+      "spriteId": 189
+    },
+    {
+      "dexNumber": 190,
+      "formSlug": null,
+      "displayName": "Aipom",
+      "searchQuery": "aipom",
+      "spriteId": 190
+    },
+    {
+      "dexNumber": 191,
+      "formSlug": null,
+      "displayName": "Sunkern",
+      "searchQuery": "sunkern",
+      "spriteId": 191
+    },
+    {
+      "dexNumber": 192,
+      "formSlug": null,
+      "displayName": "Sunflora",
+      "searchQuery": "sunflora",
+      "spriteId": 192
+    },
+    {
+      "dexNumber": 193,
+      "formSlug": null,
+      "displayName": "Yanma",
+      "searchQuery": "yanma",
+      "spriteId": 193
+    },
+    {
+      "dexNumber": 194,
+      "formSlug": null,
+      "displayName": "Wooper",
+      "searchQuery": "wooper",
+      "spriteId": 194
+    },
+    {
+      "dexNumber": 195,
+      "formSlug": null,
+      "displayName": "Quagsire",
+      "searchQuery": "quagsire",
+      "spriteId": 195
+    },
+    {
+      "dexNumber": 196,
+      "formSlug": null,
+      "displayName": "Espeon",
+      "searchQuery": "espeon",
+      "spriteId": 196
+    },
+    {
+      "dexNumber": 197,
+      "formSlug": null,
+      "displayName": "Umbreon",
+      "searchQuery": "umbreon",
+      "spriteId": 197
+    },
+    {
+      "dexNumber": 198,
+      "formSlug": null,
+      "displayName": "Murkrow",
+      "searchQuery": "murkrow",
+      "spriteId": 198
+    },
+    {
+      "dexNumber": 199,
+      "formSlug": null,
+      "displayName": "Slowking",
+      "searchQuery": "slowking",
+      "spriteId": 199
+    },
+    {
+      "dexNumber": 200,
+      "formSlug": null,
+      "displayName": "Misdreavus",
+      "searchQuery": "misdreavus",
+      "spriteId": 200
+    },
+    {
+      "dexNumber": 201,
+      "formSlug": null,
+      "displayName": "Unown",
+      "searchQuery": "unown",
+      "spriteId": 201
+    },
+    {
+      "dexNumber": 202,
+      "formSlug": null,
+      "displayName": "Wobbuffet",
+      "searchQuery": "wobbuffet",
+      "spriteId": 202
+    },
+    {
+      "dexNumber": 203,
+      "formSlug": null,
+      "displayName": "Girafarig",
+      "searchQuery": "girafarig",
+      "spriteId": 203
+    },
+    {
+      "dexNumber": 204,
+      "formSlug": null,
+      "displayName": "Pineco",
+      "searchQuery": "pineco",
+      "spriteId": 204
+    },
+    {
+      "dexNumber": 205,
+      "formSlug": null,
+      "displayName": "Forretress",
+      "searchQuery": "forretress",
+      "spriteId": 205
+    },
+    {
+      "dexNumber": 206,
+      "formSlug": null,
+      "displayName": "Dunsparce",
+      "searchQuery": "dunsparce",
+      "spriteId": 206
+    },
+    {
+      "dexNumber": 207,
+      "formSlug": null,
+      "displayName": "Gligar",
+      "searchQuery": "gligar",
+      "spriteId": 207
+    },
+    {
+      "dexNumber": 208,
+      "formSlug": null,
+      "displayName": "Steelix",
+      "searchQuery": "steelix",
+      "spriteId": 208
+    },
+    {
+      "dexNumber": 209,
+      "formSlug": null,
+      "displayName": "Snubbull",
+      "searchQuery": "snubbull",
+      "spriteId": 209
+    },
+    {
+      "dexNumber": 210,
+      "formSlug": null,
+      "displayName": "Granbull",
+      "searchQuery": "granbull",
+      "spriteId": 210
+    },
+    {
+      "dexNumber": 211,
+      "formSlug": null,
+      "displayName": "Qwilfish",
+      "searchQuery": "qwilfish",
+      "spriteId": 211
+    },
+    {
+      "dexNumber": 212,
+      "formSlug": null,
+      "displayName": "Scizor",
+      "searchQuery": "scizor",
+      "spriteId": 212
+    },
+    {
+      "dexNumber": 213,
+      "formSlug": null,
+      "displayName": "Shuckle",
+      "searchQuery": "shuckle",
+      "spriteId": 213
+    },
+    {
+      "dexNumber": 214,
+      "formSlug": null,
+      "displayName": "Heracross",
+      "searchQuery": "heracross",
+      "spriteId": 214
+    },
+    {
+      "dexNumber": 215,
+      "formSlug": null,
+      "displayName": "Sneasel",
+      "searchQuery": "sneasel",
+      "spriteId": 215
+    },
+    {
+      "dexNumber": 216,
+      "formSlug": null,
+      "displayName": "Teddiursa",
+      "searchQuery": "teddiursa",
+      "spriteId": 216
+    },
+    {
+      "dexNumber": 217,
+      "formSlug": null,
+      "displayName": "Ursaring",
+      "searchQuery": "ursaring",
+      "spriteId": 217
+    },
+    {
+      "dexNumber": 218,
+      "formSlug": null,
+      "displayName": "Slugma",
+      "searchQuery": "slugma",
+      "spriteId": 218
+    },
+    {
+      "dexNumber": 219,
+      "formSlug": null,
+      "displayName": "Magcargo",
+      "searchQuery": "magcargo",
+      "spriteId": 219
+    },
+    {
+      "dexNumber": 220,
+      "formSlug": null,
+      "displayName": "Swinub",
+      "searchQuery": "swinub",
+      "spriteId": 220
+    },
+    {
+      "dexNumber": 221,
+      "formSlug": null,
+      "displayName": "Piloswine",
+      "searchQuery": "piloswine",
+      "spriteId": 221
+    },
+    {
+      "dexNumber": 222,
+      "formSlug": null,
+      "displayName": "Corsola",
+      "searchQuery": "corsola",
+      "spriteId": 222
+    },
+    {
+      "dexNumber": 223,
+      "formSlug": null,
+      "displayName": "Remoraid",
+      "searchQuery": "remoraid",
+      "spriteId": 223
+    },
+    {
+      "dexNumber": 224,
+      "formSlug": null,
+      "displayName": "Octillery",
+      "searchQuery": "octillery",
+      "spriteId": 224
+    },
+    {
+      "dexNumber": 225,
+      "formSlug": null,
+      "displayName": "Delibird",
+      "searchQuery": "delibird",
+      "spriteId": 225
+    },
+    {
+      "dexNumber": 226,
+      "formSlug": null,
+      "displayName": "Mantine",
+      "searchQuery": "mantine",
+      "spriteId": 226
+    },
+    {
+      "dexNumber": 227,
+      "formSlug": null,
+      "displayName": "Skarmory",
+      "searchQuery": "skarmory",
+      "spriteId": 227
+    },
+    {
+      "dexNumber": 228,
+      "formSlug": null,
+      "displayName": "Houndour",
+      "searchQuery": "houndour",
+      "spriteId": 228
+    },
+    {
+      "dexNumber": 229,
+      "formSlug": null,
+      "displayName": "Houndoom",
+      "searchQuery": "houndoom",
+      "spriteId": 229
+    },
+    {
+      "dexNumber": 230,
+      "formSlug": null,
+      "displayName": "Kingdra",
+      "searchQuery": "kingdra",
+      "spriteId": 230
+    },
+    {
+      "dexNumber": 231,
+      "formSlug": null,
+      "displayName": "Phanpy",
+      "searchQuery": "phanpy",
+      "spriteId": 231
+    },
+    {
+      "dexNumber": 232,
+      "formSlug": null,
+      "displayName": "Donphan",
+      "searchQuery": "donphan",
+      "spriteId": 232
+    },
+    {
+      "dexNumber": 233,
+      "formSlug": null,
+      "displayName": "Porygon2",
+      "searchQuery": "porygon2",
+      "spriteId": 233
+    },
+    {
+      "dexNumber": 234,
+      "formSlug": null,
+      "displayName": "Stantler",
+      "searchQuery": "stantler",
+      "spriteId": 234
+    },
+    {
+      "dexNumber": 235,
+      "formSlug": null,
+      "displayName": "Smeargle",
+      "searchQuery": "smeargle",
+      "spriteId": 235
+    },
+    {
+      "dexNumber": 236,
+      "formSlug": null,
+      "displayName": "Tyrogue",
+      "searchQuery": "tyrogue",
+      "spriteId": 236
+    },
+    {
+      "dexNumber": 237,
+      "formSlug": null,
+      "displayName": "Hitmontop",
+      "searchQuery": "hitmontop",
+      "spriteId": 237
+    },
+    {
+      "dexNumber": 238,
+      "formSlug": null,
+      "displayName": "Smoochum",
+      "searchQuery": "smoochum",
+      "spriteId": 238
+    },
+    {
+      "dexNumber": 239,
+      "formSlug": null,
+      "displayName": "Elekid",
+      "searchQuery": "elekid",
+      "spriteId": 239
+    },
+    {
+      "dexNumber": 240,
+      "formSlug": null,
+      "displayName": "Magby",
+      "searchQuery": "magby",
+      "spriteId": 240
+    },
+    {
+      "dexNumber": 241,
+      "formSlug": null,
+      "displayName": "Miltank",
+      "searchQuery": "miltank",
+      "spriteId": 241
+    },
+    {
+      "dexNumber": 242,
+      "formSlug": null,
+      "displayName": "Blissey",
+      "searchQuery": "blissey",
+      "spriteId": 242
+    },
+    {
+      "dexNumber": 243,
+      "formSlug": null,
+      "displayName": "Raikou",
+      "searchQuery": "raikou",
+      "spriteId": 243
+    },
+    {
+      "dexNumber": 244,
+      "formSlug": null,
+      "displayName": "Entei",
+      "searchQuery": "entei",
+      "spriteId": 244
+    },
+    {
+      "dexNumber": 245,
+      "formSlug": null,
+      "displayName": "Suicune",
+      "searchQuery": "suicune",
+      "spriteId": 245
+    },
+    {
+      "dexNumber": 246,
+      "formSlug": null,
+      "displayName": "Larvitar",
+      "searchQuery": "larvitar",
+      "spriteId": 246
+    },
+    {
+      "dexNumber": 247,
+      "formSlug": null,
+      "displayName": "Pupitar",
+      "searchQuery": "pupitar",
+      "spriteId": 247
+    },
+    {
+      "dexNumber": 248,
+      "formSlug": null,
+      "displayName": "Tyranitar",
+      "searchQuery": "tyranitar",
+      "spriteId": 248
+    },
+    {
+      "dexNumber": 249,
+      "formSlug": null,
+      "displayName": "Lugia",
+      "searchQuery": "lugia",
+      "spriteId": 249
+    },
+    {
+      "dexNumber": 250,
+      "formSlug": null,
+      "displayName": "Ho Oh",
+      "searchQuery": "ho",
+      "spriteId": 250
+    },
+    {
+      "dexNumber": 251,
+      "formSlug": null,
+      "displayName": "Celebi",
+      "searchQuery": "celebi",
+      "spriteId": 251
+    },
+    {
+      "dexNumber": 252,
+      "formSlug": null,
+      "displayName": "Treecko",
+      "searchQuery": "treecko",
+      "spriteId": 252
+    },
+    {
+      "dexNumber": 253,
+      "formSlug": null,
+      "displayName": "Grovyle",
+      "searchQuery": "grovyle",
+      "spriteId": 253
+    },
+    {
+      "dexNumber": 254,
+      "formSlug": null,
+      "displayName": "Sceptile",
+      "searchQuery": "sceptile",
+      "spriteId": 254
+    },
+    {
+      "dexNumber": 255,
+      "formSlug": null,
+      "displayName": "Torchic",
+      "searchQuery": "torchic",
+      "spriteId": 255
+    },
+    {
+      "dexNumber": 256,
+      "formSlug": null,
+      "displayName": "Combusken",
+      "searchQuery": "combusken",
+      "spriteId": 256
+    },
+    {
+      "dexNumber": 257,
+      "formSlug": null,
+      "displayName": "Blaziken",
+      "searchQuery": "blaziken",
+      "spriteId": 257
+    },
+    {
+      "dexNumber": 258,
+      "formSlug": null,
+      "displayName": "Mudkip",
+      "searchQuery": "mudkip",
+      "spriteId": 258
+    },
+    {
+      "dexNumber": 259,
+      "formSlug": null,
+      "displayName": "Marshtomp",
+      "searchQuery": "marshtomp",
+      "spriteId": 259
+    },
+    {
+      "dexNumber": 260,
+      "formSlug": null,
+      "displayName": "Swampert",
+      "searchQuery": "swampert",
+      "spriteId": 260
+    },
+    {
+      "dexNumber": 261,
+      "formSlug": null,
+      "displayName": "Poochyena",
+      "searchQuery": "poochyena",
+      "spriteId": 261
+    },
+    {
+      "dexNumber": 262,
+      "formSlug": null,
+      "displayName": "Mightyena",
+      "searchQuery": "mightyena",
+      "spriteId": 262
+    },
+    {
+      "dexNumber": 263,
+      "formSlug": null,
+      "displayName": "Zigzagoon",
+      "searchQuery": "zigzagoon",
+      "spriteId": 263
+    },
+    {
+      "dexNumber": 264,
+      "formSlug": null,
+      "displayName": "Linoone",
+      "searchQuery": "linoone",
+      "spriteId": 264
+    },
+    {
+      "dexNumber": 265,
+      "formSlug": null,
+      "displayName": "Wurmple",
+      "searchQuery": "wurmple",
+      "spriteId": 265
+    },
+    {
+      "dexNumber": 266,
+      "formSlug": null,
+      "displayName": "Silcoon",
+      "searchQuery": "silcoon",
+      "spriteId": 266
+    },
+    {
+      "dexNumber": 267,
+      "formSlug": null,
+      "displayName": "Beautifly",
+      "searchQuery": "beautifly",
+      "spriteId": 267
+    },
+    {
+      "dexNumber": 268,
+      "formSlug": null,
+      "displayName": "Cascoon",
+      "searchQuery": "cascoon",
+      "spriteId": 268
+    },
+    {
+      "dexNumber": 269,
+      "formSlug": null,
+      "displayName": "Dustox",
+      "searchQuery": "dustox",
+      "spriteId": 269
+    },
+    {
+      "dexNumber": 270,
+      "formSlug": null,
+      "displayName": "Lotad",
+      "searchQuery": "lotad",
+      "spriteId": 270
+    },
+    {
+      "dexNumber": 271,
+      "formSlug": null,
+      "displayName": "Lombre",
+      "searchQuery": "lombre",
+      "spriteId": 271
+    },
+    {
+      "dexNumber": 272,
+      "formSlug": null,
+      "displayName": "Ludicolo",
+      "searchQuery": "ludicolo",
+      "spriteId": 272
+    },
+    {
+      "dexNumber": 273,
+      "formSlug": null,
+      "displayName": "Seedot",
+      "searchQuery": "seedot",
+      "spriteId": 273
+    },
+    {
+      "dexNumber": 274,
+      "formSlug": null,
+      "displayName": "Nuzleaf",
+      "searchQuery": "nuzleaf",
+      "spriteId": 274
+    },
+    {
+      "dexNumber": 275,
+      "formSlug": null,
+      "displayName": "Shiftry",
+      "searchQuery": "shiftry",
+      "spriteId": 275
+    },
+    {
+      "dexNumber": 276,
+      "formSlug": null,
+      "displayName": "Taillow",
+      "searchQuery": "taillow",
+      "spriteId": 276
+    },
+    {
+      "dexNumber": 277,
+      "formSlug": null,
+      "displayName": "Swellow",
+      "searchQuery": "swellow",
+      "spriteId": 277
+    },
+    {
+      "dexNumber": 278,
+      "formSlug": null,
+      "displayName": "Wingull",
+      "searchQuery": "wingull",
+      "spriteId": 278
+    },
+    {
+      "dexNumber": 279,
+      "formSlug": null,
+      "displayName": "Pelipper",
+      "searchQuery": "pelipper",
+      "spriteId": 279
+    },
+    {
+      "dexNumber": 280,
+      "formSlug": null,
+      "displayName": "Ralts",
+      "searchQuery": "ralts",
+      "spriteId": 280
+    },
+    {
+      "dexNumber": 281,
+      "formSlug": null,
+      "displayName": "Kirlia",
+      "searchQuery": "kirlia",
+      "spriteId": 281
+    },
+    {
+      "dexNumber": 282,
+      "formSlug": null,
+      "displayName": "Gardevoir",
+      "searchQuery": "gardevoir",
+      "spriteId": 282
+    },
+    {
+      "dexNumber": 283,
+      "formSlug": null,
+      "displayName": "Surskit",
+      "searchQuery": "surskit",
+      "spriteId": 283
+    },
+    {
+      "dexNumber": 284,
+      "formSlug": null,
+      "displayName": "Masquerain",
+      "searchQuery": "masquerain",
+      "spriteId": 284
+    },
+    {
+      "dexNumber": 285,
+      "formSlug": null,
+      "displayName": "Shroomish",
+      "searchQuery": "shroomish",
+      "spriteId": 285
+    },
+    {
+      "dexNumber": 286,
+      "formSlug": null,
+      "displayName": "Breloom",
+      "searchQuery": "breloom",
+      "spriteId": 286
+    },
+    {
+      "dexNumber": 287,
+      "formSlug": null,
+      "displayName": "Slakoth",
+      "searchQuery": "slakoth",
+      "spriteId": 287
+    },
+    {
+      "dexNumber": 288,
+      "formSlug": null,
+      "displayName": "Vigoroth",
+      "searchQuery": "vigoroth",
+      "spriteId": 288
+    },
+    {
+      "dexNumber": 289,
+      "formSlug": null,
+      "displayName": "Slaking",
+      "searchQuery": "slaking",
+      "spriteId": 289
+    },
+    {
+      "dexNumber": 290,
+      "formSlug": null,
+      "displayName": "Nincada",
+      "searchQuery": "nincada",
+      "spriteId": 290
+    },
+    {
+      "dexNumber": 291,
+      "formSlug": null,
+      "displayName": "Ninjask",
+      "searchQuery": "ninjask",
+      "spriteId": 291
+    },
+    {
+      "dexNumber": 292,
+      "formSlug": null,
+      "displayName": "Shedinja",
+      "searchQuery": "shedinja",
+      "spriteId": 292
+    },
+    {
+      "dexNumber": 293,
+      "formSlug": null,
+      "displayName": "Whismur",
+      "searchQuery": "whismur",
+      "spriteId": 293
+    },
+    {
+      "dexNumber": 294,
+      "formSlug": null,
+      "displayName": "Loudred",
+      "searchQuery": "loudred",
+      "spriteId": 294
+    },
+    {
+      "dexNumber": 295,
+      "formSlug": null,
+      "displayName": "Exploud",
+      "searchQuery": "exploud",
+      "spriteId": 295
+    },
+    {
+      "dexNumber": 296,
+      "formSlug": null,
+      "displayName": "Makuhita",
+      "searchQuery": "makuhita",
+      "spriteId": 296
+    },
+    {
+      "dexNumber": 297,
+      "formSlug": null,
+      "displayName": "Hariyama",
+      "searchQuery": "hariyama",
+      "spriteId": 297
+    },
+    {
+      "dexNumber": 298,
+      "formSlug": null,
+      "displayName": "Azurill",
+      "searchQuery": "azurill",
+      "spriteId": 298
+    },
+    {
+      "dexNumber": 299,
+      "formSlug": null,
+      "displayName": "Nosepass",
+      "searchQuery": "nosepass",
+      "spriteId": 299
+    },
+    {
+      "dexNumber": 300,
+      "formSlug": null,
+      "displayName": "Skitty",
+      "searchQuery": "skitty",
+      "spriteId": 300
+    },
+    {
+      "dexNumber": 301,
+      "formSlug": null,
+      "displayName": "Delcatty",
+      "searchQuery": "delcatty",
+      "spriteId": 301
+    },
+    {
+      "dexNumber": 302,
+      "formSlug": null,
+      "displayName": "Sableye",
+      "searchQuery": "sableye",
+      "spriteId": 302
+    },
+    {
+      "dexNumber": 303,
+      "formSlug": null,
+      "displayName": "Mawile",
+      "searchQuery": "mawile",
+      "spriteId": 303
+    },
+    {
+      "dexNumber": 304,
+      "formSlug": null,
+      "displayName": "Aron",
+      "searchQuery": "aron",
+      "spriteId": 304
+    },
+    {
+      "dexNumber": 305,
+      "formSlug": null,
+      "displayName": "Lairon",
+      "searchQuery": "lairon",
+      "spriteId": 305
+    },
+    {
+      "dexNumber": 306,
+      "formSlug": null,
+      "displayName": "Aggron",
+      "searchQuery": "aggron",
+      "spriteId": 306
+    },
+    {
+      "dexNumber": 307,
+      "formSlug": null,
+      "displayName": "Meditite",
+      "searchQuery": "meditite",
+      "spriteId": 307
+    },
+    {
+      "dexNumber": 308,
+      "formSlug": null,
+      "displayName": "Medicham",
+      "searchQuery": "medicham",
+      "spriteId": 308
+    },
+    {
+      "dexNumber": 309,
+      "formSlug": null,
+      "displayName": "Electrike",
+      "searchQuery": "electrike",
+      "spriteId": 309
+    },
+    {
+      "dexNumber": 310,
+      "formSlug": null,
+      "displayName": "Manectric",
+      "searchQuery": "manectric",
+      "spriteId": 310
+    },
+    {
+      "dexNumber": 311,
+      "formSlug": null,
+      "displayName": "Plusle",
+      "searchQuery": "plusle",
+      "spriteId": 311
+    },
+    {
+      "dexNumber": 312,
+      "formSlug": null,
+      "displayName": "Minun",
+      "searchQuery": "minun",
+      "spriteId": 312
+    },
+    {
+      "dexNumber": 313,
+      "formSlug": null,
+      "displayName": "Volbeat",
+      "searchQuery": "volbeat",
+      "spriteId": 313
+    },
+    {
+      "dexNumber": 314,
+      "formSlug": null,
+      "displayName": "Illumise",
+      "searchQuery": "illumise",
+      "spriteId": 314
+    },
+    {
+      "dexNumber": 315,
+      "formSlug": null,
+      "displayName": "Roselia",
+      "searchQuery": "roselia",
+      "spriteId": 315
+    },
+    {
+      "dexNumber": 316,
+      "formSlug": null,
+      "displayName": "Gulpin",
+      "searchQuery": "gulpin",
+      "spriteId": 316
+    },
+    {
+      "dexNumber": 317,
+      "formSlug": null,
+      "displayName": "Swalot",
+      "searchQuery": "swalot",
+      "spriteId": 317
+    },
+    {
+      "dexNumber": 318,
+      "formSlug": null,
+      "displayName": "Carvanha",
+      "searchQuery": "carvanha",
+      "spriteId": 318
+    },
+    {
+      "dexNumber": 319,
+      "formSlug": null,
+      "displayName": "Sharpedo",
+      "searchQuery": "sharpedo",
+      "spriteId": 319
+    },
+    {
+      "dexNumber": 320,
+      "formSlug": null,
+      "displayName": "Wailmer",
+      "searchQuery": "wailmer",
+      "spriteId": 320
+    },
+    {
+      "dexNumber": 321,
+      "formSlug": null,
+      "displayName": "Wailord",
+      "searchQuery": "wailord",
+      "spriteId": 321
+    },
+    {
+      "dexNumber": 322,
+      "formSlug": null,
+      "displayName": "Numel",
+      "searchQuery": "numel",
+      "spriteId": 322
+    },
+    {
+      "dexNumber": 323,
+      "formSlug": null,
+      "displayName": "Camerupt",
+      "searchQuery": "camerupt",
+      "spriteId": 323
+    },
+    {
+      "dexNumber": 324,
+      "formSlug": null,
+      "displayName": "Torkoal",
+      "searchQuery": "torkoal",
+      "spriteId": 324
+    },
+    {
+      "dexNumber": 325,
+      "formSlug": null,
+      "displayName": "Spoink",
+      "searchQuery": "spoink",
+      "spriteId": 325
+    },
+    {
+      "dexNumber": 326,
+      "formSlug": null,
+      "displayName": "Grumpig",
+      "searchQuery": "grumpig",
+      "spriteId": 326
+    },
+    {
+      "dexNumber": 327,
+      "formSlug": null,
+      "displayName": "Spinda",
+      "searchQuery": "spinda",
+      "spriteId": 327
+    },
+    {
+      "dexNumber": 328,
+      "formSlug": null,
+      "displayName": "Trapinch",
+      "searchQuery": "trapinch",
+      "spriteId": 328
+    },
+    {
+      "dexNumber": 329,
+      "formSlug": null,
+      "displayName": "Vibrava",
+      "searchQuery": "vibrava",
+      "spriteId": 329
+    },
+    {
+      "dexNumber": 330,
+      "formSlug": null,
+      "displayName": "Flygon",
+      "searchQuery": "flygon",
+      "spriteId": 330
+    },
+    {
+      "dexNumber": 331,
+      "formSlug": null,
+      "displayName": "Cacnea",
+      "searchQuery": "cacnea",
+      "spriteId": 331
+    },
+    {
+      "dexNumber": 332,
+      "formSlug": null,
+      "displayName": "Cacturne",
+      "searchQuery": "cacturne",
+      "spriteId": 332
+    },
+    {
+      "dexNumber": 333,
+      "formSlug": null,
+      "displayName": "Swablu",
+      "searchQuery": "swablu",
+      "spriteId": 333
+    },
+    {
+      "dexNumber": 334,
+      "formSlug": null,
+      "displayName": "Altaria",
+      "searchQuery": "altaria",
+      "spriteId": 334
+    },
+    {
+      "dexNumber": 335,
+      "formSlug": null,
+      "displayName": "Zangoose",
+      "searchQuery": "zangoose",
+      "spriteId": 335
+    },
+    {
+      "dexNumber": 336,
+      "formSlug": null,
+      "displayName": "Seviper",
+      "searchQuery": "seviper",
+      "spriteId": 336
+    },
+    {
+      "dexNumber": 337,
+      "formSlug": null,
+      "displayName": "Lunatone",
+      "searchQuery": "lunatone",
+      "spriteId": 337
+    },
+    {
+      "dexNumber": 338,
+      "formSlug": null,
+      "displayName": "Solrock",
+      "searchQuery": "solrock",
+      "spriteId": 338
+    },
+    {
+      "dexNumber": 339,
+      "formSlug": null,
+      "displayName": "Barboach",
+      "searchQuery": "barboach",
+      "spriteId": 339
+    },
+    {
+      "dexNumber": 340,
+      "formSlug": null,
+      "displayName": "Whiscash",
+      "searchQuery": "whiscash",
+      "spriteId": 340
+    },
+    {
+      "dexNumber": 341,
+      "formSlug": null,
+      "displayName": "Corphish",
+      "searchQuery": "corphish",
+      "spriteId": 341
+    },
+    {
+      "dexNumber": 342,
+      "formSlug": null,
+      "displayName": "Crawdaunt",
+      "searchQuery": "crawdaunt",
+      "spriteId": 342
+    },
+    {
+      "dexNumber": 343,
+      "formSlug": null,
+      "displayName": "Baltoy",
+      "searchQuery": "baltoy",
+      "spriteId": 343
+    },
+    {
+      "dexNumber": 344,
+      "formSlug": null,
+      "displayName": "Claydol",
+      "searchQuery": "claydol",
+      "spriteId": 344
+    },
+    {
+      "dexNumber": 345,
+      "formSlug": null,
+      "displayName": "Lileep",
+      "searchQuery": "lileep",
+      "spriteId": 345
+    },
+    {
+      "dexNumber": 346,
+      "formSlug": null,
+      "displayName": "Cradily",
+      "searchQuery": "cradily",
+      "spriteId": 346
+    },
+    {
+      "dexNumber": 347,
+      "formSlug": null,
+      "displayName": "Anorith",
+      "searchQuery": "anorith",
+      "spriteId": 347
+    },
+    {
+      "dexNumber": 348,
+      "formSlug": null,
+      "displayName": "Armaldo",
+      "searchQuery": "armaldo",
+      "spriteId": 348
+    },
+    {
+      "dexNumber": 349,
+      "formSlug": null,
+      "displayName": "Feebas",
+      "searchQuery": "feebas",
+      "spriteId": 349
+    },
+    {
+      "dexNumber": 350,
+      "formSlug": null,
+      "displayName": "Milotic",
+      "searchQuery": "milotic",
+      "spriteId": 350
+    },
+    {
+      "dexNumber": 351,
+      "formSlug": null,
+      "displayName": "Castform",
+      "searchQuery": "castform",
+      "spriteId": 351
+    },
+    {
+      "dexNumber": 352,
+      "formSlug": null,
+      "displayName": "Kecleon",
+      "searchQuery": "kecleon",
+      "spriteId": 352
+    },
+    {
+      "dexNumber": 353,
+      "formSlug": null,
+      "displayName": "Shuppet",
+      "searchQuery": "shuppet",
+      "spriteId": 353
+    },
+    {
+      "dexNumber": 354,
+      "formSlug": null,
+      "displayName": "Banette",
+      "searchQuery": "banette",
+      "spriteId": 354
+    },
+    {
+      "dexNumber": 355,
+      "formSlug": null,
+      "displayName": "Duskull",
+      "searchQuery": "duskull",
+      "spriteId": 355
+    },
+    {
+      "dexNumber": 356,
+      "formSlug": null,
+      "displayName": "Dusclops",
+      "searchQuery": "dusclops",
+      "spriteId": 356
+    },
+    {
+      "dexNumber": 357,
+      "formSlug": null,
+      "displayName": "Tropius",
+      "searchQuery": "tropius",
+      "spriteId": 357
+    },
+    {
+      "dexNumber": 358,
+      "formSlug": null,
+      "displayName": "Chimecho",
+      "searchQuery": "chimecho",
+      "spriteId": 358
+    },
+    {
+      "dexNumber": 359,
+      "formSlug": null,
+      "displayName": "Absol",
+      "searchQuery": "absol",
+      "spriteId": 359
+    },
+    {
+      "dexNumber": 360,
+      "formSlug": null,
+      "displayName": "Wynaut",
+      "searchQuery": "wynaut",
+      "spriteId": 360
+    },
+    {
+      "dexNumber": 361,
+      "formSlug": null,
+      "displayName": "Snorunt",
+      "searchQuery": "snorunt",
+      "spriteId": 361
+    },
+    {
+      "dexNumber": 362,
+      "formSlug": null,
+      "displayName": "Glalie",
+      "searchQuery": "glalie",
+      "spriteId": 362
+    },
+    {
+      "dexNumber": 363,
+      "formSlug": null,
+      "displayName": "Spheal",
+      "searchQuery": "spheal",
+      "spriteId": 363
+    },
+    {
+      "dexNumber": 364,
+      "formSlug": null,
+      "displayName": "Sealeo",
+      "searchQuery": "sealeo",
+      "spriteId": 364
+    },
+    {
+      "dexNumber": 365,
+      "formSlug": null,
+      "displayName": "Walrein",
+      "searchQuery": "walrein",
+      "spriteId": 365
+    },
+    {
+      "dexNumber": 366,
+      "formSlug": null,
+      "displayName": "Clamperl",
+      "searchQuery": "clamperl",
+      "spriteId": 366
+    },
+    {
+      "dexNumber": 367,
+      "formSlug": null,
+      "displayName": "Huntail",
+      "searchQuery": "huntail",
+      "spriteId": 367
+    },
+    {
+      "dexNumber": 368,
+      "formSlug": null,
+      "displayName": "Gorebyss",
+      "searchQuery": "gorebyss",
+      "spriteId": 368
+    },
+    {
+      "dexNumber": 369,
+      "formSlug": null,
+      "displayName": "Relicanth",
+      "searchQuery": "relicanth",
+      "spriteId": 369
+    },
+    {
+      "dexNumber": 370,
+      "formSlug": null,
+      "displayName": "Luvdisc",
+      "searchQuery": "luvdisc",
+      "spriteId": 370
+    },
+    {
+      "dexNumber": 371,
+      "formSlug": null,
+      "displayName": "Bagon",
+      "searchQuery": "bagon",
+      "spriteId": 371
+    },
+    {
+      "dexNumber": 372,
+      "formSlug": null,
+      "displayName": "Shelgon",
+      "searchQuery": "shelgon",
+      "spriteId": 372
+    },
+    {
+      "dexNumber": 373,
+      "formSlug": null,
+      "displayName": "Salamence",
+      "searchQuery": "salamence",
+      "spriteId": 373
+    },
+    {
+      "dexNumber": 374,
+      "formSlug": null,
+      "displayName": "Beldum",
+      "searchQuery": "beldum",
+      "spriteId": 374
+    },
+    {
+      "dexNumber": 375,
+      "formSlug": null,
+      "displayName": "Metang",
+      "searchQuery": "metang",
+      "spriteId": 375
+    },
+    {
+      "dexNumber": 376,
+      "formSlug": null,
+      "displayName": "Metagross",
+      "searchQuery": "metagross",
+      "spriteId": 376
+    },
+    {
+      "dexNumber": 377,
+      "formSlug": null,
+      "displayName": "Regirock",
+      "searchQuery": "regirock",
+      "spriteId": 377
+    },
+    {
+      "dexNumber": 378,
+      "formSlug": null,
+      "displayName": "Regice",
+      "searchQuery": "regice",
+      "spriteId": 378
+    },
+    {
+      "dexNumber": 379,
+      "formSlug": null,
+      "displayName": "Registeel",
+      "searchQuery": "registeel",
+      "spriteId": 379
+    },
+    {
+      "dexNumber": 380,
+      "formSlug": null,
+      "displayName": "Latias",
+      "searchQuery": "latias",
+      "spriteId": 380
+    },
+    {
+      "dexNumber": 381,
+      "formSlug": null,
+      "displayName": "Latios",
+      "searchQuery": "latios",
+      "spriteId": 381
+    },
+    {
+      "dexNumber": 382,
+      "formSlug": null,
+      "displayName": "Kyogre",
+      "searchQuery": "kyogre",
+      "spriteId": 382
+    },
+    {
+      "dexNumber": 383,
+      "formSlug": null,
+      "displayName": "Groudon",
+      "searchQuery": "groudon",
+      "spriteId": 383
+    },
+    {
+      "dexNumber": 384,
+      "formSlug": null,
+      "displayName": "Rayquaza",
+      "searchQuery": "rayquaza",
+      "spriteId": 384
+    },
+    {
+      "dexNumber": 385,
+      "formSlug": null,
+      "displayName": "Jirachi",
+      "searchQuery": "jirachi",
+      "spriteId": 385
+    },
+    {
+      "dexNumber": 386,
+      "formSlug": null,
+      "displayName": "Deoxys",
+      "searchQuery": "deoxys",
+      "spriteId": 386
+    },
+    {
+      "dexNumber": 387,
+      "formSlug": null,
+      "displayName": "Turtwig",
+      "searchQuery": "turtwig",
+      "spriteId": 387
+    },
+    {
+      "dexNumber": 388,
+      "formSlug": null,
+      "displayName": "Grotle",
+      "searchQuery": "grotle",
+      "spriteId": 388
+    },
+    {
+      "dexNumber": 389,
+      "formSlug": null,
+      "displayName": "Torterra",
+      "searchQuery": "torterra",
+      "spriteId": 389
+    },
+    {
+      "dexNumber": 390,
+      "formSlug": null,
+      "displayName": "Chimchar",
+      "searchQuery": "chimchar",
+      "spriteId": 390
+    },
+    {
+      "dexNumber": 391,
+      "formSlug": null,
+      "displayName": "Monferno",
+      "searchQuery": "monferno",
+      "spriteId": 391
+    },
+    {
+      "dexNumber": 392,
+      "formSlug": null,
+      "displayName": "Infernape",
+      "searchQuery": "infernape",
+      "spriteId": 392
+    },
+    {
+      "dexNumber": 393,
+      "formSlug": null,
+      "displayName": "Piplup",
+      "searchQuery": "piplup",
+      "spriteId": 393
+    },
+    {
+      "dexNumber": 394,
+      "formSlug": null,
+      "displayName": "Prinplup",
+      "searchQuery": "prinplup",
+      "spriteId": 394
+    },
+    {
+      "dexNumber": 395,
+      "formSlug": null,
+      "displayName": "Empoleon",
+      "searchQuery": "empoleon",
+      "spriteId": 395
+    },
+    {
+      "dexNumber": 396,
+      "formSlug": null,
+      "displayName": "Starly",
+      "searchQuery": "starly",
+      "spriteId": 396
+    },
+    {
+      "dexNumber": 397,
+      "formSlug": null,
+      "displayName": "Staravia",
+      "searchQuery": "staravia",
+      "spriteId": 397
+    },
+    {
+      "dexNumber": 398,
+      "formSlug": null,
+      "displayName": "Staraptor",
+      "searchQuery": "staraptor",
+      "spriteId": 398
+    },
+    {
+      "dexNumber": 399,
+      "formSlug": null,
+      "displayName": "Bidoof",
+      "searchQuery": "bidoof",
+      "spriteId": 399
+    },
+    {
+      "dexNumber": 400,
+      "formSlug": null,
+      "displayName": "Bibarel",
+      "searchQuery": "bibarel",
+      "spriteId": 400
+    },
+    {
+      "dexNumber": 401,
+      "formSlug": null,
+      "displayName": "Kricketot",
+      "searchQuery": "kricketot",
+      "spriteId": 401
+    },
+    {
+      "dexNumber": 402,
+      "formSlug": null,
+      "displayName": "Kricketune",
+      "searchQuery": "kricketune",
+      "spriteId": 402
+    },
+    {
+      "dexNumber": 403,
+      "formSlug": null,
+      "displayName": "Shinx",
+      "searchQuery": "shinx",
+      "spriteId": 403
+    },
+    {
+      "dexNumber": 404,
+      "formSlug": null,
+      "displayName": "Luxio",
+      "searchQuery": "luxio",
+      "spriteId": 404
+    },
+    {
+      "dexNumber": 405,
+      "formSlug": null,
+      "displayName": "Luxray",
+      "searchQuery": "luxray",
+      "spriteId": 405
+    },
+    {
+      "dexNumber": 406,
+      "formSlug": null,
+      "displayName": "Budew",
+      "searchQuery": "budew",
+      "spriteId": 406
+    },
+    {
+      "dexNumber": 407,
+      "formSlug": null,
+      "displayName": "Roserade",
+      "searchQuery": "roserade",
+      "spriteId": 407
+    },
+    {
+      "dexNumber": 408,
+      "formSlug": null,
+      "displayName": "Cranidos",
+      "searchQuery": "cranidos",
+      "spriteId": 408
+    },
+    {
+      "dexNumber": 409,
+      "formSlug": null,
+      "displayName": "Rampardos",
+      "searchQuery": "rampardos",
+      "spriteId": 409
+    },
+    {
+      "dexNumber": 410,
+      "formSlug": null,
+      "displayName": "Shieldon",
+      "searchQuery": "shieldon",
+      "spriteId": 410
+    },
+    {
+      "dexNumber": 411,
+      "formSlug": null,
+      "displayName": "Bastiodon",
+      "searchQuery": "bastiodon",
+      "spriteId": 411
+    },
+    {
+      "dexNumber": 412,
+      "formSlug": null,
+      "displayName": "Burmy",
+      "searchQuery": "burmy",
+      "spriteId": 412
+    },
+    {
+      "dexNumber": 413,
+      "formSlug": null,
+      "displayName": "Wormadam",
+      "searchQuery": "wormadam",
+      "spriteId": 413
+    },
+    {
+      "dexNumber": 414,
+      "formSlug": null,
+      "displayName": "Mothim",
+      "searchQuery": "mothim",
+      "spriteId": 414
+    },
+    {
+      "dexNumber": 415,
+      "formSlug": null,
+      "displayName": "Combee",
+      "searchQuery": "combee",
+      "spriteId": 415
+    },
+    {
+      "dexNumber": 416,
+      "formSlug": null,
+      "displayName": "Vespiquen",
+      "searchQuery": "vespiquen",
+      "spriteId": 416
+    },
+    {
+      "dexNumber": 417,
+      "formSlug": null,
+      "displayName": "Pachirisu",
+      "searchQuery": "pachirisu",
+      "spriteId": 417
+    },
+    {
+      "dexNumber": 418,
+      "formSlug": null,
+      "displayName": "Buizel",
+      "searchQuery": "buizel",
+      "spriteId": 418
+    },
+    {
+      "dexNumber": 419,
+      "formSlug": null,
+      "displayName": "Floatzel",
+      "searchQuery": "floatzel",
+      "spriteId": 419
+    },
+    {
+      "dexNumber": 420,
+      "formSlug": null,
+      "displayName": "Cherubi",
+      "searchQuery": "cherubi",
+      "spriteId": 420
+    },
+    {
+      "dexNumber": 421,
+      "formSlug": null,
+      "displayName": "Cherrim",
+      "searchQuery": "cherrim",
+      "spriteId": 421
+    },
+    {
+      "dexNumber": 422,
+      "formSlug": null,
+      "displayName": "Shellos",
+      "searchQuery": "shellos",
+      "spriteId": 422
+    },
+    {
+      "dexNumber": 423,
+      "formSlug": null,
+      "displayName": "Gastrodon",
+      "searchQuery": "gastrodon",
+      "spriteId": 423
+    },
+    {
+      "dexNumber": 424,
+      "formSlug": null,
+      "displayName": "Ambipom",
+      "searchQuery": "ambipom",
+      "spriteId": 424
+    },
+    {
+      "dexNumber": 425,
+      "formSlug": null,
+      "displayName": "Drifloon",
+      "searchQuery": "drifloon",
+      "spriteId": 425
+    },
+    {
+      "dexNumber": 426,
+      "formSlug": null,
+      "displayName": "Drifblim",
+      "searchQuery": "drifblim",
+      "spriteId": 426
+    },
+    {
+      "dexNumber": 427,
+      "formSlug": null,
+      "displayName": "Buneary",
+      "searchQuery": "buneary",
+      "spriteId": 427
+    },
+    {
+      "dexNumber": 428,
+      "formSlug": null,
+      "displayName": "Lopunny",
+      "searchQuery": "lopunny",
+      "spriteId": 428
+    },
+    {
+      "dexNumber": 429,
+      "formSlug": null,
+      "displayName": "Mismagius",
+      "searchQuery": "mismagius",
+      "spriteId": 429
+    },
+    {
+      "dexNumber": 430,
+      "formSlug": null,
+      "displayName": "Honchkrow",
+      "searchQuery": "honchkrow",
+      "spriteId": 430
+    },
+    {
+      "dexNumber": 431,
+      "formSlug": null,
+      "displayName": "Glameow",
+      "searchQuery": "glameow",
+      "spriteId": 431
+    },
+    {
+      "dexNumber": 432,
+      "formSlug": null,
+      "displayName": "Purugly",
+      "searchQuery": "purugly",
+      "spriteId": 432
+    },
+    {
+      "dexNumber": 433,
+      "formSlug": null,
+      "displayName": "Chingling",
+      "searchQuery": "chingling",
+      "spriteId": 433
+    },
+    {
+      "dexNumber": 434,
+      "formSlug": null,
+      "displayName": "Stunky",
+      "searchQuery": "stunky",
+      "spriteId": 434
+    },
+    {
+      "dexNumber": 435,
+      "formSlug": null,
+      "displayName": "Skuntank",
+      "searchQuery": "skuntank",
+      "spriteId": 435
+    },
+    {
+      "dexNumber": 436,
+      "formSlug": null,
+      "displayName": "Bronzor",
+      "searchQuery": "bronzor",
+      "spriteId": 436
+    },
+    {
+      "dexNumber": 437,
+      "formSlug": null,
+      "displayName": "Bronzong",
+      "searchQuery": "bronzong",
+      "spriteId": 437
+    },
+    {
+      "dexNumber": 438,
+      "formSlug": null,
+      "displayName": "Bonsly",
+      "searchQuery": "bonsly",
+      "spriteId": 438
+    },
+    {
+      "dexNumber": 439,
+      "formSlug": null,
+      "displayName": "Mime Jr",
+      "searchQuery": "mime",
+      "spriteId": 439
+    },
+    {
+      "dexNumber": 440,
+      "formSlug": null,
+      "displayName": "Happiny",
+      "searchQuery": "happiny",
+      "spriteId": 440
+    },
+    {
+      "dexNumber": 441,
+      "formSlug": null,
+      "displayName": "Chatot",
+      "searchQuery": "chatot",
+      "spriteId": 441
+    },
+    {
+      "dexNumber": 442,
+      "formSlug": null,
+      "displayName": "Spiritomb",
+      "searchQuery": "spiritomb",
+      "spriteId": 442
+    },
+    {
+      "dexNumber": 443,
+      "formSlug": null,
+      "displayName": "Gible",
+      "searchQuery": "gible",
+      "spriteId": 443
+    },
+    {
+      "dexNumber": 444,
+      "formSlug": null,
+      "displayName": "Gabite",
+      "searchQuery": "gabite",
+      "spriteId": 444
+    },
+    {
+      "dexNumber": 445,
+      "formSlug": null,
+      "displayName": "Garchomp",
+      "searchQuery": "garchomp",
+      "spriteId": 445
+    },
+    {
+      "dexNumber": 446,
+      "formSlug": null,
+      "displayName": "Munchlax",
+      "searchQuery": "munchlax",
+      "spriteId": 446
+    },
+    {
+      "dexNumber": 447,
+      "formSlug": null,
+      "displayName": "Riolu",
+      "searchQuery": "riolu",
+      "spriteId": 447
+    },
+    {
+      "dexNumber": 448,
+      "formSlug": null,
+      "displayName": "Lucario",
+      "searchQuery": "lucario",
+      "spriteId": 448
+    },
+    {
+      "dexNumber": 449,
+      "formSlug": null,
+      "displayName": "Hippopotas",
+      "searchQuery": "hippopotas",
+      "spriteId": 449
+    },
+    {
+      "dexNumber": 450,
+      "formSlug": null,
+      "displayName": "Hippowdon",
+      "searchQuery": "hippowdon",
+      "spriteId": 450
+    },
+    {
+      "dexNumber": 451,
+      "formSlug": null,
+      "displayName": "Skorupi",
+      "searchQuery": "skorupi",
+      "spriteId": 451
+    },
+    {
+      "dexNumber": 452,
+      "formSlug": null,
+      "displayName": "Drapion",
+      "searchQuery": "drapion",
+      "spriteId": 452
+    },
+    {
+      "dexNumber": 453,
+      "formSlug": null,
+      "displayName": "Croagunk",
+      "searchQuery": "croagunk",
+      "spriteId": 453
+    },
+    {
+      "dexNumber": 454,
+      "formSlug": null,
+      "displayName": "Toxicroak",
+      "searchQuery": "toxicroak",
+      "spriteId": 454
+    },
+    {
+      "dexNumber": 455,
+      "formSlug": null,
+      "displayName": "Carnivine",
+      "searchQuery": "carnivine",
+      "spriteId": 455
+    },
+    {
+      "dexNumber": 456,
+      "formSlug": null,
+      "displayName": "Finneon",
+      "searchQuery": "finneon",
+      "spriteId": 456
+    },
+    {
+      "dexNumber": 457,
+      "formSlug": null,
+      "displayName": "Lumineon",
+      "searchQuery": "lumineon",
+      "spriteId": 457
+    },
+    {
+      "dexNumber": 458,
+      "formSlug": null,
+      "displayName": "Mantyke",
+      "searchQuery": "mantyke",
+      "spriteId": 458
+    },
+    {
+      "dexNumber": 459,
+      "formSlug": null,
+      "displayName": "Snover",
+      "searchQuery": "snover",
+      "spriteId": 459
+    },
+    {
+      "dexNumber": 460,
+      "formSlug": null,
+      "displayName": "Abomasnow",
+      "searchQuery": "abomasnow",
+      "spriteId": 460
+    },
+    {
+      "dexNumber": 461,
+      "formSlug": null,
+      "displayName": "Weavile",
+      "searchQuery": "weavile",
+      "spriteId": 461
+    },
+    {
+      "dexNumber": 462,
+      "formSlug": null,
+      "displayName": "Magnezone",
+      "searchQuery": "magnezone",
+      "spriteId": 462
+    },
+    {
+      "dexNumber": 463,
+      "formSlug": null,
+      "displayName": "Lickilicky",
+      "searchQuery": "lickilicky",
+      "spriteId": 463
+    },
+    {
+      "dexNumber": 464,
+      "formSlug": null,
+      "displayName": "Rhyperior",
+      "searchQuery": "rhyperior",
+      "spriteId": 464
+    },
+    {
+      "dexNumber": 465,
+      "formSlug": null,
+      "displayName": "Tangrowth",
+      "searchQuery": "tangrowth",
+      "spriteId": 465
+    },
+    {
+      "dexNumber": 466,
+      "formSlug": null,
+      "displayName": "Electivire",
+      "searchQuery": "electivire",
+      "spriteId": 466
+    },
+    {
+      "dexNumber": 467,
+      "formSlug": null,
+      "displayName": "Magmortar",
+      "searchQuery": "magmortar",
+      "spriteId": 467
+    },
+    {
+      "dexNumber": 468,
+      "formSlug": null,
+      "displayName": "Togekiss",
+      "searchQuery": "togekiss",
+      "spriteId": 468
+    },
+    {
+      "dexNumber": 469,
+      "formSlug": null,
+      "displayName": "Yanmega",
+      "searchQuery": "yanmega",
+      "spriteId": 469
+    },
+    {
+      "dexNumber": 470,
+      "formSlug": null,
+      "displayName": "Leafeon",
+      "searchQuery": "leafeon",
+      "spriteId": 470
+    },
+    {
+      "dexNumber": 471,
+      "formSlug": null,
+      "displayName": "Glaceon",
+      "searchQuery": "glaceon",
+      "spriteId": 471
+    },
+    {
+      "dexNumber": 472,
+      "formSlug": null,
+      "displayName": "Gliscor",
+      "searchQuery": "gliscor",
+      "spriteId": 472
+    },
+    {
+      "dexNumber": 473,
+      "formSlug": null,
+      "displayName": "Mamoswine",
+      "searchQuery": "mamoswine",
+      "spriteId": 473
+    },
+    {
+      "dexNumber": 474,
+      "formSlug": null,
+      "displayName": "Porygon Z",
+      "searchQuery": "porygon",
+      "spriteId": 474
+    },
+    {
+      "dexNumber": 475,
+      "formSlug": null,
+      "displayName": "Gallade",
+      "searchQuery": "gallade",
+      "spriteId": 475
+    },
+    {
+      "dexNumber": 476,
+      "formSlug": null,
+      "displayName": "Probopass",
+      "searchQuery": "probopass",
+      "spriteId": 476
+    },
+    {
+      "dexNumber": 477,
+      "formSlug": null,
+      "displayName": "Dusknoir",
+      "searchQuery": "dusknoir",
+      "spriteId": 477
+    },
+    {
+      "dexNumber": 478,
+      "formSlug": null,
+      "displayName": "Froslass",
+      "searchQuery": "froslass",
+      "spriteId": 478
+    },
+    {
+      "dexNumber": 479,
+      "formSlug": null,
+      "displayName": "Rotom",
+      "searchQuery": "rotom",
+      "spriteId": 479
+    },
+    {
+      "dexNumber": 480,
+      "formSlug": null,
+      "displayName": "Uxie",
+      "searchQuery": "uxie",
+      "spriteId": 480
+    },
+    {
+      "dexNumber": 481,
+      "formSlug": null,
+      "displayName": "Mesprit",
+      "searchQuery": "mesprit",
+      "spriteId": 481
+    },
+    {
+      "dexNumber": 482,
+      "formSlug": null,
+      "displayName": "Azelf",
+      "searchQuery": "azelf",
+      "spriteId": 482
+    },
+    {
+      "dexNumber": 483,
+      "formSlug": null,
+      "displayName": "Dialga",
+      "searchQuery": "dialga",
+      "spriteId": 483
+    },
+    {
+      "dexNumber": 484,
+      "formSlug": null,
+      "displayName": "Palkia",
+      "searchQuery": "palkia",
+      "spriteId": 484
+    },
+    {
+      "dexNumber": 485,
+      "formSlug": null,
+      "displayName": "Heatran",
+      "searchQuery": "heatran",
+      "spriteId": 485
+    },
+    {
+      "dexNumber": 486,
+      "formSlug": null,
+      "displayName": "Regigigas",
+      "searchQuery": "regigigas",
+      "spriteId": 486
+    },
+    {
+      "dexNumber": 487,
+      "formSlug": null,
+      "displayName": "Giratina",
+      "searchQuery": "giratina",
+      "spriteId": 487
+    },
+    {
+      "dexNumber": 488,
+      "formSlug": null,
+      "displayName": "Cresselia",
+      "searchQuery": "cresselia",
+      "spriteId": 488
+    },
+    {
+      "dexNumber": 489,
+      "formSlug": null,
+      "displayName": "Phione",
+      "searchQuery": "phione",
+      "spriteId": 489
+    },
+    {
+      "dexNumber": 490,
+      "formSlug": null,
+      "displayName": "Manaphy",
+      "searchQuery": "manaphy",
+      "spriteId": 490
+    },
+    {
+      "dexNumber": 491,
+      "formSlug": null,
+      "displayName": "Darkrai",
+      "searchQuery": "darkrai",
+      "spriteId": 491
+    },
+    {
+      "dexNumber": 492,
+      "formSlug": null,
+      "displayName": "Shaymin",
+      "searchQuery": "shaymin",
+      "spriteId": 492
+    },
+    {
+      "dexNumber": 493,
+      "formSlug": null,
+      "displayName": "Arceus",
+      "searchQuery": "arceus",
+      "spriteId": 493
+    },
+    {
+      "dexNumber": 494,
+      "formSlug": null,
+      "displayName": "Victini",
+      "searchQuery": "victini",
+      "spriteId": 494
+    },
+    {
+      "dexNumber": 495,
+      "formSlug": null,
+      "displayName": "Snivy",
+      "searchQuery": "snivy",
+      "spriteId": 495
+    },
+    {
+      "dexNumber": 496,
+      "formSlug": null,
+      "displayName": "Servine",
+      "searchQuery": "servine",
+      "spriteId": 496
+    },
+    {
+      "dexNumber": 497,
+      "formSlug": null,
+      "displayName": "Serperior",
+      "searchQuery": "serperior",
+      "spriteId": 497
+    },
+    {
+      "dexNumber": 498,
+      "formSlug": null,
+      "displayName": "Tepig",
+      "searchQuery": "tepig",
+      "spriteId": 498
+    },
+    {
+      "dexNumber": 499,
+      "formSlug": null,
+      "displayName": "Pignite",
+      "searchQuery": "pignite",
+      "spriteId": 499
+    },
+    {
+      "dexNumber": 500,
+      "formSlug": null,
+      "displayName": "Emboar",
+      "searchQuery": "emboar",
+      "spriteId": 500
+    },
+    {
+      "dexNumber": 501,
+      "formSlug": null,
+      "displayName": "Oshawott",
+      "searchQuery": "oshawott",
+      "spriteId": 501
+    },
+    {
+      "dexNumber": 502,
+      "formSlug": null,
+      "displayName": "Dewott",
+      "searchQuery": "dewott",
+      "spriteId": 502
+    },
+    {
+      "dexNumber": 503,
+      "formSlug": null,
+      "displayName": "Samurott",
+      "searchQuery": "samurott",
+      "spriteId": 503
+    },
+    {
+      "dexNumber": 504,
+      "formSlug": null,
+      "displayName": "Patrat",
+      "searchQuery": "patrat",
+      "spriteId": 504
+    },
+    {
+      "dexNumber": 505,
+      "formSlug": null,
+      "displayName": "Watchog",
+      "searchQuery": "watchog",
+      "spriteId": 505
+    },
+    {
+      "dexNumber": 506,
+      "formSlug": null,
+      "displayName": "Lillipup",
+      "searchQuery": "lillipup",
+      "spriteId": 506
+    },
+    {
+      "dexNumber": 507,
+      "formSlug": null,
+      "displayName": "Herdier",
+      "searchQuery": "herdier",
+      "spriteId": 507
+    },
+    {
+      "dexNumber": 508,
+      "formSlug": null,
+      "displayName": "Stoutland",
+      "searchQuery": "stoutland",
+      "spriteId": 508
+    },
+    {
+      "dexNumber": 509,
+      "formSlug": null,
+      "displayName": "Purrloin",
+      "searchQuery": "purrloin",
+      "spriteId": 509
+    },
+    {
+      "dexNumber": 510,
+      "formSlug": null,
+      "displayName": "Liepard",
+      "searchQuery": "liepard",
+      "spriteId": 510
+    },
+    {
+      "dexNumber": 511,
+      "formSlug": null,
+      "displayName": "Pansage",
+      "searchQuery": "pansage",
+      "spriteId": 511
+    },
+    {
+      "dexNumber": 512,
+      "formSlug": null,
+      "displayName": "Simisage",
+      "searchQuery": "simisage",
+      "spriteId": 512
+    },
+    {
+      "dexNumber": 513,
+      "formSlug": null,
+      "displayName": "Pansear",
+      "searchQuery": "pansear",
+      "spriteId": 513
+    },
+    {
+      "dexNumber": 514,
+      "formSlug": null,
+      "displayName": "Simisear",
+      "searchQuery": "simisear",
+      "spriteId": 514
+    },
+    {
+      "dexNumber": 515,
+      "formSlug": null,
+      "displayName": "Panpour",
+      "searchQuery": "panpour",
+      "spriteId": 515
+    },
+    {
+      "dexNumber": 516,
+      "formSlug": null,
+      "displayName": "Simipour",
+      "searchQuery": "simipour",
+      "spriteId": 516
+    },
+    {
+      "dexNumber": 517,
+      "formSlug": null,
+      "displayName": "Munna",
+      "searchQuery": "munna",
+      "spriteId": 517
+    },
+    {
+      "dexNumber": 518,
+      "formSlug": null,
+      "displayName": "Musharna",
+      "searchQuery": "musharna",
+      "spriteId": 518
+    },
+    {
+      "dexNumber": 519,
+      "formSlug": null,
+      "displayName": "Pidove",
+      "searchQuery": "pidove",
+      "spriteId": 519
+    },
+    {
+      "dexNumber": 520,
+      "formSlug": null,
+      "displayName": "Tranquill",
+      "searchQuery": "tranquill",
+      "spriteId": 520
+    },
+    {
+      "dexNumber": 521,
+      "formSlug": null,
+      "displayName": "Unfezant",
+      "searchQuery": "unfezant",
+      "spriteId": 521
+    },
+    {
+      "dexNumber": 522,
+      "formSlug": null,
+      "displayName": "Blitzle",
+      "searchQuery": "blitzle",
+      "spriteId": 522
+    },
+    {
+      "dexNumber": 523,
+      "formSlug": null,
+      "displayName": "Zebstrika",
+      "searchQuery": "zebstrika",
+      "spriteId": 523
+    },
+    {
+      "dexNumber": 524,
+      "formSlug": null,
+      "displayName": "Roggenrola",
+      "searchQuery": "roggenrola",
+      "spriteId": 524
+    },
+    {
+      "dexNumber": 525,
+      "formSlug": null,
+      "displayName": "Boldore",
+      "searchQuery": "boldore",
+      "spriteId": 525
+    },
+    {
+      "dexNumber": 526,
+      "formSlug": null,
+      "displayName": "Gigalith",
+      "searchQuery": "gigalith",
+      "spriteId": 526
+    },
+    {
+      "dexNumber": 527,
+      "formSlug": null,
+      "displayName": "Woobat",
+      "searchQuery": "woobat",
+      "spriteId": 527
+    },
+    {
+      "dexNumber": 528,
+      "formSlug": null,
+      "displayName": "Swoobat",
+      "searchQuery": "swoobat",
+      "spriteId": 528
+    },
+    {
+      "dexNumber": 529,
+      "formSlug": null,
+      "displayName": "Drilbur",
+      "searchQuery": "drilbur",
+      "spriteId": 529
+    },
+    {
+      "dexNumber": 530,
+      "formSlug": null,
+      "displayName": "Excadrill",
+      "searchQuery": "excadrill",
+      "spriteId": 530
+    },
+    {
+      "dexNumber": 531,
+      "formSlug": null,
+      "displayName": "Audino",
+      "searchQuery": "audino",
+      "spriteId": 531
+    },
+    {
+      "dexNumber": 532,
+      "formSlug": null,
+      "displayName": "Timburr",
+      "searchQuery": "timburr",
+      "spriteId": 532
+    },
+    {
+      "dexNumber": 533,
+      "formSlug": null,
+      "displayName": "Gurdurr",
+      "searchQuery": "gurdurr",
+      "spriteId": 533
+    },
+    {
+      "dexNumber": 534,
+      "formSlug": null,
+      "displayName": "Conkeldurr",
+      "searchQuery": "conkeldurr",
+      "spriteId": 534
+    },
+    {
+      "dexNumber": 535,
+      "formSlug": null,
+      "displayName": "Tympole",
+      "searchQuery": "tympole",
+      "spriteId": 535
+    },
+    {
+      "dexNumber": 536,
+      "formSlug": null,
+      "displayName": "Palpitoad",
+      "searchQuery": "palpitoad",
+      "spriteId": 536
+    },
+    {
+      "dexNumber": 537,
+      "formSlug": null,
+      "displayName": "Seismitoad",
+      "searchQuery": "seismitoad",
+      "spriteId": 537
+    },
+    {
+      "dexNumber": 538,
+      "formSlug": null,
+      "displayName": "Throh",
+      "searchQuery": "throh",
+      "spriteId": 538
+    },
+    {
+      "dexNumber": 539,
+      "formSlug": null,
+      "displayName": "Sawk",
+      "searchQuery": "sawk",
+      "spriteId": 539
+    },
+    {
+      "dexNumber": 540,
+      "formSlug": null,
+      "displayName": "Sewaddle",
+      "searchQuery": "sewaddle",
+      "spriteId": 540
+    },
+    {
+      "dexNumber": 541,
+      "formSlug": null,
+      "displayName": "Swadloon",
+      "searchQuery": "swadloon",
+      "spriteId": 541
+    },
+    {
+      "dexNumber": 542,
+      "formSlug": null,
+      "displayName": "Leavanny",
+      "searchQuery": "leavanny",
+      "spriteId": 542
+    },
+    {
+      "dexNumber": 543,
+      "formSlug": null,
+      "displayName": "Venipede",
+      "searchQuery": "venipede",
+      "spriteId": 543
+    },
+    {
+      "dexNumber": 544,
+      "formSlug": null,
+      "displayName": "Whirlipede",
+      "searchQuery": "whirlipede",
+      "spriteId": 544
+    },
+    {
+      "dexNumber": 545,
+      "formSlug": null,
+      "displayName": "Scolipede",
+      "searchQuery": "scolipede",
+      "spriteId": 545
+    },
+    {
+      "dexNumber": 546,
+      "formSlug": null,
+      "displayName": "Cottonee",
+      "searchQuery": "cottonee",
+      "spriteId": 546
+    },
+    {
+      "dexNumber": 547,
+      "formSlug": null,
+      "displayName": "Whimsicott",
+      "searchQuery": "whimsicott",
+      "spriteId": 547
+    },
+    {
+      "dexNumber": 548,
+      "formSlug": null,
+      "displayName": "Petilil",
+      "searchQuery": "petilil",
+      "spriteId": 548
+    },
+    {
+      "dexNumber": 549,
+      "formSlug": null,
+      "displayName": "Lilligant",
+      "searchQuery": "lilligant",
+      "spriteId": 549
+    },
+    {
+      "dexNumber": 550,
+      "formSlug": null,
+      "displayName": "Basculin",
+      "searchQuery": "basculin",
+      "spriteId": 550
+    },
+    {
+      "dexNumber": 551,
+      "formSlug": null,
+      "displayName": "Sandile",
+      "searchQuery": "sandile",
+      "spriteId": 551
+    },
+    {
+      "dexNumber": 552,
+      "formSlug": null,
+      "displayName": "Krokorok",
+      "searchQuery": "krokorok",
+      "spriteId": 552
+    },
+    {
+      "dexNumber": 553,
+      "formSlug": null,
+      "displayName": "Krookodile",
+      "searchQuery": "krookodile",
+      "spriteId": 553
+    },
+    {
+      "dexNumber": 554,
+      "formSlug": null,
+      "displayName": "Darumaka",
+      "searchQuery": "darumaka",
+      "spriteId": 554
+    },
+    {
+      "dexNumber": 555,
+      "formSlug": null,
+      "displayName": "Darmanitan",
+      "searchQuery": "darmanitan",
+      "spriteId": 555
+    },
+    {
+      "dexNumber": 556,
+      "formSlug": null,
+      "displayName": "Maractus",
+      "searchQuery": "maractus",
+      "spriteId": 556
+    },
+    {
+      "dexNumber": 557,
+      "formSlug": null,
+      "displayName": "Dwebble",
+      "searchQuery": "dwebble",
+      "spriteId": 557
+    },
+    {
+      "dexNumber": 558,
+      "formSlug": null,
+      "displayName": "Crustle",
+      "searchQuery": "crustle",
+      "spriteId": 558
+    },
+    {
+      "dexNumber": 559,
+      "formSlug": null,
+      "displayName": "Scraggy",
+      "searchQuery": "scraggy",
+      "spriteId": 559
+    },
+    {
+      "dexNumber": 560,
+      "formSlug": null,
+      "displayName": "Scrafty",
+      "searchQuery": "scrafty",
+      "spriteId": 560
+    },
+    {
+      "dexNumber": 561,
+      "formSlug": null,
+      "displayName": "Sigilyph",
+      "searchQuery": "sigilyph",
+      "spriteId": 561
+    },
+    {
+      "dexNumber": 562,
+      "formSlug": null,
+      "displayName": "Yamask",
+      "searchQuery": "yamask",
+      "spriteId": 562
+    },
+    {
+      "dexNumber": 563,
+      "formSlug": null,
+      "displayName": "Cofagrigus",
+      "searchQuery": "cofagrigus",
+      "spriteId": 563
+    },
+    {
+      "dexNumber": 564,
+      "formSlug": null,
+      "displayName": "Tirtouga",
+      "searchQuery": "tirtouga",
+      "spriteId": 564
+    },
+    {
+      "dexNumber": 565,
+      "formSlug": null,
+      "displayName": "Carracosta",
+      "searchQuery": "carracosta",
+      "spriteId": 565
+    },
+    {
+      "dexNumber": 566,
+      "formSlug": null,
+      "displayName": "Archen",
+      "searchQuery": "archen",
+      "spriteId": 566
+    },
+    {
+      "dexNumber": 567,
+      "formSlug": null,
+      "displayName": "Archeops",
+      "searchQuery": "archeops",
+      "spriteId": 567
+    },
+    {
+      "dexNumber": 568,
+      "formSlug": null,
+      "displayName": "Trubbish",
+      "searchQuery": "trubbish",
+      "spriteId": 568
+    },
+    {
+      "dexNumber": 569,
+      "formSlug": null,
+      "displayName": "Garbodor",
+      "searchQuery": "garbodor",
+      "spriteId": 569
+    },
+    {
+      "dexNumber": 570,
+      "formSlug": null,
+      "displayName": "Zorua",
+      "searchQuery": "zorua",
+      "spriteId": 570
+    },
+    {
+      "dexNumber": 571,
+      "formSlug": null,
+      "displayName": "Zoroark",
+      "searchQuery": "zoroark",
+      "spriteId": 571
+    },
+    {
+      "dexNumber": 572,
+      "formSlug": null,
+      "displayName": "Minccino",
+      "searchQuery": "minccino",
+      "spriteId": 572
+    },
+    {
+      "dexNumber": 573,
+      "formSlug": null,
+      "displayName": "Cinccino",
+      "searchQuery": "cinccino",
+      "spriteId": 573
+    },
+    {
+      "dexNumber": 574,
+      "formSlug": null,
+      "displayName": "Gothita",
+      "searchQuery": "gothita",
+      "spriteId": 574
+    },
+    {
+      "dexNumber": 575,
+      "formSlug": null,
+      "displayName": "Gothorita",
+      "searchQuery": "gothorita",
+      "spriteId": 575
+    },
+    {
+      "dexNumber": 576,
+      "formSlug": null,
+      "displayName": "Gothitelle",
+      "searchQuery": "gothitelle",
+      "spriteId": 576
+    },
+    {
+      "dexNumber": 577,
+      "formSlug": null,
+      "displayName": "Solosis",
+      "searchQuery": "solosis",
+      "spriteId": 577
+    },
+    {
+      "dexNumber": 578,
+      "formSlug": null,
+      "displayName": "Duosion",
+      "searchQuery": "duosion",
+      "spriteId": 578
+    },
+    {
+      "dexNumber": 579,
+      "formSlug": null,
+      "displayName": "Reuniclus",
+      "searchQuery": "reuniclus",
+      "spriteId": 579
+    },
+    {
+      "dexNumber": 580,
+      "formSlug": null,
+      "displayName": "Ducklett",
+      "searchQuery": "ducklett",
+      "spriteId": 580
+    },
+    {
+      "dexNumber": 581,
+      "formSlug": null,
+      "displayName": "Swanna",
+      "searchQuery": "swanna",
+      "spriteId": 581
+    },
+    {
+      "dexNumber": 582,
+      "formSlug": null,
+      "displayName": "Vanillite",
+      "searchQuery": "vanillite",
+      "spriteId": 582
+    },
+    {
+      "dexNumber": 583,
+      "formSlug": null,
+      "displayName": "Vanillish",
+      "searchQuery": "vanillish",
+      "spriteId": 583
+    },
+    {
+      "dexNumber": 584,
+      "formSlug": null,
+      "displayName": "Vanilluxe",
+      "searchQuery": "vanilluxe",
+      "spriteId": 584
+    },
+    {
+      "dexNumber": 585,
+      "formSlug": null,
+      "displayName": "Deerling",
+      "searchQuery": "deerling",
+      "spriteId": 585
+    },
+    {
+      "dexNumber": 586,
+      "formSlug": null,
+      "displayName": "Sawsbuck",
+      "searchQuery": "sawsbuck",
+      "spriteId": 586
+    },
+    {
+      "dexNumber": 587,
+      "formSlug": null,
+      "displayName": "Emolga",
+      "searchQuery": "emolga",
+      "spriteId": 587
+    },
+    {
+      "dexNumber": 588,
+      "formSlug": null,
+      "displayName": "Karrablast",
+      "searchQuery": "karrablast",
+      "spriteId": 588
+    },
+    {
+      "dexNumber": 589,
+      "formSlug": null,
+      "displayName": "Escavalier",
+      "searchQuery": "escavalier",
+      "spriteId": 589
+    },
+    {
+      "dexNumber": 590,
+      "formSlug": null,
+      "displayName": "Foongus",
+      "searchQuery": "foongus",
+      "spriteId": 590
+    },
+    {
+      "dexNumber": 591,
+      "formSlug": null,
+      "displayName": "Amoonguss",
+      "searchQuery": "amoonguss",
+      "spriteId": 591
+    },
+    {
+      "dexNumber": 592,
+      "formSlug": null,
+      "displayName": "Frillish",
+      "searchQuery": "frillish",
+      "spriteId": 592
+    },
+    {
+      "dexNumber": 593,
+      "formSlug": null,
+      "displayName": "Jellicent",
+      "searchQuery": "jellicent",
+      "spriteId": 593
+    },
+    {
+      "dexNumber": 594,
+      "formSlug": null,
+      "displayName": "Alomomola",
+      "searchQuery": "alomomola",
+      "spriteId": 594
+    },
+    {
+      "dexNumber": 595,
+      "formSlug": null,
+      "displayName": "Joltik",
+      "searchQuery": "joltik",
+      "spriteId": 595
+    },
+    {
+      "dexNumber": 596,
+      "formSlug": null,
+      "displayName": "Galvantula",
+      "searchQuery": "galvantula",
+      "spriteId": 596
+    },
+    {
+      "dexNumber": 597,
+      "formSlug": null,
+      "displayName": "Ferroseed",
+      "searchQuery": "ferroseed",
+      "spriteId": 597
+    },
+    {
+      "dexNumber": 598,
+      "formSlug": null,
+      "displayName": "Ferrothorn",
+      "searchQuery": "ferrothorn",
+      "spriteId": 598
+    },
+    {
+      "dexNumber": 599,
+      "formSlug": null,
+      "displayName": "Klink",
+      "searchQuery": "klink",
+      "spriteId": 599
+    },
+    {
+      "dexNumber": 600,
+      "formSlug": null,
+      "displayName": "Klang",
+      "searchQuery": "klang",
+      "spriteId": 600
+    },
+    {
+      "dexNumber": 601,
+      "formSlug": null,
+      "displayName": "Klinklang",
+      "searchQuery": "klinklang",
+      "spriteId": 601
+    },
+    {
+      "dexNumber": 602,
+      "formSlug": null,
+      "displayName": "Tynamo",
+      "searchQuery": "tynamo",
+      "spriteId": 602
+    },
+    {
+      "dexNumber": 603,
+      "formSlug": null,
+      "displayName": "Eelektrik",
+      "searchQuery": "eelektrik",
+      "spriteId": 603
+    },
+    {
+      "dexNumber": 604,
+      "formSlug": null,
+      "displayName": "Eelektross",
+      "searchQuery": "eelektross",
+      "spriteId": 604
+    },
+    {
+      "dexNumber": 605,
+      "formSlug": null,
+      "displayName": "Elgyem",
+      "searchQuery": "elgyem",
+      "spriteId": 605
+    },
+    {
+      "dexNumber": 606,
+      "formSlug": null,
+      "displayName": "Beheeyem",
+      "searchQuery": "beheeyem",
+      "spriteId": 606
+    },
+    {
+      "dexNumber": 607,
+      "formSlug": null,
+      "displayName": "Litwick",
+      "searchQuery": "litwick",
+      "spriteId": 607
+    },
+    {
+      "dexNumber": 608,
+      "formSlug": null,
+      "displayName": "Lampent",
+      "searchQuery": "lampent",
+      "spriteId": 608
+    },
+    {
+      "dexNumber": 609,
+      "formSlug": null,
+      "displayName": "Chandelure",
+      "searchQuery": "chandelure",
+      "spriteId": 609
+    },
+    {
+      "dexNumber": 610,
+      "formSlug": null,
+      "displayName": "Axew",
+      "searchQuery": "axew",
+      "spriteId": 610
+    },
+    {
+      "dexNumber": 611,
+      "formSlug": null,
+      "displayName": "Fraxure",
+      "searchQuery": "fraxure",
+      "spriteId": 611
+    },
+    {
+      "dexNumber": 612,
+      "formSlug": null,
+      "displayName": "Haxorus",
+      "searchQuery": "haxorus",
+      "spriteId": 612
+    },
+    {
+      "dexNumber": 613,
+      "formSlug": null,
+      "displayName": "Cubchoo",
+      "searchQuery": "cubchoo",
+      "spriteId": 613
+    },
+    {
+      "dexNumber": 614,
+      "formSlug": null,
+      "displayName": "Beartic",
+      "searchQuery": "beartic",
+      "spriteId": 614
+    },
+    {
+      "dexNumber": 615,
+      "formSlug": null,
+      "displayName": "Cryogonal",
+      "searchQuery": "cryogonal",
+      "spriteId": 615
+    },
+    {
+      "dexNumber": 616,
+      "formSlug": null,
+      "displayName": "Shelmet",
+      "searchQuery": "shelmet",
+      "spriteId": 616
+    },
+    {
+      "dexNumber": 617,
+      "formSlug": null,
+      "displayName": "Accelgor",
+      "searchQuery": "accelgor",
+      "spriteId": 617
+    },
+    {
+      "dexNumber": 618,
+      "formSlug": null,
+      "displayName": "Stunfisk",
+      "searchQuery": "stunfisk",
+      "spriteId": 618
+    },
+    {
+      "dexNumber": 619,
+      "formSlug": null,
+      "displayName": "Mienfoo",
+      "searchQuery": "mienfoo",
+      "spriteId": 619
+    },
+    {
+      "dexNumber": 620,
+      "formSlug": null,
+      "displayName": "Mienshao",
+      "searchQuery": "mienshao",
+      "spriteId": 620
+    },
+    {
+      "dexNumber": 621,
+      "formSlug": null,
+      "displayName": "Druddigon",
+      "searchQuery": "druddigon",
+      "spriteId": 621
+    },
+    {
+      "dexNumber": 622,
+      "formSlug": null,
+      "displayName": "Golett",
+      "searchQuery": "golett",
+      "spriteId": 622
+    },
+    {
+      "dexNumber": 623,
+      "formSlug": null,
+      "displayName": "Golurk",
+      "searchQuery": "golurk",
+      "spriteId": 623
+    },
+    {
+      "dexNumber": 624,
+      "formSlug": null,
+      "displayName": "Pawniard",
+      "searchQuery": "pawniard",
+      "spriteId": 624
+    },
+    {
+      "dexNumber": 625,
+      "formSlug": null,
+      "displayName": "Bisharp",
+      "searchQuery": "bisharp",
+      "spriteId": 625
+    },
+    {
+      "dexNumber": 626,
+      "formSlug": null,
+      "displayName": "Bouffalant",
+      "searchQuery": "bouffalant",
+      "spriteId": 626
+    },
+    {
+      "dexNumber": 627,
+      "formSlug": null,
+      "displayName": "Rufflet",
+      "searchQuery": "rufflet",
+      "spriteId": 627
+    },
+    {
+      "dexNumber": 628,
+      "formSlug": null,
+      "displayName": "Braviary",
+      "searchQuery": "braviary",
+      "spriteId": 628
+    },
+    {
+      "dexNumber": 629,
+      "formSlug": null,
+      "displayName": "Vullaby",
+      "searchQuery": "vullaby",
+      "spriteId": 629
+    },
+    {
+      "dexNumber": 630,
+      "formSlug": null,
+      "displayName": "Mandibuzz",
+      "searchQuery": "mandibuzz",
+      "spriteId": 630
+    },
+    {
+      "dexNumber": 631,
+      "formSlug": null,
+      "displayName": "Heatmor",
+      "searchQuery": "heatmor",
+      "spriteId": 631
+    },
+    {
+      "dexNumber": 632,
+      "formSlug": null,
+      "displayName": "Durant",
+      "searchQuery": "durant",
+      "spriteId": 632
+    },
+    {
+      "dexNumber": 633,
+      "formSlug": null,
+      "displayName": "Deino",
+      "searchQuery": "deino",
+      "spriteId": 633
+    },
+    {
+      "dexNumber": 634,
+      "formSlug": null,
+      "displayName": "Zweilous",
+      "searchQuery": "zweilous",
+      "spriteId": 634
+    },
+    {
+      "dexNumber": 635,
+      "formSlug": null,
+      "displayName": "Hydreigon",
+      "searchQuery": "hydreigon",
+      "spriteId": 635
+    },
+    {
+      "dexNumber": 636,
+      "formSlug": null,
+      "displayName": "Larvesta",
+      "searchQuery": "larvesta",
+      "spriteId": 636
+    },
+    {
+      "dexNumber": 637,
+      "formSlug": null,
+      "displayName": "Volcarona",
+      "searchQuery": "volcarona",
+      "spriteId": 637
+    },
+    {
+      "dexNumber": 638,
+      "formSlug": null,
+      "displayName": "Cobalion",
+      "searchQuery": "cobalion",
+      "spriteId": 638
+    },
+    {
+      "dexNumber": 639,
+      "formSlug": null,
+      "displayName": "Terrakion",
+      "searchQuery": "terrakion",
+      "spriteId": 639
+    },
+    {
+      "dexNumber": 640,
+      "formSlug": null,
+      "displayName": "Virizion",
+      "searchQuery": "virizion",
+      "spriteId": 640
+    },
+    {
+      "dexNumber": 641,
+      "formSlug": null,
+      "displayName": "Tornadus",
+      "searchQuery": "tornadus",
+      "spriteId": 641
+    },
+    {
+      "dexNumber": 642,
+      "formSlug": null,
+      "displayName": "Thundurus",
+      "searchQuery": "thundurus",
+      "spriteId": 642
+    },
+    {
+      "dexNumber": 643,
+      "formSlug": null,
+      "displayName": "Reshiram",
+      "searchQuery": "reshiram",
+      "spriteId": 643
+    },
+    {
+      "dexNumber": 644,
+      "formSlug": null,
+      "displayName": "Zekrom",
+      "searchQuery": "zekrom",
+      "spriteId": 644
+    },
+    {
+      "dexNumber": 645,
+      "formSlug": null,
+      "displayName": "Landorus",
+      "searchQuery": "landorus",
+      "spriteId": 645
+    },
+    {
+      "dexNumber": 646,
+      "formSlug": null,
+      "displayName": "Kyurem",
+      "searchQuery": "kyurem",
+      "spriteId": 646
+    },
+    {
+      "dexNumber": 647,
+      "formSlug": null,
+      "displayName": "Keldeo",
+      "searchQuery": "keldeo",
+      "spriteId": 647
+    },
+    {
+      "dexNumber": 648,
+      "formSlug": null,
+      "displayName": "Meloetta",
+      "searchQuery": "meloetta",
+      "spriteId": 648
+    },
+    {
+      "dexNumber": 649,
+      "formSlug": null,
+      "displayName": "Genesect",
+      "searchQuery": "genesect",
+      "spriteId": 649
+    },
+    {
+      "dexNumber": 650,
+      "formSlug": null,
+      "displayName": "Chespin",
+      "searchQuery": "chespin",
+      "spriteId": 650
+    },
+    {
+      "dexNumber": 651,
+      "formSlug": null,
+      "displayName": "Quilladin",
+      "searchQuery": "quilladin",
+      "spriteId": 651
+    },
+    {
+      "dexNumber": 652,
+      "formSlug": null,
+      "displayName": "Chesnaught",
+      "searchQuery": "chesnaught",
+      "spriteId": 652
+    },
+    {
+      "dexNumber": 653,
+      "formSlug": null,
+      "displayName": "Fennekin",
+      "searchQuery": "fennekin",
+      "spriteId": 653
+    },
+    {
+      "dexNumber": 654,
+      "formSlug": null,
+      "displayName": "Braixen",
+      "searchQuery": "braixen",
+      "spriteId": 654
+    },
+    {
+      "dexNumber": 655,
+      "formSlug": null,
+      "displayName": "Delphox",
+      "searchQuery": "delphox",
+      "spriteId": 655
+    },
+    {
+      "dexNumber": 656,
+      "formSlug": null,
+      "displayName": "Froakie",
+      "searchQuery": "froakie",
+      "spriteId": 656
+    },
+    {
+      "dexNumber": 657,
+      "formSlug": null,
+      "displayName": "Frogadier",
+      "searchQuery": "frogadier",
+      "spriteId": 657
+    },
+    {
+      "dexNumber": 658,
+      "formSlug": null,
+      "displayName": "Greninja",
+      "searchQuery": "greninja",
+      "spriteId": 658
+    },
+    {
+      "dexNumber": 659,
+      "formSlug": null,
+      "displayName": "Bunnelby",
+      "searchQuery": "bunnelby",
+      "spriteId": 659
+    },
+    {
+      "dexNumber": 660,
+      "formSlug": null,
+      "displayName": "Diggersby",
+      "searchQuery": "diggersby",
+      "spriteId": 660
+    },
+    {
+      "dexNumber": 661,
+      "formSlug": null,
+      "displayName": "Fletchling",
+      "searchQuery": "fletchling",
+      "spriteId": 661
+    },
+    {
+      "dexNumber": 662,
+      "formSlug": null,
+      "displayName": "Fletchinder",
+      "searchQuery": "fletchinder",
+      "spriteId": 662
+    },
+    {
+      "dexNumber": 663,
+      "formSlug": null,
+      "displayName": "Talonflame",
+      "searchQuery": "talonflame",
+      "spriteId": 663
+    },
+    {
+      "dexNumber": 664,
+      "formSlug": null,
+      "displayName": "Scatterbug",
+      "searchQuery": "scatterbug",
+      "spriteId": 664
+    },
+    {
+      "dexNumber": 665,
+      "formSlug": null,
+      "displayName": "Spewpa",
+      "searchQuery": "spewpa",
+      "spriteId": 665
+    },
+    {
+      "dexNumber": 666,
+      "formSlug": null,
+      "displayName": "Vivillon",
+      "searchQuery": "vivillon",
+      "spriteId": 666
+    },
+    {
+      "dexNumber": 667,
+      "formSlug": null,
+      "displayName": "Litleo",
+      "searchQuery": "litleo",
+      "spriteId": 667
+    },
+    {
+      "dexNumber": 668,
+      "formSlug": null,
+      "displayName": "Pyroar",
+      "searchQuery": "pyroar",
+      "spriteId": 668
+    },
+    {
+      "dexNumber": 669,
+      "formSlug": null,
+      "displayName": "Flabebe",
+      "searchQuery": "flabebe",
+      "spriteId": 669
+    },
+    {
+      "dexNumber": 670,
+      "formSlug": null,
+      "displayName": "Floette",
+      "searchQuery": "floette",
+      "spriteId": 670
+    },
+    {
+      "dexNumber": 671,
+      "formSlug": null,
+      "displayName": "Florges",
+      "searchQuery": "florges",
+      "spriteId": 671
+    },
+    {
+      "dexNumber": 672,
+      "formSlug": null,
+      "displayName": "Skiddo",
+      "searchQuery": "skiddo",
+      "spriteId": 672
+    },
+    {
+      "dexNumber": 673,
+      "formSlug": null,
+      "displayName": "Gogoat",
+      "searchQuery": "gogoat",
+      "spriteId": 673
+    },
+    {
+      "dexNumber": 674,
+      "formSlug": null,
+      "displayName": "Pancham",
+      "searchQuery": "pancham",
+      "spriteId": 674
+    },
+    {
+      "dexNumber": 675,
+      "formSlug": null,
+      "displayName": "Pangoro",
+      "searchQuery": "pangoro",
+      "spriteId": 675
+    },
+    {
+      "dexNumber": 676,
+      "formSlug": null,
+      "displayName": "Furfrou",
+      "searchQuery": "furfrou",
+      "spriteId": 676
+    },
+    {
+      "dexNumber": 677,
+      "formSlug": null,
+      "displayName": "Espurr",
+      "searchQuery": "espurr",
+      "spriteId": 677
+    },
+    {
+      "dexNumber": 678,
+      "formSlug": null,
+      "displayName": "Meowstic",
+      "searchQuery": "meowstic",
+      "spriteId": 678
+    },
+    {
+      "dexNumber": 679,
+      "formSlug": null,
+      "displayName": "Honedge",
+      "searchQuery": "honedge",
+      "spriteId": 679
+    },
+    {
+      "dexNumber": 680,
+      "formSlug": null,
+      "displayName": "Doublade",
+      "searchQuery": "doublade",
+      "spriteId": 680
+    },
+    {
+      "dexNumber": 681,
+      "formSlug": null,
+      "displayName": "Aegislash",
+      "searchQuery": "aegislash",
+      "spriteId": 681
+    },
+    {
+      "dexNumber": 682,
+      "formSlug": null,
+      "displayName": "Spritzee",
+      "searchQuery": "spritzee",
+      "spriteId": 682
+    },
+    {
+      "dexNumber": 683,
+      "formSlug": null,
+      "displayName": "Aromatisse",
+      "searchQuery": "aromatisse",
+      "spriteId": 683
+    },
+    {
+      "dexNumber": 684,
+      "formSlug": null,
+      "displayName": "Swirlix",
+      "searchQuery": "swirlix",
+      "spriteId": 684
+    },
+    {
+      "dexNumber": 685,
+      "formSlug": null,
+      "displayName": "Slurpuff",
+      "searchQuery": "slurpuff",
+      "spriteId": 685
+    },
+    {
+      "dexNumber": 686,
+      "formSlug": null,
+      "displayName": "Inkay",
+      "searchQuery": "inkay",
+      "spriteId": 686
+    },
+    {
+      "dexNumber": 687,
+      "formSlug": null,
+      "displayName": "Malamar",
+      "searchQuery": "malamar",
+      "spriteId": 687
+    },
+    {
+      "dexNumber": 688,
+      "formSlug": null,
+      "displayName": "Binacle",
+      "searchQuery": "binacle",
+      "spriteId": 688
+    },
+    {
+      "dexNumber": 689,
+      "formSlug": null,
+      "displayName": "Barbaracle",
+      "searchQuery": "barbaracle",
+      "spriteId": 689
+    },
+    {
+      "dexNumber": 690,
+      "formSlug": null,
+      "displayName": "Skrelp",
+      "searchQuery": "skrelp",
+      "spriteId": 690
+    },
+    {
+      "dexNumber": 691,
+      "formSlug": null,
+      "displayName": "Dragalge",
+      "searchQuery": "dragalge",
+      "spriteId": 691
+    },
+    {
+      "dexNumber": 692,
+      "formSlug": null,
+      "displayName": "Clauncher",
+      "searchQuery": "clauncher",
+      "spriteId": 692
+    },
+    {
+      "dexNumber": 693,
+      "formSlug": null,
+      "displayName": "Clawitzer",
+      "searchQuery": "clawitzer",
+      "spriteId": 693
+    },
+    {
+      "dexNumber": 694,
+      "formSlug": null,
+      "displayName": "Helioptile",
+      "searchQuery": "helioptile",
+      "spriteId": 694
+    },
+    {
+      "dexNumber": 695,
+      "formSlug": null,
+      "displayName": "Heliolisk",
+      "searchQuery": "heliolisk",
+      "spriteId": 695
+    },
+    {
+      "dexNumber": 696,
+      "formSlug": null,
+      "displayName": "Tyrunt",
+      "searchQuery": "tyrunt",
+      "spriteId": 696
+    },
+    {
+      "dexNumber": 697,
+      "formSlug": null,
+      "displayName": "Tyrantrum",
+      "searchQuery": "tyrantrum",
+      "spriteId": 697
+    },
+    {
+      "dexNumber": 698,
+      "formSlug": null,
+      "displayName": "Amaura",
+      "searchQuery": "amaura",
+      "spriteId": 698
+    },
+    {
+      "dexNumber": 699,
+      "formSlug": null,
+      "displayName": "Aurorus",
+      "searchQuery": "aurorus",
+      "spriteId": 699
+    },
+    {
+      "dexNumber": 700,
+      "formSlug": null,
+      "displayName": "Sylveon",
+      "searchQuery": "sylveon",
+      "spriteId": 700
+    },
+    {
+      "dexNumber": 701,
+      "formSlug": null,
+      "displayName": "Hawlucha",
+      "searchQuery": "hawlucha",
+      "spriteId": 701
+    },
+    {
+      "dexNumber": 702,
+      "formSlug": null,
+      "displayName": "Dedenne",
+      "searchQuery": "dedenne",
+      "spriteId": 702
+    },
+    {
+      "dexNumber": 703,
+      "formSlug": null,
+      "displayName": "Carbink",
+      "searchQuery": "carbink",
+      "spriteId": 703
+    },
+    {
+      "dexNumber": 704,
+      "formSlug": null,
+      "displayName": "Goomy",
+      "searchQuery": "goomy",
+      "spriteId": 704
+    },
+    {
+      "dexNumber": 705,
+      "formSlug": null,
+      "displayName": "Sliggoo",
+      "searchQuery": "sliggoo",
+      "spriteId": 705
+    },
+    {
+      "dexNumber": 706,
+      "formSlug": null,
+      "displayName": "Goodra",
+      "searchQuery": "goodra",
+      "spriteId": 706
+    },
+    {
+      "dexNumber": 707,
+      "formSlug": null,
+      "displayName": "Klefki",
+      "searchQuery": "klefki",
+      "spriteId": 707
+    },
+    {
+      "dexNumber": 708,
+      "formSlug": null,
+      "displayName": "Phantump",
+      "searchQuery": "phantump",
+      "spriteId": 708
+    },
+    {
+      "dexNumber": 709,
+      "formSlug": null,
+      "displayName": "Trevenant",
+      "searchQuery": "trevenant",
+      "spriteId": 709
+    },
+    {
+      "dexNumber": 710,
+      "formSlug": null,
+      "displayName": "Pumpkaboo",
+      "searchQuery": "pumpkaboo",
+      "spriteId": 710
+    },
+    {
+      "dexNumber": 711,
+      "formSlug": null,
+      "displayName": "Gourgeist",
+      "searchQuery": "gourgeist",
+      "spriteId": 711
+    },
+    {
+      "dexNumber": 712,
+      "formSlug": null,
+      "displayName": "Bergmite",
+      "searchQuery": "bergmite",
+      "spriteId": 712
+    },
+    {
+      "dexNumber": 713,
+      "formSlug": null,
+      "displayName": "Avalugg",
+      "searchQuery": "avalugg",
+      "spriteId": 713
+    },
+    {
+      "dexNumber": 714,
+      "formSlug": null,
+      "displayName": "Noibat",
+      "searchQuery": "noibat",
+      "spriteId": 714
+    },
+    {
+      "dexNumber": 715,
+      "formSlug": null,
+      "displayName": "Noivern",
+      "searchQuery": "noivern",
+      "spriteId": 715
+    },
+    {
+      "dexNumber": 716,
+      "formSlug": null,
+      "displayName": "Xerneas",
+      "searchQuery": "xerneas",
+      "spriteId": 716
+    },
+    {
+      "dexNumber": 717,
+      "formSlug": null,
+      "displayName": "Yveltal",
+      "searchQuery": "yveltal",
+      "spriteId": 717
+    },
+    {
+      "dexNumber": 718,
+      "formSlug": null,
+      "displayName": "Zygarde",
+      "searchQuery": "zygarde",
+      "spriteId": 718
+    },
+    {
+      "dexNumber": 719,
+      "formSlug": null,
+      "displayName": "Diancie",
+      "searchQuery": "diancie",
+      "spriteId": 719
+    },
+    {
+      "dexNumber": 720,
+      "formSlug": null,
+      "displayName": "Hoopa",
+      "searchQuery": "hoopa",
+      "spriteId": 720
+    },
+    {
+      "dexNumber": 721,
+      "formSlug": null,
+      "displayName": "Volcanion",
+      "searchQuery": "volcanion",
+      "spriteId": 721
+    },
+    {
+      "dexNumber": 722,
+      "formSlug": null,
+      "displayName": "Rowlet",
+      "searchQuery": "rowlet",
+      "spriteId": 722
+    },
+    {
+      "dexNumber": 723,
+      "formSlug": null,
+      "displayName": "Dartrix",
+      "searchQuery": "dartrix",
+      "spriteId": 723
+    },
+    {
+      "dexNumber": 724,
+      "formSlug": null,
+      "displayName": "Decidueye",
+      "searchQuery": "decidueye",
+      "spriteId": 724
+    },
+    {
+      "dexNumber": 725,
+      "formSlug": null,
+      "displayName": "Litten",
+      "searchQuery": "litten",
+      "spriteId": 725
+    },
+    {
+      "dexNumber": 726,
+      "formSlug": null,
+      "displayName": "Torracat",
+      "searchQuery": "torracat",
+      "spriteId": 726
+    },
+    {
+      "dexNumber": 727,
+      "formSlug": null,
+      "displayName": "Incineroar",
+      "searchQuery": "incineroar",
+      "spriteId": 727
+    },
+    {
+      "dexNumber": 728,
+      "formSlug": null,
+      "displayName": "Popplio",
+      "searchQuery": "popplio",
+      "spriteId": 728
+    },
+    {
+      "dexNumber": 729,
+      "formSlug": null,
+      "displayName": "Brionne",
+      "searchQuery": "brionne",
+      "spriteId": 729
+    },
+    {
+      "dexNumber": 730,
+      "formSlug": null,
+      "displayName": "Primarina",
+      "searchQuery": "primarina",
+      "spriteId": 730
+    },
+    {
+      "dexNumber": 731,
+      "formSlug": null,
+      "displayName": "Pikipek",
+      "searchQuery": "pikipek",
+      "spriteId": 731
+    },
+    {
+      "dexNumber": 732,
+      "formSlug": null,
+      "displayName": "Trumbeak",
+      "searchQuery": "trumbeak",
+      "spriteId": 732
+    },
+    {
+      "dexNumber": 733,
+      "formSlug": null,
+      "displayName": "Toucannon",
+      "searchQuery": "toucannon",
+      "spriteId": 733
+    },
+    {
+      "dexNumber": 734,
+      "formSlug": null,
+      "displayName": "Yungoos",
+      "searchQuery": "yungoos",
+      "spriteId": 734
+    },
+    {
+      "dexNumber": 735,
+      "formSlug": null,
+      "displayName": "Gumshoos",
+      "searchQuery": "gumshoos",
+      "spriteId": 735
+    },
+    {
+      "dexNumber": 736,
+      "formSlug": null,
+      "displayName": "Grubbin",
+      "searchQuery": "grubbin",
+      "spriteId": 736
+    },
+    {
+      "dexNumber": 737,
+      "formSlug": null,
+      "displayName": "Charjabug",
+      "searchQuery": "charjabug",
+      "spriteId": 737
+    },
+    {
+      "dexNumber": 738,
+      "formSlug": null,
+      "displayName": "Vikavolt",
+      "searchQuery": "vikavolt",
+      "spriteId": 738
+    },
+    {
+      "dexNumber": 739,
+      "formSlug": null,
+      "displayName": "Crabrawler",
+      "searchQuery": "crabrawler",
+      "spriteId": 739
+    },
+    {
+      "dexNumber": 740,
+      "formSlug": null,
+      "displayName": "Crabominable",
+      "searchQuery": "crabominable",
+      "spriteId": 740
+    },
+    {
+      "dexNumber": 741,
+      "formSlug": null,
+      "displayName": "Oricorio",
+      "searchQuery": "oricorio",
+      "spriteId": 741
+    },
+    {
+      "dexNumber": 742,
+      "formSlug": null,
+      "displayName": "Cutiefly",
+      "searchQuery": "cutiefly",
+      "spriteId": 742
+    },
+    {
+      "dexNumber": 743,
+      "formSlug": null,
+      "displayName": "Ribombee",
+      "searchQuery": "ribombee",
+      "spriteId": 743
+    },
+    {
+      "dexNumber": 744,
+      "formSlug": null,
+      "displayName": "Rockruff",
+      "searchQuery": "rockruff",
+      "spriteId": 744
+    },
+    {
+      "dexNumber": 745,
+      "formSlug": null,
+      "displayName": "Lycanroc",
+      "searchQuery": "lycanroc",
+      "spriteId": 745
+    },
+    {
+      "dexNumber": 746,
+      "formSlug": null,
+      "displayName": "Wishiwashi",
+      "searchQuery": "wishiwashi",
+      "spriteId": 746
+    },
+    {
+      "dexNumber": 747,
+      "formSlug": null,
+      "displayName": "Mareanie",
+      "searchQuery": "mareanie",
+      "spriteId": 747
+    },
+    {
+      "dexNumber": 748,
+      "formSlug": null,
+      "displayName": "Toxapex",
+      "searchQuery": "toxapex",
+      "spriteId": 748
+    },
+    {
+      "dexNumber": 749,
+      "formSlug": null,
+      "displayName": "Mudbray",
+      "searchQuery": "mudbray",
+      "spriteId": 749
+    },
+    {
+      "dexNumber": 750,
+      "formSlug": null,
+      "displayName": "Mudsdale",
+      "searchQuery": "mudsdale",
+      "spriteId": 750
+    },
+    {
+      "dexNumber": 751,
+      "formSlug": null,
+      "displayName": "Dewpider",
+      "searchQuery": "dewpider",
+      "spriteId": 751
+    },
+    {
+      "dexNumber": 752,
+      "formSlug": null,
+      "displayName": "Araquanid",
+      "searchQuery": "araquanid",
+      "spriteId": 752
+    },
+    {
+      "dexNumber": 753,
+      "formSlug": null,
+      "displayName": "Fomantis",
+      "searchQuery": "fomantis",
+      "spriteId": 753
+    },
+    {
+      "dexNumber": 754,
+      "formSlug": null,
+      "displayName": "Lurantis",
+      "searchQuery": "lurantis",
+      "spriteId": 754
+    },
+    {
+      "dexNumber": 755,
+      "formSlug": null,
+      "displayName": "Morelull",
+      "searchQuery": "morelull",
+      "spriteId": 755
+    },
+    {
+      "dexNumber": 756,
+      "formSlug": null,
+      "displayName": "Shiinotic",
+      "searchQuery": "shiinotic",
+      "spriteId": 756
+    },
+    {
+      "dexNumber": 757,
+      "formSlug": null,
+      "displayName": "Salandit",
+      "searchQuery": "salandit",
+      "spriteId": 757
+    },
+    {
+      "dexNumber": 758,
+      "formSlug": null,
+      "displayName": "Salazzle",
+      "searchQuery": "salazzle",
+      "spriteId": 758
+    },
+    {
+      "dexNumber": 759,
+      "formSlug": null,
+      "displayName": "Stufful",
+      "searchQuery": "stufful",
+      "spriteId": 759
+    },
+    {
+      "dexNumber": 760,
+      "formSlug": null,
+      "displayName": "Bewear",
+      "searchQuery": "bewear",
+      "spriteId": 760
+    },
+    {
+      "dexNumber": 761,
+      "formSlug": null,
+      "displayName": "Bounsweet",
+      "searchQuery": "bounsweet",
+      "spriteId": 761
+    },
+    {
+      "dexNumber": 762,
+      "formSlug": null,
+      "displayName": "Steenee",
+      "searchQuery": "steenee",
+      "spriteId": 762
+    },
+    {
+      "dexNumber": 763,
+      "formSlug": null,
+      "displayName": "Tsareena",
+      "searchQuery": "tsareena",
+      "spriteId": 763
+    },
+    {
+      "dexNumber": 764,
+      "formSlug": null,
+      "displayName": "Comfey",
+      "searchQuery": "comfey",
+      "spriteId": 764
+    },
+    {
+      "dexNumber": 765,
+      "formSlug": null,
+      "displayName": "Oranguru",
+      "searchQuery": "oranguru",
+      "spriteId": 765
+    },
+    {
+      "dexNumber": 766,
+      "formSlug": null,
+      "displayName": "Passimian",
+      "searchQuery": "passimian",
+      "spriteId": 766
+    },
+    {
+      "dexNumber": 767,
+      "formSlug": null,
+      "displayName": "Wimpod",
+      "searchQuery": "wimpod",
+      "spriteId": 767
+    },
+    {
+      "dexNumber": 768,
+      "formSlug": null,
+      "displayName": "Golisopod",
+      "searchQuery": "golisopod",
+      "spriteId": 768
+    },
+    {
+      "dexNumber": 769,
+      "formSlug": null,
+      "displayName": "Sandygast",
+      "searchQuery": "sandygast",
+      "spriteId": 769
+    },
+    {
+      "dexNumber": 770,
+      "formSlug": null,
+      "displayName": "Palossand",
+      "searchQuery": "palossand",
+      "spriteId": 770
+    },
+    {
+      "dexNumber": 771,
+      "formSlug": null,
+      "displayName": "Pyukumuku",
+      "searchQuery": "pyukumuku",
+      "spriteId": 771
+    },
+    {
+      "dexNumber": 772,
+      "formSlug": null,
+      "displayName": "Type Null",
+      "searchQuery": "type",
+      "spriteId": 772
+    },
+    {
+      "dexNumber": 773,
+      "formSlug": null,
+      "displayName": "Silvally",
+      "searchQuery": "silvally",
+      "spriteId": 773
+    },
+    {
+      "dexNumber": 774,
+      "formSlug": null,
+      "displayName": "Minior",
+      "searchQuery": "minior",
+      "spriteId": 774
+    },
+    {
+      "dexNumber": 775,
+      "formSlug": null,
+      "displayName": "Komala",
+      "searchQuery": "komala",
+      "spriteId": 775
+    },
+    {
+      "dexNumber": 776,
+      "formSlug": null,
+      "displayName": "Turtonator",
+      "searchQuery": "turtonator",
+      "spriteId": 776
+    },
+    {
+      "dexNumber": 777,
+      "formSlug": null,
+      "displayName": "Togedemaru",
+      "searchQuery": "togedemaru",
+      "spriteId": 777
+    },
+    {
+      "dexNumber": 778,
+      "formSlug": null,
+      "displayName": "Mimikyu",
+      "searchQuery": "mimikyu",
+      "spriteId": 778
+    },
+    {
+      "dexNumber": 779,
+      "formSlug": null,
+      "displayName": "Bruxish",
+      "searchQuery": "bruxish",
+      "spriteId": 779
+    },
+    {
+      "dexNumber": 780,
+      "formSlug": null,
+      "displayName": "Drampa",
+      "searchQuery": "drampa",
+      "spriteId": 780
+    },
+    {
+      "dexNumber": 781,
+      "formSlug": null,
+      "displayName": "Dhelmise",
+      "searchQuery": "dhelmise",
+      "spriteId": 781
+    },
+    {
+      "dexNumber": 782,
+      "formSlug": null,
+      "displayName": "Jangmo O",
+      "searchQuery": "jangmo",
+      "spriteId": 782
+    },
+    {
+      "dexNumber": 783,
+      "formSlug": null,
+      "displayName": "Hakamo O",
+      "searchQuery": "hakamo",
+      "spriteId": 783
+    },
+    {
+      "dexNumber": 784,
+      "formSlug": null,
+      "displayName": "Kommo O",
+      "searchQuery": "kommo",
+      "spriteId": 784
+    },
+    {
+      "dexNumber": 785,
+      "formSlug": null,
+      "displayName": "Tapu Koko",
+      "searchQuery": "tapu",
+      "spriteId": 785
+    },
+    {
+      "dexNumber": 786,
+      "formSlug": null,
+      "displayName": "Tapu Lele",
+      "searchQuery": "tapu",
+      "spriteId": 786
+    },
+    {
+      "dexNumber": 787,
+      "formSlug": null,
+      "displayName": "Tapu Bulu",
+      "searchQuery": "tapu",
+      "spriteId": 787
+    },
+    {
+      "dexNumber": 788,
+      "formSlug": null,
+      "displayName": "Tapu Fini",
+      "searchQuery": "tapu",
+      "spriteId": 788
+    },
+    {
+      "dexNumber": 789,
+      "formSlug": null,
+      "displayName": "Cosmog",
+      "searchQuery": "cosmog",
+      "spriteId": 789
+    },
+    {
+      "dexNumber": 790,
+      "formSlug": null,
+      "displayName": "Cosmoem",
+      "searchQuery": "cosmoem",
+      "spriteId": 790
+    },
+    {
+      "dexNumber": 791,
+      "formSlug": null,
+      "displayName": "Solgaleo",
+      "searchQuery": "solgaleo",
+      "spriteId": 791
+    },
+    {
+      "dexNumber": 792,
+      "formSlug": null,
+      "displayName": "Lunala",
+      "searchQuery": "lunala",
+      "spriteId": 792
+    },
+    {
+      "dexNumber": 793,
+      "formSlug": null,
+      "displayName": "Nihilego",
+      "searchQuery": "nihilego",
+      "spriteId": 793
+    },
+    {
+      "dexNumber": 794,
+      "formSlug": null,
+      "displayName": "Buzzwole",
+      "searchQuery": "buzzwole",
+      "spriteId": 794
+    },
+    {
+      "dexNumber": 795,
+      "formSlug": null,
+      "displayName": "Pheromosa",
+      "searchQuery": "pheromosa",
+      "spriteId": 795
+    },
+    {
+      "dexNumber": 796,
+      "formSlug": null,
+      "displayName": "Xurkitree",
+      "searchQuery": "xurkitree",
+      "spriteId": 796
+    },
+    {
+      "dexNumber": 797,
+      "formSlug": null,
+      "displayName": "Celesteela",
+      "searchQuery": "celesteela",
+      "spriteId": 797
+    },
+    {
+      "dexNumber": 798,
+      "formSlug": null,
+      "displayName": "Kartana",
+      "searchQuery": "kartana",
+      "spriteId": 798
+    },
+    {
+      "dexNumber": 799,
+      "formSlug": null,
+      "displayName": "Guzzlord",
+      "searchQuery": "guzzlord",
+      "spriteId": 799
+    },
+    {
+      "dexNumber": 800,
+      "formSlug": null,
+      "displayName": "Necrozma",
+      "searchQuery": "necrozma",
+      "spriteId": 800
+    },
+    {
+      "dexNumber": 801,
+      "formSlug": null,
+      "displayName": "Magearna",
+      "searchQuery": "magearna",
+      "spriteId": 801
+    },
+    {
+      "dexNumber": 802,
+      "formSlug": null,
+      "displayName": "Marshadow",
+      "searchQuery": "marshadow",
+      "spriteId": 802
+    },
+    {
+      "dexNumber": 803,
+      "formSlug": null,
+      "displayName": "Poipole",
+      "searchQuery": "poipole",
+      "spriteId": 803
+    },
+    {
+      "dexNumber": 804,
+      "formSlug": null,
+      "displayName": "Naganadel",
+      "searchQuery": "naganadel",
+      "spriteId": 804
+    },
+    {
+      "dexNumber": 805,
+      "formSlug": null,
+      "displayName": "Stakataka",
+      "searchQuery": "stakataka",
+      "spriteId": 805
+    },
+    {
+      "dexNumber": 806,
+      "formSlug": null,
+      "displayName": "Blacephalon",
+      "searchQuery": "blacephalon",
+      "spriteId": 806
+    },
+    {
+      "dexNumber": 807,
+      "formSlug": null,
+      "displayName": "Zeraora",
+      "searchQuery": "zeraora",
+      "spriteId": 807
+    },
+    {
+      "dexNumber": 808,
+      "formSlug": null,
+      "displayName": "Meltan",
+      "searchQuery": "meltan",
+      "spriteId": 808
+    },
+    {
+      "dexNumber": 809,
+      "formSlug": null,
+      "displayName": "Melmetal",
+      "searchQuery": "melmetal",
+      "spriteId": 809
+    },
+    {
+      "dexNumber": 810,
+      "formSlug": null,
+      "displayName": "Grookey",
+      "searchQuery": "grookey",
+      "spriteId": 810
+    },
+    {
+      "dexNumber": 811,
+      "formSlug": null,
+      "displayName": "Thwackey",
+      "searchQuery": "thwackey",
+      "spriteId": 811
+    },
+    {
+      "dexNumber": 812,
+      "formSlug": null,
+      "displayName": "Rillaboom",
+      "searchQuery": "rillaboom",
+      "spriteId": 812
+    },
+    {
+      "dexNumber": 813,
+      "formSlug": null,
+      "displayName": "Scorbunny",
+      "searchQuery": "scorbunny",
+      "spriteId": 813
+    },
+    {
+      "dexNumber": 814,
+      "formSlug": null,
+      "displayName": "Raboot",
+      "searchQuery": "raboot",
+      "spriteId": 814
+    },
+    {
+      "dexNumber": 815,
+      "formSlug": null,
+      "displayName": "Cinderace",
+      "searchQuery": "cinderace",
+      "spriteId": 815
+    },
+    {
+      "dexNumber": 816,
+      "formSlug": null,
+      "displayName": "Sobble",
+      "searchQuery": "sobble",
+      "spriteId": 816
+    },
+    {
+      "dexNumber": 817,
+      "formSlug": null,
+      "displayName": "Drizzile",
+      "searchQuery": "drizzile",
+      "spriteId": 817
+    },
+    {
+      "dexNumber": 818,
+      "formSlug": null,
+      "displayName": "Inteleon",
+      "searchQuery": "inteleon",
+      "spriteId": 818
+    },
+    {
+      "dexNumber": 819,
+      "formSlug": null,
+      "displayName": "Skwovet",
+      "searchQuery": "skwovet",
+      "spriteId": 819
+    },
+    {
+      "dexNumber": 820,
+      "formSlug": null,
+      "displayName": "Greedent",
+      "searchQuery": "greedent",
+      "spriteId": 820
+    },
+    {
+      "dexNumber": 821,
+      "formSlug": null,
+      "displayName": "Rookidee",
+      "searchQuery": "rookidee",
+      "spriteId": 821
+    },
+    {
+      "dexNumber": 822,
+      "formSlug": null,
+      "displayName": "Corvisquire",
+      "searchQuery": "corvisquire",
+      "spriteId": 822
+    },
+    {
+      "dexNumber": 823,
+      "formSlug": null,
+      "displayName": "Corviknight",
+      "searchQuery": "corviknight",
+      "spriteId": 823
+    },
+    {
+      "dexNumber": 824,
+      "formSlug": null,
+      "displayName": "Blipbug",
+      "searchQuery": "blipbug",
+      "spriteId": 824
+    },
+    {
+      "dexNumber": 825,
+      "formSlug": null,
+      "displayName": "Dottler",
+      "searchQuery": "dottler",
+      "spriteId": 825
+    },
+    {
+      "dexNumber": 826,
+      "formSlug": null,
+      "displayName": "Orbeetle",
+      "searchQuery": "orbeetle",
+      "spriteId": 826
+    },
+    {
+      "dexNumber": 827,
+      "formSlug": null,
+      "displayName": "Nickit",
+      "searchQuery": "nickit",
+      "spriteId": 827
+    },
+    {
+      "dexNumber": 828,
+      "formSlug": null,
+      "displayName": "Thievul",
+      "searchQuery": "thievul",
+      "spriteId": 828
+    },
+    {
+      "dexNumber": 829,
+      "formSlug": null,
+      "displayName": "Gossifleur",
+      "searchQuery": "gossifleur",
+      "spriteId": 829
+    },
+    {
+      "dexNumber": 830,
+      "formSlug": null,
+      "displayName": "Eldegoss",
+      "searchQuery": "eldegoss",
+      "spriteId": 830
+    },
+    {
+      "dexNumber": 831,
+      "formSlug": null,
+      "displayName": "Wooloo",
+      "searchQuery": "wooloo",
+      "spriteId": 831
+    },
+    {
+      "dexNumber": 832,
+      "formSlug": null,
+      "displayName": "Dubwool",
+      "searchQuery": "dubwool",
+      "spriteId": 832
+    },
+    {
+      "dexNumber": 833,
+      "formSlug": null,
+      "displayName": "Chewtle",
+      "searchQuery": "chewtle",
+      "spriteId": 833
+    },
+    {
+      "dexNumber": 834,
+      "formSlug": null,
+      "displayName": "Drednaw",
+      "searchQuery": "drednaw",
+      "spriteId": 834
+    },
+    {
+      "dexNumber": 835,
+      "formSlug": null,
+      "displayName": "Yamper",
+      "searchQuery": "yamper",
+      "spriteId": 835
+    },
+    {
+      "dexNumber": 836,
+      "formSlug": null,
+      "displayName": "Boltund",
+      "searchQuery": "boltund",
+      "spriteId": 836
+    },
+    {
+      "dexNumber": 837,
+      "formSlug": null,
+      "displayName": "Rolycoly",
+      "searchQuery": "rolycoly",
+      "spriteId": 837
+    },
+    {
+      "dexNumber": 838,
+      "formSlug": null,
+      "displayName": "Carkol",
+      "searchQuery": "carkol",
+      "spriteId": 838
+    },
+    {
+      "dexNumber": 839,
+      "formSlug": null,
+      "displayName": "Coalossal",
+      "searchQuery": "coalossal",
+      "spriteId": 839
+    },
+    {
+      "dexNumber": 840,
+      "formSlug": null,
+      "displayName": "Applin",
+      "searchQuery": "applin",
+      "spriteId": 840
+    },
+    {
+      "dexNumber": 841,
+      "formSlug": null,
+      "displayName": "Flapple",
+      "searchQuery": "flapple",
+      "spriteId": 841
+    },
+    {
+      "dexNumber": 842,
+      "formSlug": null,
+      "displayName": "Appletun",
+      "searchQuery": "appletun",
+      "spriteId": 842
+    },
+    {
+      "dexNumber": 843,
+      "formSlug": null,
+      "displayName": "Silicobra",
+      "searchQuery": "silicobra",
+      "spriteId": 843
+    },
+    {
+      "dexNumber": 844,
+      "formSlug": null,
+      "displayName": "Sandaconda",
+      "searchQuery": "sandaconda",
+      "spriteId": 844
+    },
+    {
+      "dexNumber": 845,
+      "formSlug": null,
+      "displayName": "Cramorant",
+      "searchQuery": "cramorant",
+      "spriteId": 845
+    },
+    {
+      "dexNumber": 846,
+      "formSlug": null,
+      "displayName": "Arrokuda",
+      "searchQuery": "arrokuda",
+      "spriteId": 846
+    },
+    {
+      "dexNumber": 847,
+      "formSlug": null,
+      "displayName": "Barraskewda",
+      "searchQuery": "barraskewda",
+      "spriteId": 847
+    },
+    {
+      "dexNumber": 848,
+      "formSlug": null,
+      "displayName": "Toxel",
+      "searchQuery": "toxel",
+      "spriteId": 848
+    },
+    {
+      "dexNumber": 849,
+      "formSlug": null,
+      "displayName": "Toxtricity",
+      "searchQuery": "toxtricity",
+      "spriteId": 849
+    },
+    {
+      "dexNumber": 850,
+      "formSlug": null,
+      "displayName": "Sizzlipede",
+      "searchQuery": "sizzlipede",
+      "spriteId": 850
+    },
+    {
+      "dexNumber": 851,
+      "formSlug": null,
+      "displayName": "Centiskorch",
+      "searchQuery": "centiskorch",
+      "spriteId": 851
+    },
+    {
+      "dexNumber": 852,
+      "formSlug": null,
+      "displayName": "Clobbopus",
+      "searchQuery": "clobbopus",
+      "spriteId": 852
+    },
+    {
+      "dexNumber": 853,
+      "formSlug": null,
+      "displayName": "Grapploct",
+      "searchQuery": "grapploct",
+      "spriteId": 853
+    },
+    {
+      "dexNumber": 854,
+      "formSlug": null,
+      "displayName": "Sinistea",
+      "searchQuery": "sinistea",
+      "spriteId": 854
+    },
+    {
+      "dexNumber": 855,
+      "formSlug": null,
+      "displayName": "Polteageist",
+      "searchQuery": "polteageist",
+      "spriteId": 855
+    },
+    {
+      "dexNumber": 856,
+      "formSlug": null,
+      "displayName": "Hatenna",
+      "searchQuery": "hatenna",
+      "spriteId": 856
+    },
+    {
+      "dexNumber": 857,
+      "formSlug": null,
+      "displayName": "Hattrem",
+      "searchQuery": "hattrem",
+      "spriteId": 857
+    },
+    {
+      "dexNumber": 858,
+      "formSlug": null,
+      "displayName": "Hatterene",
+      "searchQuery": "hatterene",
+      "spriteId": 858
+    },
+    {
+      "dexNumber": 859,
+      "formSlug": null,
+      "displayName": "Impidimp",
+      "searchQuery": "impidimp",
+      "spriteId": 859
+    },
+    {
+      "dexNumber": 860,
+      "formSlug": null,
+      "displayName": "Morgrem",
+      "searchQuery": "morgrem",
+      "spriteId": 860
+    },
+    {
+      "dexNumber": 861,
+      "formSlug": null,
+      "displayName": "Grimmsnarl",
+      "searchQuery": "grimmsnarl",
+      "spriteId": 861
+    },
+    {
+      "dexNumber": 862,
+      "formSlug": null,
+      "displayName": "Obstagoon",
+      "searchQuery": "obstagoon",
+      "spriteId": 862
+    },
+    {
+      "dexNumber": 863,
+      "formSlug": null,
+      "displayName": "Perrserker",
+      "searchQuery": "perrserker",
+      "spriteId": 863
+    },
+    {
+      "dexNumber": 864,
+      "formSlug": null,
+      "displayName": "Cursola",
+      "searchQuery": "cursola",
+      "spriteId": 864
+    },
+    {
+      "dexNumber": 865,
+      "formSlug": null,
+      "displayName": "Sirfetchd",
+      "searchQuery": "sirfetchd",
+      "spriteId": 865
+    },
+    {
+      "dexNumber": 866,
+      "formSlug": null,
+      "displayName": "Mr Rime",
+      "searchQuery": "mr",
+      "spriteId": 866
+    },
+    {
+      "dexNumber": 867,
+      "formSlug": null,
+      "displayName": "Runerigus",
+      "searchQuery": "runerigus",
+      "spriteId": 867
+    },
+    {
+      "dexNumber": 868,
+      "formSlug": null,
+      "displayName": "Milcery",
+      "searchQuery": "milcery",
+      "spriteId": 868
+    },
+    {
+      "dexNumber": 869,
+      "formSlug": null,
+      "displayName": "Alcremie",
+      "searchQuery": "alcremie",
+      "spriteId": 869
+    },
+    {
+      "dexNumber": 870,
+      "formSlug": null,
+      "displayName": "Falinks",
+      "searchQuery": "falinks",
+      "spriteId": 870
+    },
+    {
+      "dexNumber": 871,
+      "formSlug": null,
+      "displayName": "Pincurchin",
+      "searchQuery": "pincurchin",
+      "spriteId": 871
+    },
+    {
+      "dexNumber": 872,
+      "formSlug": null,
+      "displayName": "Snom",
+      "searchQuery": "snom",
+      "spriteId": 872
+    },
+    {
+      "dexNumber": 873,
+      "formSlug": null,
+      "displayName": "Frosmoth",
+      "searchQuery": "frosmoth",
+      "spriteId": 873
+    },
+    {
+      "dexNumber": 874,
+      "formSlug": null,
+      "displayName": "Stonjourner",
+      "searchQuery": "stonjourner",
+      "spriteId": 874
+    },
+    {
+      "dexNumber": 875,
+      "formSlug": null,
+      "displayName": "Eiscue",
+      "searchQuery": "eiscue",
+      "spriteId": 875
+    },
+    {
+      "dexNumber": 876,
+      "formSlug": null,
+      "displayName": "Indeedee",
+      "searchQuery": "indeedee",
+      "spriteId": 876
+    },
+    {
+      "dexNumber": 877,
+      "formSlug": null,
+      "displayName": "Morpeko",
+      "searchQuery": "morpeko",
+      "spriteId": 877
+    },
+    {
+      "dexNumber": 878,
+      "formSlug": null,
+      "displayName": "Cufant",
+      "searchQuery": "cufant",
+      "spriteId": 878
+    },
+    {
+      "dexNumber": 879,
+      "formSlug": null,
+      "displayName": "Copperajah",
+      "searchQuery": "copperajah",
+      "spriteId": 879
+    },
+    {
+      "dexNumber": 880,
+      "formSlug": null,
+      "displayName": "Dracozolt",
+      "searchQuery": "dracozolt",
+      "spriteId": 880
+    },
+    {
+      "dexNumber": 881,
+      "formSlug": null,
+      "displayName": "Arctozolt",
+      "searchQuery": "arctozolt",
+      "spriteId": 881
+    },
+    {
+      "dexNumber": 882,
+      "formSlug": null,
+      "displayName": "Dracovish",
+      "searchQuery": "dracovish",
+      "spriteId": 882
+    },
+    {
+      "dexNumber": 883,
+      "formSlug": null,
+      "displayName": "Arctovish",
+      "searchQuery": "arctovish",
+      "spriteId": 883
+    },
+    {
+      "dexNumber": 884,
+      "formSlug": null,
+      "displayName": "Duraludon",
+      "searchQuery": "duraludon",
+      "spriteId": 884
+    },
+    {
+      "dexNumber": 885,
+      "formSlug": null,
+      "displayName": "Dreepy",
+      "searchQuery": "dreepy",
+      "spriteId": 885
+    },
+    {
+      "dexNumber": 886,
+      "formSlug": null,
+      "displayName": "Drakloak",
+      "searchQuery": "drakloak",
+      "spriteId": 886
+    },
+    {
+      "dexNumber": 887,
+      "formSlug": null,
+      "displayName": "Dragapult",
+      "searchQuery": "dragapult",
+      "spriteId": 887
+    },
+    {
+      "dexNumber": 888,
+      "formSlug": null,
+      "displayName": "Zacian",
+      "searchQuery": "zacian",
+      "spriteId": 888
+    },
+    {
+      "dexNumber": 889,
+      "formSlug": null,
+      "displayName": "Zamazenta",
+      "searchQuery": "zamazenta",
+      "spriteId": 889
+    },
+    {
+      "dexNumber": 890,
+      "formSlug": null,
+      "displayName": "Eternatus",
+      "searchQuery": "eternatus",
+      "spriteId": 890
+    },
+    {
+      "dexNumber": 891,
+      "formSlug": null,
+      "displayName": "Kubfu",
+      "searchQuery": "kubfu",
+      "spriteId": 891
+    },
+    {
+      "dexNumber": 892,
+      "formSlug": null,
+      "displayName": "Urshifu",
+      "searchQuery": "urshifu",
+      "spriteId": 892
+    },
+    {
+      "dexNumber": 893,
+      "formSlug": null,
+      "displayName": "Zarude",
+      "searchQuery": "zarude",
+      "spriteId": 893
+    },
+    {
+      "dexNumber": 894,
+      "formSlug": null,
+      "displayName": "Regieleki",
+      "searchQuery": "regieleki",
+      "spriteId": 894
+    },
+    {
+      "dexNumber": 895,
+      "formSlug": null,
+      "displayName": "Regidrago",
+      "searchQuery": "regidrago",
+      "spriteId": 895
+    },
+    {
+      "dexNumber": 896,
+      "formSlug": null,
+      "displayName": "Glastrier",
+      "searchQuery": "glastrier",
+      "spriteId": 896
+    },
+    {
+      "dexNumber": 897,
+      "formSlug": null,
+      "displayName": "Spectrier",
+      "searchQuery": "spectrier",
+      "spriteId": 897
+    },
+    {
+      "dexNumber": 898,
+      "formSlug": null,
+      "displayName": "Calyrex",
+      "searchQuery": "calyrex",
+      "spriteId": 898
+    },
+    {
+      "dexNumber": 899,
+      "formSlug": null,
+      "displayName": "Wyrdeer",
+      "searchQuery": "wyrdeer",
+      "spriteId": 899
+    },
+    {
+      "dexNumber": 900,
+      "formSlug": null,
+      "displayName": "Kleavor",
+      "searchQuery": "kleavor",
+      "spriteId": 900
+    },
+    {
+      "dexNumber": 901,
+      "formSlug": null,
+      "displayName": "Ursaluna",
+      "searchQuery": "ursaluna",
+      "spriteId": 901
+    },
+    {
+      "dexNumber": 902,
+      "formSlug": null,
+      "displayName": "Basculegion",
+      "searchQuery": "basculegion",
+      "spriteId": 902
+    },
+    {
+      "dexNumber": 903,
+      "formSlug": null,
+      "displayName": "Sneasler",
+      "searchQuery": "sneasler",
+      "spriteId": 903
+    },
+    {
+      "dexNumber": 904,
+      "formSlug": null,
+      "displayName": "Overqwil",
+      "searchQuery": "overqwil",
+      "spriteId": 904
+    },
+    {
+      "dexNumber": 905,
+      "formSlug": null,
+      "displayName": "Enamorus",
+      "searchQuery": "enamorus",
+      "spriteId": 905
+    },
+    {
+      "dexNumber": 906,
+      "formSlug": null,
+      "displayName": "Sprigatito",
+      "searchQuery": "sprigatito",
+      "spriteId": 906
+    },
+    {
+      "dexNumber": 907,
+      "formSlug": null,
+      "displayName": "Floragato",
+      "searchQuery": "floragato",
+      "spriteId": 907
+    },
+    {
+      "dexNumber": 908,
+      "formSlug": null,
+      "displayName": "Meowscarada",
+      "searchQuery": "meowscarada",
+      "spriteId": 908
+    },
+    {
+      "dexNumber": 909,
+      "formSlug": null,
+      "displayName": "Fuecoco",
+      "searchQuery": "fuecoco",
+      "spriteId": 909
+    },
+    {
+      "dexNumber": 910,
+      "formSlug": null,
+      "displayName": "Crocalor",
+      "searchQuery": "crocalor",
+      "spriteId": 910
+    },
+    {
+      "dexNumber": 911,
+      "formSlug": null,
+      "displayName": "Skeledirge",
+      "searchQuery": "skeledirge",
+      "spriteId": 911
+    },
+    {
+      "dexNumber": 912,
+      "formSlug": null,
+      "displayName": "Quaxly",
+      "searchQuery": "quaxly",
+      "spriteId": 912
+    },
+    {
+      "dexNumber": 913,
+      "formSlug": null,
+      "displayName": "Quaxwell",
+      "searchQuery": "quaxwell",
+      "spriteId": 913
+    },
+    {
+      "dexNumber": 914,
+      "formSlug": null,
+      "displayName": "Quaquaval",
+      "searchQuery": "quaquaval",
+      "spriteId": 914
+    },
+    {
+      "dexNumber": 915,
+      "formSlug": null,
+      "displayName": "Lechonk",
+      "searchQuery": "lechonk",
+      "spriteId": 915
+    },
+    {
+      "dexNumber": 916,
+      "formSlug": null,
+      "displayName": "Oinkologne",
+      "searchQuery": "oinkologne",
+      "spriteId": 916
+    },
+    {
+      "dexNumber": 917,
+      "formSlug": null,
+      "displayName": "Tarountula",
+      "searchQuery": "tarountula",
+      "spriteId": 917
+    },
+    {
+      "dexNumber": 918,
+      "formSlug": null,
+      "displayName": "Spidops",
+      "searchQuery": "spidops",
+      "spriteId": 918
+    },
+    {
+      "dexNumber": 919,
+      "formSlug": null,
+      "displayName": "Nymble",
+      "searchQuery": "nymble",
+      "spriteId": 919
+    },
+    {
+      "dexNumber": 920,
+      "formSlug": null,
+      "displayName": "Lokix",
+      "searchQuery": "lokix",
+      "spriteId": 920
+    },
+    {
+      "dexNumber": 921,
+      "formSlug": null,
+      "displayName": "Pawmi",
+      "searchQuery": "pawmi",
+      "spriteId": 921
+    },
+    {
+      "dexNumber": 922,
+      "formSlug": null,
+      "displayName": "Pawmo",
+      "searchQuery": "pawmo",
+      "spriteId": 922
+    },
+    {
+      "dexNumber": 923,
+      "formSlug": null,
+      "displayName": "Pawmot",
+      "searchQuery": "pawmot",
+      "spriteId": 923
+    },
+    {
+      "dexNumber": 924,
+      "formSlug": null,
+      "displayName": "Tandemaus",
+      "searchQuery": "tandemaus",
+      "spriteId": 924
+    },
+    {
+      "dexNumber": 925,
+      "formSlug": null,
+      "displayName": "Maushold",
+      "searchQuery": "maushold",
+      "spriteId": 925
+    },
+    {
+      "dexNumber": 926,
+      "formSlug": null,
+      "displayName": "Fidough",
+      "searchQuery": "fidough",
+      "spriteId": 926
+    },
+    {
+      "dexNumber": 927,
+      "formSlug": null,
+      "displayName": "Dachsbun",
+      "searchQuery": "dachsbun",
+      "spriteId": 927
+    },
+    {
+      "dexNumber": 928,
+      "formSlug": null,
+      "displayName": "Smoliv",
+      "searchQuery": "smoliv",
+      "spriteId": 928
+    },
+    {
+      "dexNumber": 929,
+      "formSlug": null,
+      "displayName": "Dolliv",
+      "searchQuery": "dolliv",
+      "spriteId": 929
+    },
+    {
+      "dexNumber": 930,
+      "formSlug": null,
+      "displayName": "Arboliva",
+      "searchQuery": "arboliva",
+      "spriteId": 930
+    },
+    {
+      "dexNumber": 931,
+      "formSlug": null,
+      "displayName": "Squawkabilly",
+      "searchQuery": "squawkabilly",
+      "spriteId": 931
+    },
+    {
+      "dexNumber": 932,
+      "formSlug": null,
+      "displayName": "Nacli",
+      "searchQuery": "nacli",
+      "spriteId": 932
+    },
+    {
+      "dexNumber": 933,
+      "formSlug": null,
+      "displayName": "Naclstack",
+      "searchQuery": "naclstack",
+      "spriteId": 933
+    },
+    {
+      "dexNumber": 934,
+      "formSlug": null,
+      "displayName": "Garganacl",
+      "searchQuery": "garganacl",
+      "spriteId": 934
+    },
+    {
+      "dexNumber": 935,
+      "formSlug": null,
+      "displayName": "Charcadet",
+      "searchQuery": "charcadet",
+      "spriteId": 935
+    },
+    {
+      "dexNumber": 936,
+      "formSlug": null,
+      "displayName": "Armarouge",
+      "searchQuery": "armarouge",
+      "spriteId": 936
+    },
+    {
+      "dexNumber": 937,
+      "formSlug": null,
+      "displayName": "Ceruledge",
+      "searchQuery": "ceruledge",
+      "spriteId": 937
+    },
+    {
+      "dexNumber": 938,
+      "formSlug": null,
+      "displayName": "Tadbulb",
+      "searchQuery": "tadbulb",
+      "spriteId": 938
+    },
+    {
+      "dexNumber": 939,
+      "formSlug": null,
+      "displayName": "Bellibolt",
+      "searchQuery": "bellibolt",
+      "spriteId": 939
+    },
+    {
+      "dexNumber": 940,
+      "formSlug": null,
+      "displayName": "Wattrel",
+      "searchQuery": "wattrel",
+      "spriteId": 940
+    },
+    {
+      "dexNumber": 941,
+      "formSlug": null,
+      "displayName": "Kilowattrel",
+      "searchQuery": "kilowattrel",
+      "spriteId": 941
+    },
+    {
+      "dexNumber": 942,
+      "formSlug": null,
+      "displayName": "Maschiff",
+      "searchQuery": "maschiff",
+      "spriteId": 942
+    },
+    {
+      "dexNumber": 943,
+      "formSlug": null,
+      "displayName": "Mabosstiff",
+      "searchQuery": "mabosstiff",
+      "spriteId": 943
+    },
+    {
+      "dexNumber": 944,
+      "formSlug": null,
+      "displayName": "Shroodle",
+      "searchQuery": "shroodle",
+      "spriteId": 944
+    },
+    {
+      "dexNumber": 945,
+      "formSlug": null,
+      "displayName": "Grafaiai",
+      "searchQuery": "grafaiai",
+      "spriteId": 945
+    },
+    {
+      "dexNumber": 946,
+      "formSlug": null,
+      "displayName": "Bramblin",
+      "searchQuery": "bramblin",
+      "spriteId": 946
+    },
+    {
+      "dexNumber": 947,
+      "formSlug": null,
+      "displayName": "Brambleghast",
+      "searchQuery": "brambleghast",
+      "spriteId": 947
+    },
+    {
+      "dexNumber": 948,
+      "formSlug": null,
+      "displayName": "Toedscool",
+      "searchQuery": "toedscool",
+      "spriteId": 948
+    },
+    {
+      "dexNumber": 949,
+      "formSlug": null,
+      "displayName": "Toedscruel",
+      "searchQuery": "toedscruel",
+      "spriteId": 949
+    },
+    {
+      "dexNumber": 950,
+      "formSlug": null,
+      "displayName": "Klawf",
+      "searchQuery": "klawf",
+      "spriteId": 950
+    },
+    {
+      "dexNumber": 951,
+      "formSlug": null,
+      "displayName": "Capsakid",
+      "searchQuery": "capsakid",
+      "spriteId": 951
+    },
+    {
+      "dexNumber": 952,
+      "formSlug": null,
+      "displayName": "Scovillain",
+      "searchQuery": "scovillain",
+      "spriteId": 952
+    },
+    {
+      "dexNumber": 953,
+      "formSlug": null,
+      "displayName": "Rellor",
+      "searchQuery": "rellor",
+      "spriteId": 953
+    },
+    {
+      "dexNumber": 954,
+      "formSlug": null,
+      "displayName": "Rabsca",
+      "searchQuery": "rabsca",
+      "spriteId": 954
+    },
+    {
+      "dexNumber": 955,
+      "formSlug": null,
+      "displayName": "Flittle",
+      "searchQuery": "flittle",
+      "spriteId": 955
+    },
+    {
+      "dexNumber": 956,
+      "formSlug": null,
+      "displayName": "Espathra",
+      "searchQuery": "espathra",
+      "spriteId": 956
+    },
+    {
+      "dexNumber": 957,
+      "formSlug": null,
+      "displayName": "Tinkatink",
+      "searchQuery": "tinkatink",
+      "spriteId": 957
+    },
+    {
+      "dexNumber": 958,
+      "formSlug": null,
+      "displayName": "Tinkatuff",
+      "searchQuery": "tinkatuff",
+      "spriteId": 958
+    },
+    {
+      "dexNumber": 959,
+      "formSlug": null,
+      "displayName": "Tinkaton",
+      "searchQuery": "tinkaton",
+      "spriteId": 959
+    },
+    {
+      "dexNumber": 960,
+      "formSlug": null,
+      "displayName": "Wiglett",
+      "searchQuery": "wiglett",
+      "spriteId": 960
+    },
+    {
+      "dexNumber": 961,
+      "formSlug": null,
+      "displayName": "Wugtrio",
+      "searchQuery": "wugtrio",
+      "spriteId": 961
+    },
+    {
+      "dexNumber": 962,
+      "formSlug": null,
+      "displayName": "Bombirdier",
+      "searchQuery": "bombirdier",
+      "spriteId": 962
+    },
+    {
+      "dexNumber": 963,
+      "formSlug": null,
+      "displayName": "Finizen",
+      "searchQuery": "finizen",
+      "spriteId": 963
+    },
+    {
+      "dexNumber": 964,
+      "formSlug": null,
+      "displayName": "Palafin",
+      "searchQuery": "palafin",
+      "spriteId": 964
+    },
+    {
+      "dexNumber": 965,
+      "formSlug": null,
+      "displayName": "Varoom",
+      "searchQuery": "varoom",
+      "spriteId": 965
+    },
+    {
+      "dexNumber": 966,
+      "formSlug": null,
+      "displayName": "Revavroom",
+      "searchQuery": "revavroom",
+      "spriteId": 966
+    },
+    {
+      "dexNumber": 967,
+      "formSlug": null,
+      "displayName": "Cyclizar",
+      "searchQuery": "cyclizar",
+      "spriteId": 967
+    },
+    {
+      "dexNumber": 968,
+      "formSlug": null,
+      "displayName": "Orthworm",
+      "searchQuery": "orthworm",
+      "spriteId": 968
+    },
+    {
+      "dexNumber": 969,
+      "formSlug": null,
+      "displayName": "Glimmet",
+      "searchQuery": "glimmet",
+      "spriteId": 969
+    },
+    {
+      "dexNumber": 970,
+      "formSlug": null,
+      "displayName": "Glimmora",
+      "searchQuery": "glimmora",
+      "spriteId": 970
+    },
+    {
+      "dexNumber": 971,
+      "formSlug": null,
+      "displayName": "Greavard",
+      "searchQuery": "greavard",
+      "spriteId": 971
+    },
+    {
+      "dexNumber": 972,
+      "formSlug": null,
+      "displayName": "Houndstone",
+      "searchQuery": "houndstone",
+      "spriteId": 972
+    },
+    {
+      "dexNumber": 973,
+      "formSlug": null,
+      "displayName": "Flamigo",
+      "searchQuery": "flamigo",
+      "spriteId": 973
+    },
+    {
+      "dexNumber": 974,
+      "formSlug": null,
+      "displayName": "Cetoddle",
+      "searchQuery": "cetoddle",
+      "spriteId": 974
+    },
+    {
+      "dexNumber": 975,
+      "formSlug": null,
+      "displayName": "Cetitan",
+      "searchQuery": "cetitan",
+      "spriteId": 975
+    },
+    {
+      "dexNumber": 976,
+      "formSlug": null,
+      "displayName": "Veluza",
+      "searchQuery": "veluza",
+      "spriteId": 976
+    },
+    {
+      "dexNumber": 977,
+      "formSlug": null,
+      "displayName": "Dondozo",
+      "searchQuery": "dondozo",
+      "spriteId": 977
+    },
+    {
+      "dexNumber": 978,
+      "formSlug": null,
+      "displayName": "Tatsugiri",
+      "searchQuery": "tatsugiri",
+      "spriteId": 978
+    },
+    {
+      "dexNumber": 979,
+      "formSlug": null,
+      "displayName": "Annihilape",
+      "searchQuery": "annihilape",
+      "spriteId": 979
+    },
+    {
+      "dexNumber": 980,
+      "formSlug": null,
+      "displayName": "Clodsire",
+      "searchQuery": "clodsire",
+      "spriteId": 980
+    },
+    {
+      "dexNumber": 981,
+      "formSlug": null,
+      "displayName": "Farigiraf",
+      "searchQuery": "farigiraf",
+      "spriteId": 981
+    },
+    {
+      "dexNumber": 982,
+      "formSlug": null,
+      "displayName": "Dudunsparce",
+      "searchQuery": "dudunsparce",
+      "spriteId": 982
+    },
+    {
+      "dexNumber": 983,
+      "formSlug": null,
+      "displayName": "Kingambit",
+      "searchQuery": "kingambit",
+      "spriteId": 983
+    },
+    {
+      "dexNumber": 984,
+      "formSlug": null,
+      "displayName": "Great Tusk",
+      "searchQuery": "great",
+      "spriteId": 984
+    },
+    {
+      "dexNumber": 985,
+      "formSlug": null,
+      "displayName": "Scream Tail",
+      "searchQuery": "scream",
+      "spriteId": 985
+    },
+    {
+      "dexNumber": 986,
+      "formSlug": null,
+      "displayName": "Brute Bonnet",
+      "searchQuery": "brute",
+      "spriteId": 986
+    },
+    {
+      "dexNumber": 987,
+      "formSlug": null,
+      "displayName": "Flutter Mane",
+      "searchQuery": "flutter",
+      "spriteId": 987
+    },
+    {
+      "dexNumber": 988,
+      "formSlug": null,
+      "displayName": "Slither Wing",
+      "searchQuery": "slither",
+      "spriteId": 988
+    },
+    {
+      "dexNumber": 989,
+      "formSlug": null,
+      "displayName": "Sandy Shocks",
+      "searchQuery": "sandy",
+      "spriteId": 989
+    },
+    {
+      "dexNumber": 990,
+      "formSlug": null,
+      "displayName": "Iron Treads",
+      "searchQuery": "iron",
+      "spriteId": 990
+    },
+    {
+      "dexNumber": 991,
+      "formSlug": null,
+      "displayName": "Iron Bundle",
+      "searchQuery": "iron",
+      "spriteId": 991
+    },
+    {
+      "dexNumber": 992,
+      "formSlug": null,
+      "displayName": "Iron Hands",
+      "searchQuery": "iron",
+      "spriteId": 992
+    },
+    {
+      "dexNumber": 993,
+      "formSlug": null,
+      "displayName": "Iron Jugulis",
+      "searchQuery": "iron",
+      "spriteId": 993
+    },
+    {
+      "dexNumber": 994,
+      "formSlug": null,
+      "displayName": "Iron Moth",
+      "searchQuery": "iron",
+      "spriteId": 994
+    },
+    {
+      "dexNumber": 995,
+      "formSlug": null,
+      "displayName": "Iron Thorns",
+      "searchQuery": "iron",
+      "spriteId": 995
+    },
+    {
+      "dexNumber": 996,
+      "formSlug": null,
+      "displayName": "Frigibax",
+      "searchQuery": "frigibax",
+      "spriteId": 996
+    },
+    {
+      "dexNumber": 997,
+      "formSlug": null,
+      "displayName": "Arctibax",
+      "searchQuery": "arctibax",
+      "spriteId": 997
+    },
+    {
+      "dexNumber": 998,
+      "formSlug": null,
+      "displayName": "Baxcalibur",
+      "searchQuery": "baxcalibur",
+      "spriteId": 998
+    },
+    {
+      "dexNumber": 999,
+      "formSlug": null,
+      "displayName": "Gimmighoul",
+      "searchQuery": "gimmighoul",
+      "spriteId": 999
+    },
+    {
+      "dexNumber": 1000,
+      "formSlug": null,
+      "displayName": "Gholdengo",
+      "searchQuery": "gholdengo",
+      "spriteId": 1000
+    },
+    {
+      "dexNumber": 1001,
+      "formSlug": null,
+      "displayName": "Wo Chien",
+      "searchQuery": "wo",
+      "spriteId": 1001
+    },
+    {
+      "dexNumber": 1002,
+      "formSlug": null,
+      "displayName": "Chien Pao",
+      "searchQuery": "chien",
+      "spriteId": 1002
+    },
+    {
+      "dexNumber": 1003,
+      "formSlug": null,
+      "displayName": "Ting Lu",
+      "searchQuery": "ting",
+      "spriteId": 1003
+    },
+    {
+      "dexNumber": 1004,
+      "formSlug": null,
+      "displayName": "Chi Yu",
+      "searchQuery": "chi",
+      "spriteId": 1004
+    },
+    {
+      "dexNumber": 1005,
+      "formSlug": null,
+      "displayName": "Roaring Moon",
+      "searchQuery": "roaring",
+      "spriteId": 1005
+    },
+    {
+      "dexNumber": 1006,
+      "formSlug": null,
+      "displayName": "Iron Valiant",
+      "searchQuery": "iron",
+      "spriteId": 1006
+    },
+    {
+      "dexNumber": 1007,
+      "formSlug": null,
+      "displayName": "Koraidon",
+      "searchQuery": "koraidon",
+      "spriteId": 1007
+    },
+    {
+      "dexNumber": 1008,
+      "formSlug": null,
+      "displayName": "Miraidon",
+      "searchQuery": "miraidon",
+      "spriteId": 1008
+    },
+    {
+      "dexNumber": 1009,
+      "formSlug": null,
+      "displayName": "Walking Wake",
+      "searchQuery": "walking",
+      "spriteId": 1009
+    },
+    {
+      "dexNumber": 1010,
+      "formSlug": null,
+      "displayName": "Iron Leaves",
+      "searchQuery": "iron",
+      "spriteId": 1010
+    },
+    {
+      "dexNumber": 1011,
+      "formSlug": null,
+      "displayName": "Dipplin",
+      "searchQuery": "dipplin",
+      "spriteId": 1011
+    },
+    {
+      "dexNumber": 1012,
+      "formSlug": null,
+      "displayName": "Poltchageist",
+      "searchQuery": "poltchageist",
+      "spriteId": 1012
+    },
+    {
+      "dexNumber": 1013,
+      "formSlug": null,
+      "displayName": "Sinistcha",
+      "searchQuery": "sinistcha",
+      "spriteId": 1013
+    },
+    {
+      "dexNumber": 1014,
+      "formSlug": null,
+      "displayName": "Okidogi",
+      "searchQuery": "okidogi",
+      "spriteId": 1014
+    },
+    {
+      "dexNumber": 1015,
+      "formSlug": null,
+      "displayName": "Munkidori",
+      "searchQuery": "munkidori",
+      "spriteId": 1015
+    },
+    {
+      "dexNumber": 1016,
+      "formSlug": null,
+      "displayName": "Fezandipiti",
+      "searchQuery": "fezandipiti",
+      "spriteId": 1016
+    },
+    {
+      "dexNumber": 1017,
+      "formSlug": null,
+      "displayName": "Ogerpon",
+      "searchQuery": "ogerpon",
+      "spriteId": 1017
+    },
+    {
+      "dexNumber": 1018,
+      "formSlug": null,
+      "displayName": "Archaludon",
+      "searchQuery": "archaludon",
+      "spriteId": 1018
+    },
+    {
+      "dexNumber": 1019,
+      "formSlug": null,
+      "displayName": "Hydrapple",
+      "searchQuery": "hydrapple",
+      "spriteId": 1019
+    },
+    {
+      "dexNumber": 1020,
+      "formSlug": null,
+      "displayName": "Gouging Fire",
+      "searchQuery": "gouging",
+      "spriteId": 1020
+    },
+    {
+      "dexNumber": 1021,
+      "formSlug": null,
+      "displayName": "Raging Bolt",
+      "searchQuery": "raging",
+      "spriteId": 1021
+    },
+    {
+      "dexNumber": 1022,
+      "formSlug": null,
+      "displayName": "Iron Boulder",
+      "searchQuery": "iron",
+      "spriteId": 1022
+    },
+    {
+      "dexNumber": 1023,
+      "formSlug": null,
+      "displayName": "Iron Crown",
+      "searchQuery": "iron",
+      "spriteId": 1023
+    },
+    {
+      "dexNumber": 1024,
+      "formSlug": null,
+      "displayName": "Terapagos",
+      "searchQuery": "terapagos",
+      "spriteId": 1024
+    },
+    {
+      "dexNumber": 1025,
+      "formSlug": null,
+      "displayName": "Pecharunt",
+      "searchQuery": "pecharunt",
+      "spriteId": 1025
+    }
+  ]
+}

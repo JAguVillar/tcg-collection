@@ -25,12 +25,15 @@ export default defineEventHandler(async (event) => {
     .from("binder_items")
     .select(`
       id, card_id, variant, quantity, notes, created_at, updated_at,
+      dex_number, form_slug, display_name, sprite_id,
       card:cards(
         id, name, number_display, set_id, set_name, series, rarity, artist,
         category, thumb_image_url, large_image_url, set_icon_url, release_date, raw
       )
     `)
     .eq("binder_id", binderId)
+    .order("dex_number", { ascending: true, nullsFirst: false })
+    .order("form_slug", { ascending: true, nullsFirst: true })
     .order("created_at", { ascending: true });
 
   if (error) {
@@ -54,6 +57,10 @@ export default defineEventHandler(async (event) => {
       notes: row.notes,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
+      dexNumber: row.dex_number,
+      formSlug: row.form_slug,
+      displayName: row.display_name,
+      spriteId: row.sprite_id,
       card: row.card?.raw
         ? {
             ...row.card.raw,

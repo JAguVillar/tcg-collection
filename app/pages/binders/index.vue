@@ -27,8 +27,46 @@ const createState = reactive({
   iconPokemon: null,
   color: null,
   mode: "collection",
+  template: null,
 });
 const createError = ref(null);
+
+const TEMPLATE_PRESETS = [
+  {
+    value: null,
+    label: "Empty binder",
+    description: "Start blank — collection or custom checklist.",
+  },
+  {
+    value: "pokedex",
+    label: "Pokédex",
+    description: "1025 slots, one per National Dex Pokémon.",
+    name: "Pokédex",
+    iconPokemon: 25,
+    color: "red",
+  },
+  {
+    value: "pokedex-master",
+    label: "Pokédex Master",
+    description: "Pokédex + alternate forms (regionals, megas, GMax…).",
+    name: "Pokédex Master",
+    iconPokemon: 25,
+    color: "amber",
+  },
+];
+
+watch(
+  () => createState.template,
+  (id) => {
+    const preset = TEMPLATE_PRESETS.find((t) => t.value === id);
+    if (!preset || !id) return;
+    if (!createState.name) createState.name = preset.name ?? "";
+    if (createState.iconPokemon == null && preset.iconPokemon != null) {
+      createState.iconPokemon = preset.iconPokemon;
+    }
+    if (!createState.color && preset.color) createState.color = preset.color;
+  },
+);
 
 const BINDER_COLOR_PALETTE = [
   "red",
@@ -136,7 +174,8 @@ async function onCreate() {
       description: createState.description?.trim() || null,
       iconPokemon: createState.iconPokemon || null,
       color: createState.color || null,
-      mode: createState.mode,
+      mode: createState.template ? "pokedex" : createState.mode,
+      template: createState.template,
     });
     toast.add({
       color: "success",
@@ -149,6 +188,7 @@ async function onCreate() {
     createState.iconPokemon = null;
     createState.color = null;
     createState.mode = "collection";
+    createState.template = null;
     createOpen.value = false;
   } catch (err) {
     createError.value =
@@ -315,7 +355,20 @@ async function onDelete(binder) {
             class="flex flex-col gap-4"
             @submit="onCreate"
           >
-            <UFormField label="Type" name="mode">
+            <UFormField
+              label="Start from template"
+              name="template"
+              help="Pre-loaded binders skip the type choice."
+            >
+              <URadioGroup
+                v-model="createState.template"
+                :items="TEMPLATE_PRESETS"
+                value-key="value"
+                variant="table"
+              />
+            </UFormField>
+
+            <UFormField v-if="!createState.template" label="Type" name="mode">
               <URadioGroup
                 v-model="createState.mode"
                 :items="modeOptions"

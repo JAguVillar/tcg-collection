@@ -31,6 +31,8 @@ const deleteDialog = overlay.create(
 
 const isActive = computed(() => activeBinderId.value === binderId.value);
 const isCustom = computed(() => binder.value?.mode === "custom");
+const isPokedex = computed(() => binder.value?.mode === "pokedex");
+const isChecklistLike = computed(() => isCustom.value || isPokedex.value);
 
 function formatVariant(variant) {
   if (!variant || variant === "normal") return null;
@@ -289,10 +291,18 @@ function compare(a, b) {
 
 const filteredItems = computed(() => {
   let list = items.value;
-  if (isCustom.value) {
+  if (isChecklistLike.value) {
     if (filter.value === "missing") list = list.filter((i) => i.quantity === 0);
     else if (filter.value === "owned")
       list = list.filter((i) => i.quantity > 0);
+  }
+  if (isPokedex.value) {
+    return [...list].sort((a, b) => {
+      if (a.dexNumber !== b.dexNumber) return (a.dexNumber ?? 0) - (b.dexNumber ?? 0);
+      const fa = a.formSlug ?? "";
+      const fb = b.formSlug ?? "";
+      return fa.localeCompare(fb);
+    });
   }
   return [...list].sort(compare);
 });
@@ -449,6 +459,42 @@ async function onSetActive() {
 
 const bulkAddOpen = ref(false);
 const addCardOpen = ref(false);
+const pendingSlot = ref(null);
+const pendingSlotQuery = ref("");
+
+function openSlotPicker(item) {
+  if (!item?.dexNumber) return;
+  pendingSlot.value = {
+    dexNumber: item.dexNumber,
+    formSlug: item.formSlug ?? null,
+  };
+  pendingSlotQuery.value = item.displayName?.split(" (")[0]?.toLowerCase() ?? "";
+  // The displayName is "Bulbasaur" or "Deoxys (Attack Form)" — we want the
+  // base species name as the search query.
+  addCardOpen.value = true;
+}
+
+watch(addCardOpen, (open) => {
+  if (!open) {
+    pendingSlot.value = null;
+    pendingSlotQuery.value = "";
+  }
+});
+
+async function clearSlot(item) {
+  try {
+    await removeCard(item.cardId, item.variant, {
+      all: true,
+      targetSlot: { dexNumber: item.dexNumber, formSlug: item.formSlug ?? null },
+    });
+  } catch (err) {
+    toast.add({
+      color: "error",
+      title: "Failed",
+      description: err?.data?.statusMessage ?? err?.message ?? "Error",
+    });
+  }
+}
 
 const missingRows = computed(() => buildMissingRows(items.value));
 const missingCount = computed(() => missingRows.value.length);
@@ -572,9 +618,9 @@ function onCardAdded(card) {
   });
 }
 
-// Keep the binder list progress in sync when items change in a custom binder.
+// Keep the binder list progress in sync when items change.
 watch([ownedItems, totalItems], () => {
-  if (isCustom.value) fetchBinders().catch(() => {});
+  if (isChecklistLike.value) fetchBinders().catch(() => {});
 });
 </script>
 
@@ -638,6 +684,7 @@ watch([ownedItems, totalItems], () => {
             @click="bulkAddOpen = true"
           />
           <UButton
+            v-if="!isPokedex"
             icon="i-lucide-plus"
             label="Add card"
             :ui="{ label: 'hidden sm:inline' }"
@@ -692,7 +739,7 @@ watch([ownedItems, totalItems], () => {
         {{ binder.description }}
       </p>
 
-      <div v-if="isCustom && totalItems" class="flex justify-between">
+      <div v-if="isChecklistLike && totalItems" class="flex justify-between">
         <UTabs
           :items="filterTabs"
           v-model="filter"
@@ -702,6 +749,7 @@ watch([ownedItems, totalItems], () => {
           size="lg"
         />
         <UTabs
+          v-if="!isPokedex"
           :items="VIEW_MODES"
           v-model="viewMode"
           variant="pill"
@@ -711,7 +759,7 @@ watch([ownedItems, totalItems], () => {
       </div>
 
       <div
-        v-if="items.length"
+        v-if="items.length && !isPokedex"
         class="mb-4 flex w-full flex-wrap items-center gap-2"
       >
         <UTabs
@@ -801,6 +849,53 @@ watch([ownedItems, totalItems], () => {
           },
         ]"
       />
+
+      <div
+        v-else-if="isPokedex"
+        class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3"
+      >
+        <article
+          v-for="item in filteredItems"
+          :key="item.id"
+          class="flex flex-col gap-1 min-w-0"
+        >
+          <button
+            v-if="!item.cardId"
+            type="button"
+            class="aspect-[5/7] rounded-md border border-dashed border-default bg-elevated/30 hover:border-primary hover:bg-primary/5 transition flex flex-col items-center justify-center gap-1 px-1 py-2 text-center"
+            @click="openSlotPicker(item)"
+          >
+            <img
+              :src="pokemonSpriteUrl(item.spriteId ?? item.dexNumber)"
+              :alt="item.displayName"
+              class="size-12 sm:size-14 object-contain opacity-60 grayscale"
+              loading="lazy"
+            />
+            <span class="text-[10px] sm:text-xs font-medium text-muted truncate w-full">
+              #{{ String(item.dexNumber).padStart(4, "0") }}
+            </span>
+            <span class="text-[10px] sm:text-xs text-default truncate w-full">
+              {{ item.displayName }}
+            </span>
+          </button>
+          <div v-else class="relative group">
+            <CardImage :card="item.card" :variant="item.variant" :quantity="item.quantity" />
+            <UButton
+              icon="i-lucide-x"
+              color="error"
+              variant="solid"
+              size="xs"
+              square
+              class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition"
+              aria-label="Clear slot"
+              @click.stop.prevent="clearSlot(item)"
+            />
+            <p class="mt-1 text-[10px] sm:text-xs text-muted truncate text-center">
+              #{{ String(item.dexNumber).padStart(4, "0") }} {{ item.displayName }}
+            </p>
+          </div>
+        </article>
+      </div>
 
       <div v-else-if="viewMode === 'grid'" class="cards-grid">
         <article
@@ -1197,6 +1292,8 @@ watch([ownedItems, totalItems], () => {
         v-model:open="addCardOpen"
         :binder="binder"
         :add-card="addCard"
+        :initial-query="pendingSlotQuery"
+        :target-slot="pendingSlot"
         @added="onCardAdded"
       />
     </template>

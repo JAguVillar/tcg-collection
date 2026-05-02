@@ -10,9 +10,10 @@ export default defineEventHandler(async (event) => {
   const variant = body?.variant ?? "normal";
   const all = Boolean(body?.all);
   const delta = Number.isFinite(body?.delta) ? Math.trunc(body.delta) : 1;
+  const targetSlot = body?.targetSlot ?? null;
 
-  if (!cardId) {
-    throw createError({ statusCode: 400, statusMessage: "cardId required" });
+  if (!cardId && !targetSlot) {
+    throw createError({ statusCode: 400, statusMessage: "cardId or targetSlot required" });
   }
   if (!all && delta <= 0) {
     throw createError({ statusCode: 400, statusMessage: "delta must be positive" });
@@ -32,6 +33,35 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Binder not found" });
   }
   const isCustom = binderRow.mode === "custom";
+  const isPokedex = binderRow.mode === "pokedex";
+
+  // Pokédex slot mode: clear the assigned card from the slot but keep
+  // the slot row so the user can fill it again later.
+  if (isPokedex && targetSlot && Number.isInteger(targetSlot.dexNumber)) {
+    let q = supabase
+      .from("binder_items")
+      .select("id")
+      .eq("binder_id", binderId)
+      .eq("dex_number", targetSlot.dexNumber);
+    q = targetSlot.formSlug
+      ? q.eq("form_slug", targetSlot.formSlug)
+      : q.is("form_slug", null);
+    const { data: slot, error: slotErr } = await q.maybeSingle();
+    if (slotErr) {
+      throw createError({ statusCode: 500, statusMessage: slotErr.message });
+    }
+    if (!slot) {
+      throw createError({ statusCode: 404, statusMessage: "Slot not found" });
+    }
+    const { error } = await supabase
+      .from("binder_items")
+      .update({ card_id: null, quantity: 0, variant: "normal" })
+      .eq("id", slot.id);
+    if (error) {
+      throw createError({ statusCode: 500, statusMessage: error.message });
+    }
+    return { id: slot.id, quantity: 0, removed: true };
+  }
 
   const { data: existing, error: readErr } = await supabase
     .from("binder_items")
