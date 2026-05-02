@@ -1,4 +1,4 @@
-export const PKMN_API_URL = "https://www.pkmn.gg/api/search/advanced";
+export const PKMN_API_URL = "https://api.tcg.gg/pkmn/v1/search/advanced";
 
 export const DEFAULT_SEARCH_BODY = {
   query: "",
@@ -43,13 +43,27 @@ export function buildSearchPayload(body = {}) {
 export async function searchCards(body = {}) {
   const payload = buildSearchPayload(body);
 
-  return $fetch(PKMN_API_URL, {
+  const data = await $fetch(PKMN_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: payload,
   });
+
+  // api.tcg.gg wraps each result as { card: {...}, variant?, ... }.
+  // Flatten so consumers keep seeing a plain card object.
+  if (Array.isArray(data?.value)) {
+    data.value = data.value.map((item) => {
+      if (item && typeof item === "object" && item.card && typeof item.card === "object") {
+        const { card, ...rest } = item;
+        return { ...card, ...rest };
+      }
+      return item;
+    });
+  }
+
+  return data;
 }
 
 export async function collectAllCards(body = {}) {
