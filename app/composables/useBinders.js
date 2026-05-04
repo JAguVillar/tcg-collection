@@ -82,10 +82,11 @@ export function useBinders() {
     color = null,
     mode = "collection",
     isActive = true,
+    template = null,
   } = {}) {
     const created = await $fetch("/api/binders", {
       method: "POST",
-      body: { name, description, iconPokemon, color, mode, isActive },
+      body: { name, description, iconPokemon, color, mode, isActive, template },
     });
     await fetchBinders();
     return created;

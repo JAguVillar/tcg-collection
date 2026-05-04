@@ -3,6 +3,8 @@ const props = defineProps({
   open: { type: Boolean, default: false },
   binder: { type: Object, default: null },
   addCard: { type: Function, required: true },
+  initialQuery: { type: String, default: "" },
+  targetSlot: { type: Object, default: null },
 });
 
 const emit = defineEmits(["update:open", "added"]);
@@ -50,7 +52,16 @@ const selectedArtistOption = computed({
 watch(
   () => props.open,
   (open) => {
-    if (!open) reset();
+    if (!open) {
+      reset();
+      return;
+    }
+    if (props.initialQuery) {
+      searchQuery.value = props.initialQuery;
+      nextTick(() => {
+        if (searchQuery.value.trim()) searchCards();
+      });
+    }
   },
 );
 
@@ -71,10 +82,12 @@ async function addToBinder(card) {
   const key = cardKey(card);
   addStatus.value = { ...addStatus.value, [key]: "pending" };
   try {
-    await props.addCard(card, card.variant ?? "normal", 1);
+    const opts = props.targetSlot ? { targetSlot: props.targetSlot } : {};
+    await props.addCard(card, card.variant ?? "normal", 1, opts);
     addStatus.value = { ...addStatus.value, [key]: "added" };
     addedCount.value += 1;
     emit("added", card);
+    if (props.targetSlot) emit("update:open", false);
   } catch (err) {
     addStatus.value = { ...addStatus.value, [key]: "error" };
     throw err;

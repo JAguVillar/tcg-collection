@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
   const variant = body?.variant ?? "normal";
   const delta = Number.isFinite(body?.delta) ? Math.trunc(body.delta) : 1;
   const owned = body?.owned === true;
+  const targetSlot = body?.targetSlot ?? null;
 
   if (!cardId) {
     throw createError({ statusCode: 400, statusMessage: "cardId or card.id required" });
@@ -23,7 +24,6 @@ export default defineEventHandler(async (event) => {
   const supabase = await serverSupabaseClient(event);
   const admin = serverSupabaseServiceRole(event);
 
-  // Check binder mode so we can apply the right semantics for the item.
   const { data: binderRow, error: binderErr } = await supabase
     .from("binders")
     .select("id, mode")
@@ -36,8 +36,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Binder not found" });
   }
   const isCustom = binderRow.mode === "custom";
+  const isPokedex = binderRow.mode === "pokedex";
 
-  // 1) Upsert the card cache (service role, bypasses RLS on writes).
   if (card) {
     const { error: cardErr } = await admin
       .from("cards")
@@ -62,12 +62,50 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // 2) Upsert the binder_item.
-  // - collection mode: existing row -> increment quantity; new row -> insert
-  //   with quantity = delta.
-  // - custom mode: each card is a single checklist slot. If it already exists
-  //   we return it unchanged (no incrementing). New rows get quantity = 1 if
-  //   owned was requested, else 0 (wanted-but-not-yet-owned).
+  // Pokédex slot mode: update the existing slot row in place, do not insert.
+  if (isPokedex && targetSlot && Number.isInteger(targetSlot.dexNumber)) {
+    let q = supabase
+      .from("binder_items")
+      .select("id, card_id, quantity, dex_number, form_slug, display_name, sprite_id")
+      .eq("binder_id", binderId)
+      .eq("dex_number", targetSlot.dexNumber);
+    q = targetSlot.formSlug
+      ? q.eq("form_slug", targetSlot.formSlug)
+      : q.is("form_slug", null);
+
+    const { data: slot, error: slotErr } = await q.maybeSingle();
+    if (slotErr) {
+      throw createError({ statusCode: 500, statusMessage: slotErr.message });
+    }
+    if (!slot) {
+      throw createError({ statusCode: 404, statusMessage: "Slot not found" });
+    }
+
+    const { data, error } = await supabase
+      .from("binder_items")
+      .update({
+        card_id: cardId,
+        variant,
+        quantity: Math.max(1, delta),
+      })
+      .eq("id", slot.id)
+      .select("id, card_id, variant, quantity, dex_number, form_slug, display_name, sprite_id")
+      .single();
+    if (error) {
+      throw createError({ statusCode: 500, statusMessage: error.message });
+    }
+    return {
+      id: data.id,
+      cardId: data.card_id,
+      variant: data.variant,
+      quantity: data.quantity,
+      dexNumber: data.dex_number,
+      formSlug: data.form_slug,
+      displayName: data.display_name,
+      spriteId: data.sprite_id,
+    };
+  }
+
   const { data: existingItem, error: readErr } = await supabase
     .from("binder_items")
     .select("id, quantity")

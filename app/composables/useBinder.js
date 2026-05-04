@@ -41,10 +41,32 @@ export function useBinder(binderId) {
     if (!id.value) throw new Error("Binder id is not set");
     const body = { cardId: card.id, variant, card, delta };
     if (opts.owned === true || opts.owned === false) body.owned = opts.owned;
+    if (opts.targetSlot) body.targetSlot = opts.targetSlot;
     const result = await $fetch(`/api/binders/${id.value}/items`, {
       method: "POST",
       body,
     });
+
+    if (opts.targetSlot) {
+      const slotIdx = items.value.findIndex(
+        (i) =>
+          i.dexNumber === opts.targetSlot.dexNumber &&
+          (i.formSlug ?? null) === (opts.targetSlot.formSlug ?? null),
+      );
+      if (slotIdx >= 0) {
+        const next = [...items.value];
+        next[slotIdx] = {
+          ...next[slotIdx],
+          id: result.id,
+          cardId: result.cardId,
+          variant: result.variant,
+          quantity: result.quantity,
+          card,
+        };
+        items.value = next;
+      }
+      return result;
+    }
 
     const existing = findItem(card.id, variant);
     if (existing) {
@@ -94,12 +116,33 @@ export function useBinder(binderId) {
     return result;
   }
 
-  async function removeCard(cardId, variant = "normal", { all = false, delta = 1 } = {}) {
+  async function removeCard(cardId, variant = "normal", { all = false, delta = 1, targetSlot = null } = {}) {
     if (!id.value) throw new Error("Binder id is not set");
+    const body = { cardId, variant, all, delta };
+    if (targetSlot) body.targetSlot = targetSlot;
     const result = await $fetch(`/api/binders/${id.value}/items`, {
       method: "DELETE",
-      body: { cardId, variant, all, delta },
+      body,
     });
+
+    if (targetSlot) {
+      const slotIdx = items.value.findIndex(
+        (i) =>
+          i.dexNumber === targetSlot.dexNumber &&
+          (i.formSlug ?? null) === (targetSlot.formSlug ?? null),
+      );
+      if (slotIdx >= 0) {
+        const next = [...items.value];
+        next[slotIdx] = {
+          ...next[slotIdx],
+          cardId: null,
+          quantity: 0,
+          card: null,
+        };
+        items.value = next;
+      }
+      return result;
+    }
 
     if (result.removed) {
       items.value = items.value.filter(
