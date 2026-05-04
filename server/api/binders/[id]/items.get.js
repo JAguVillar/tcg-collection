@@ -34,7 +34,8 @@ export default defineEventHandler(async (event) => {
     .eq("binder_id", binderId)
     .order("dex_number", { ascending: true, nullsFirst: false })
     .order("form_slug", { ascending: true, nullsFirst: true })
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: true })
+    .range(0, 9999);
 
   if (error) {
     throw createError({ statusCode: 500, statusMessage: error.message });
