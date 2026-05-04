@@ -135,6 +135,69 @@ function jumpToGeneration(gen) {
   fallback?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+const currentDex = ref(null);
+const stickyBarEl = ref(null);
+
+const currentSlot = computed(() => {
+  if (currentDex.value == null) return null;
+  return items.value.find((i) => i.dexNumber === currentDex.value) ?? null;
+});
+
+const currentGenerationLabel = computed(() => {
+  if (currentDex.value == null) return null;
+  const g = POKEDEX_GENERATIONS.find(
+    (g) => currentDex.value >= g.from && currentDex.value <= g.to,
+  );
+  return g ? `Gen ${g.label}` : "Forms";
+});
+
+// Track the topmost visible slot via IntersectionObserver. Picks the
+// smallest dex# whose bounding box still extends below the sticky bar.
+const visibleDexSet = new Set();
+let dexObserver = null;
+
+function pickCurrentDex() {
+  if (visibleDexSet.size === 0) return;
+  let min = Infinity;
+  for (const v of visibleDexSet) if (v < min) min = v;
+  if (min !== Infinity) currentDex.value = min;
+}
+
+function attachDexObserver() {
+  if (typeof window === "undefined") return;
+  dexObserver?.disconnect();
+  visibleDexSet.clear();
+  const stickyH = stickyBarEl.value?.offsetHeight ?? 0;
+  dexObserver = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const v = Number(e.target.dataset.dexAnchor);
+        if (!Number.isFinite(v)) continue;
+        if (e.isIntersecting) visibleDexSet.add(v);
+        else visibleDexSet.delete(v);
+      }
+      pickCurrentDex();
+    },
+    { rootMargin: `-${stickyH + 4}px 0px -70% 0px`, threshold: 0 },
+  );
+  for (const el of document.querySelectorAll("[data-dex-anchor]")) {
+    dexObserver.observe(el);
+  }
+}
+
+onMounted(() => {
+  nextTick(attachDexObserver);
+});
+onBeforeUnmount(() => {
+  dexObserver?.disconnect();
+  dexObserver = null;
+});
+
+watch(
+  () => [filteredItems.value.length, isPokedex.value],
+  () => nextTick(attachDexObserver),
+);
+
 function normalizeSearch(s) {
   return (s ?? "")
     .toLowerCase()
@@ -836,7 +899,8 @@ watch([ownedItems, totalItems], () => {
 
       <div
         v-if="isPokedex && items.length"
-        class="mb-4 flex w-full flex-col gap-2"
+        ref="stickyBarEl"
+        class="sticky top-0 z-10 mb-4 -mx-2 flex w-[calc(100%+1rem)] flex-col gap-2 bg-default/85 px-2 py-2 backdrop-blur"
       >
         <div class="flex w-full flex-wrap items-center gap-2">
           <UInput
@@ -858,6 +922,18 @@ watch([ownedItems, totalItems], () => {
               />
             </template>
           </UInput>
+          <div
+            v-if="currentSlot"
+            class="flex items-center gap-1.5 text-xs text-muted tabular-nums"
+          >
+            <UBadge color="neutral" variant="subtle" size="sm">
+              {{ currentGenerationLabel }}
+            </UBadge>
+            <span class="font-medium text-default">
+              #{{ String(currentSlot.dexNumber).padStart(4, "0") }}
+            </span>
+            <span class="truncate max-w-40">{{ currentSlot.displayName }}</span>
+          </div>
           <span class="ml-auto text-xs text-muted">
             {{ filteredItems.length }} of {{ items.length }}
           </span>
