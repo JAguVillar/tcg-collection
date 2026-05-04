@@ -4,8 +4,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["pickSlot", "clearSlot"]);
-
-const { pokemonSpriteUrl } = usePokemonIcons();
 </script>
 
 <template>
@@ -18,25 +16,11 @@ const { pokemonSpriteUrl } = usePokemonIcons();
       :data-dex-anchor="item.dexNumber"
       class="pokedex-slot flex flex-col gap-1 min-w-0 scroll-mt-24"
     >
-      <button
+      <PokedexSlotPlaceholder
         v-if="!item.cardId"
-        type="button"
-        class="aspect-[5/7] rounded-md border border-dashed border-default bg-elevated/30 hover:border-primary hover:bg-primary/5 transition flex flex-col items-center justify-center gap-1 px-1 py-2 text-center w-full"
-        @click="emit('pickSlot', item)"
-      >
-        <img
-          :src="pokemonSpriteUrl(item.spriteId ?? item.dexNumber)"
-          :alt="item.displayName"
-          class="size-12 sm:size-14 object-contain opacity-80"
-          loading="lazy"
-        />
-        <span class="text-[10px] sm:text-xs font-medium text-muted truncate w-full">
-          #{{ String(item.dexNumber).padStart(4, "0") }}
-        </span>
-        <span class="text-[10px] sm:text-xs text-default truncate w-full">
-          {{ item.displayName }}
-        </span>
-      </button>
+        :item="item"
+        @pick="emit('pickSlot', $event)"
+      />
       <div v-else class="relative group">
         <CardImage :card="item.card" :variant="item.variant" :quantity="item.quantity" />
         <UButton

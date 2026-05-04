@@ -824,7 +824,6 @@ watch([ownedItems, totalItems], () => {
           size="lg"
         />
         <UTabs
-          v-if="!isPokedex"
           :items="VIEW_MODES"
           v-model="viewMode"
           variant="pill"
@@ -882,7 +881,7 @@ watch([ownedItems, totalItems], () => {
       </div>
 
       <div
-        v-if="items.length && !isPokedex"
+        v-if="items.length"
         class="mb-4 flex w-full flex-wrap items-center gap-2"
       >
         <UTabs
@@ -893,7 +892,7 @@ watch([ownedItems, totalItems], () => {
           size="sm"
           :content="false"
         />
-        <div class="ml-auto flex items-center gap-1.5">
+        <div v-if="!isPokedex" class="ml-auto flex items-center gap-1.5">
           <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
             <UButton
               :label="`Sort: ${activeSort?.label}`"
@@ -974,7 +973,7 @@ watch([ownedItems, totalItems], () => {
       />
 
       <PokedexVirtualGrid
-        v-else-if="isPokedex"
+        v-else-if="isPokedex && viewMode === 'grid'"
         :items="filteredItems"
         @pick-slot="openSlotPicker"
         @clear-slot="clearSlot"
@@ -1244,8 +1243,13 @@ watch([ownedItems, totalItems], () => {
                 v-for="(item, idx) in leftPageItems"
                 :key="item?.id ?? `left-empty-${idx}`"
               >
+                <PokedexSlotPlaceholder
+                  v-if="item && isPokedex && !item.cardId"
+                  :item="item"
+                  @pick="openSlotPicker"
+                />
                 <CardImage
-                  v-if="item"
+                  v-else-if="item"
                   :card="item.card"
                   :variant="item.variant"
                   :quantity="item.quantity"
@@ -1281,6 +1285,17 @@ watch([ownedItems, totalItems], () => {
                     "
                     @click.stop.prevent="toggleOwned(item)"
                   />
+                  <UButton
+                    v-if="isPokedex"
+                    icon="i-lucide-x"
+                    color="error"
+                    variant="solid"
+                    size="xs"
+                    square
+                    class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition"
+                    aria-label="Clear slot"
+                    @click.stop.prevent="clearSlot(item)"
+                  />
                 </CardImage>
                 <div v-else class="aspect-[5/7] rounded-md bg-muted/10"></div>
               </template>
@@ -1296,8 +1311,13 @@ watch([ownedItems, totalItems], () => {
                 v-for="(item, idx) in rightPageItems"
                 :key="item?.id ?? `right-empty-${idx}`"
               >
+                <PokedexSlotPlaceholder
+                  v-if="item && isPokedex && !item.cardId"
+                  :item="item"
+                  @pick="openSlotPicker"
+                />
                 <CardImage
-                  v-if="item"
+                  v-else-if="item"
                   :card="item.card"
                   :variant="item.variant"
                   :quantity="item.quantity"
@@ -1332,6 +1352,17 @@ watch([ownedItems, totalItems], () => {
                       item.quantity > 0 ? 'Mark as missing' : 'Mark as obtained'
                     "
                     @click.stop.prevent="toggleOwned(item)"
+                  />
+                  <UButton
+                    v-if="isPokedex"
+                    icon="i-lucide-x"
+                    color="error"
+                    variant="solid"
+                    size="xs"
+                    square
+                    class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition"
+                    aria-label="Clear slot"
+                    @click.stop.prevent="clearSlot(item)"
                   />
                 </CardImage>
                 <div v-else class="aspect-[5/7] rounded-md bg-muted/10"></div>

@@ -12,8 +12,8 @@ const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
 
 <template>
   <div
-    class="relative aspect-[5/7] w-full"
-    :class="isMissing ? 'group opacity-60 hover:opacity-100 transition' : ''"
+    class="group relative aspect-[5/7] w-full"
+    :class="isMissing ? 'opacity-60 hover:opacity-100 transition' : ''"
   >
     <img
       v-if="card?.thumbImageUrl"
