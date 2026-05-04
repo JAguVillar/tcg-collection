@@ -1,7 +1,9 @@
 import pokemonData from "~/assets/pokemon-compact.json";
 
+// official-artwork covers all forms (mega/gmax/regional, ids > 10000)
+// in color, unlike the root sprites/pokemon/{id}.png path.
 const POKEMON_SPRITE_BASE =
-  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
 
 export function pokemonSpriteUrl(slug) {
   if (!slug) return null;

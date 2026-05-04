@@ -27,7 +27,7 @@ const { pokemonSpriteUrl } = usePokemonIcons();
         <img
           :src="pokemonSpriteUrl(item.spriteId ?? item.dexNumber)"
           :alt="item.displayName"
-          class="size-12 sm:size-14 object-contain opacity-60 grayscale"
+          class="size-12 sm:size-14 object-contain opacity-80"
           loading="lazy"
         />
         <span class="text-[10px] sm:text-xs font-medium text-muted truncate w-full">
