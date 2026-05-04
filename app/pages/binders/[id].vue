@@ -122,82 +122,6 @@ const generationStats = computed(() => {
   return out;
 });
 
-function jumpToGeneration(gen) {
-  const el = document.querySelector(`[data-dex-anchor="${gen.from}"]`);
-  if (el) {
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-    return;
-  }
-  // Fallback: find first slot whose dex is >= gen.from in current filtered list
-  const target = filteredItems.value.find((i) => (i.dexNumber ?? 0) >= gen.from);
-  if (!target) return;
-  const fallback = document.querySelector(`[data-dex-anchor="${target.dexNumber}"]`);
-  fallback?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-const currentDex = ref(null);
-const stickyBarEl = ref(null);
-
-const currentSlot = computed(() => {
-  if (currentDex.value == null) return null;
-  return items.value.find((i) => i.dexNumber === currentDex.value) ?? null;
-});
-
-const currentGenerationLabel = computed(() => {
-  if (currentDex.value == null) return null;
-  const g = POKEDEX_GENERATIONS.find(
-    (g) => currentDex.value >= g.from && currentDex.value <= g.to,
-  );
-  return g ? `Gen ${g.label}` : "Forms";
-});
-
-// Track the topmost visible slot via IntersectionObserver. Picks the
-// smallest dex# whose bounding box still extends below the sticky bar.
-const visibleDexSet = new Set();
-let dexObserver = null;
-
-function pickCurrentDex() {
-  if (visibleDexSet.size === 0) return;
-  let min = Infinity;
-  for (const v of visibleDexSet) if (v < min) min = v;
-  if (min !== Infinity) currentDex.value = min;
-}
-
-function attachDexObserver() {
-  if (typeof window === "undefined") return;
-  dexObserver?.disconnect();
-  visibleDexSet.clear();
-  const stickyH = stickyBarEl.value?.offsetHeight ?? 0;
-  dexObserver = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        const v = Number(e.target.dataset.dexAnchor);
-        if (!Number.isFinite(v)) continue;
-        if (e.isIntersecting) visibleDexSet.add(v);
-        else visibleDexSet.delete(v);
-      }
-      pickCurrentDex();
-    },
-    { rootMargin: `-${stickyH + 4}px 0px -70% 0px`, threshold: 0 },
-  );
-  for (const el of document.querySelectorAll("[data-dex-anchor]")) {
-    dexObserver.observe(el);
-  }
-}
-
-onMounted(() => {
-  nextTick(attachDexObserver);
-});
-onBeforeUnmount(() => {
-  dexObserver?.disconnect();
-  dexObserver = null;
-});
-
-watch(
-  () => [filteredItems.value.length, isPokedex.value],
-  () => nextTick(attachDexObserver),
-);
-
 function normalizeSearch(s) {
   return (s ?? "")
     .toLowerCase()
@@ -441,6 +365,79 @@ const filteredItems = computed(() => {
   }
   return [...list].sort(compare);
 });
+
+function jumpToGeneration(gen) {
+  const el = document.querySelector(`[data-dex-anchor="${gen.from}"]`);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const target = filteredItems.value.find((i) => (i.dexNumber ?? 0) >= gen.from);
+  if (!target) return;
+  const fallback = document.querySelector(`[data-dex-anchor="${target.dexNumber}"]`);
+  fallback?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+const currentDex = ref(null);
+const stickyBarEl = ref(null);
+
+const currentSlot = computed(() => {
+  if (currentDex.value == null) return null;
+  return items.value.find((i) => i.dexNumber === currentDex.value) ?? null;
+});
+
+const currentGenerationLabel = computed(() => {
+  if (currentDex.value == null) return null;
+  const g = POKEDEX_GENERATIONS.find(
+    (g) => currentDex.value >= g.from && currentDex.value <= g.to,
+  );
+  return g ? `Gen ${g.label}` : "Forms";
+});
+
+const visibleDexSet = new Set();
+let dexObserver = null;
+
+function pickCurrentDex() {
+  if (visibleDexSet.size === 0) return;
+  let min = Infinity;
+  for (const v of visibleDexSet) if (v < min) min = v;
+  if (min !== Infinity) currentDex.value = min;
+}
+
+function attachDexObserver() {
+  if (typeof window === "undefined") return;
+  dexObserver?.disconnect();
+  visibleDexSet.clear();
+  const stickyH = stickyBarEl.value?.offsetHeight ?? 0;
+  dexObserver = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const v = Number(e.target.dataset.dexAnchor);
+        if (!Number.isFinite(v)) continue;
+        if (e.isIntersecting) visibleDexSet.add(v);
+        else visibleDexSet.delete(v);
+      }
+      pickCurrentDex();
+    },
+    { rootMargin: `-${stickyH + 4}px 0px -70% 0px`, threshold: 0 },
+  );
+  for (const el of document.querySelectorAll("[data-dex-anchor]")) {
+    dexObserver.observe(el);
+  }
+}
+
+onMounted(() => {
+  nextTick(attachDexObserver);
+});
+onBeforeUnmount(() => {
+  dexObserver?.disconnect();
+  dexObserver = null;
+});
+
+watch(
+  () => [filteredItems.value.length, isPokedex.value],
+  () => nextTick(attachDexObserver),
+);
 
 const physicalPages = computed(() =>
   Math.max(1, Math.ceil(filteredItems.value.length / pocketSize.value)),
