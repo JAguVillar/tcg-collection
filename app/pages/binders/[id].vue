@@ -79,6 +79,15 @@ const progressPct = computed(() => {
 });
 
 const filter = ref("all");
+const pokedexSearch = ref("");
+
+function normalizeSearch(s) {
+  return (s ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .trim();
+}
 
 const filterCounts = computed(() => {
   let owned = 0;
@@ -297,6 +306,15 @@ const filteredItems = computed(() => {
       list = list.filter((i) => i.quantity > 0);
   }
   if (isPokedex.value) {
+    const q = normalizeSearch(pokedexSearch.value);
+    if (q) {
+      list = list.filter((i) => {
+        const name = normalizeSearch(i.displayName);
+        if (name.includes(q)) return true;
+        const dex = String(i.dexNumber ?? "");
+        return dex.includes(q) || dex.padStart(4, "0").includes(q);
+      });
+    }
     return [...list].sort((a, b) => {
       if (a.dexNumber !== b.dexNumber) return (a.dexNumber ?? 0) - (b.dexNumber ?? 0);
       const fa = a.formSlug ?? "";
@@ -760,6 +778,34 @@ watch([ownedItems, totalItems], () => {
           size="md"
           :content="false"
         />
+      </div>
+
+      <div
+        v-if="isPokedex && items.length"
+        class="mb-4 flex w-full flex-wrap items-center gap-2"
+      >
+        <UInput
+          v-model="pokedexSearch"
+          placeholder="Search by name or dex #"
+          icon="i-lucide-search"
+          :ui="{ trailing: 'pe-1' }"
+          class="w-full sm:w-72"
+        >
+          <template #trailing>
+            <UButton
+              v-if="pokedexSearch"
+              icon="i-lucide-x"
+              color="neutral"
+              variant="link"
+              size="sm"
+              aria-label="Clear search"
+              @click="pokedexSearch = ''"
+            />
+          </template>
+        </UInput>
+        <span class="ml-auto text-xs text-muted">
+          {{ filteredItems.length }} of {{ items.length }}
+        </span>
       </div>
 
       <div
