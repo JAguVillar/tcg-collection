@@ -854,52 +854,12 @@ watch([ownedItems, totalItems], () => {
         ]"
       />
 
-      <div
+      <PokedexVirtualGrid
         v-else-if="isPokedex"
-        class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3"
-      >
-        <article
-          v-for="item in filteredItems"
-          :key="item.id"
-          class="flex flex-col gap-1 min-w-0 pokedex-slot"
-        >
-          <button
-            v-if="!item.cardId"
-            type="button"
-            class="aspect-[5/7] rounded-md border border-dashed border-default bg-elevated/30 hover:border-primary hover:bg-primary/5 transition flex flex-col items-center justify-center gap-1 px-1 py-2 text-center"
-            @click="openSlotPicker(item)"
-          >
-            <img
-              :src="pokemonSpriteUrl(item.spriteId ?? item.dexNumber)"
-              :alt="item.displayName"
-              class="size-12 sm:size-14 object-contain opacity-60 grayscale"
-              loading="lazy"
-            />
-            <span class="text-[10px] sm:text-xs font-medium text-muted truncate w-full">
-              #{{ String(item.dexNumber).padStart(4, "0") }}
-            </span>
-            <span class="text-[10px] sm:text-xs text-default truncate w-full">
-              {{ item.displayName }}
-            </span>
-          </button>
-          <div v-else class="relative group">
-            <CardImage :card="item.card" :variant="item.variant" :quantity="item.quantity" />
-            <UButton
-              icon="i-lucide-x"
-              color="error"
-              variant="solid"
-              size="xs"
-              square
-              class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition"
-              aria-label="Clear slot"
-              @click.stop.prevent="clearSlot(item)"
-            />
-            <p class="mt-1 text-[10px] sm:text-xs text-muted truncate text-center">
-              #{{ String(item.dexNumber).padStart(4, "0") }} {{ item.displayName }}
-            </p>
-          </div>
-        </article>
-      </div>
+        :items="filteredItems"
+        @pick-slot="openSlotPicker"
+        @clear-slot="clearSlot"
+      />
 
       <div v-else-if="viewMode === 'grid'" class="cards-grid">
         <article
@@ -1304,11 +1264,3 @@ watch([ownedItems, totalItems], () => {
   </UDashboardPanel>
 </template>
 
-<style scoped>
-/* Cheap virtualization for the pokedex grid: skip layout/paint of
-   off-screen slots. The intrinsic size keeps the scrollbar honest. */
-.pokedex-slot {
-  content-visibility: auto;
-  contain-intrinsic-size: 220px;
-}
-</style>
