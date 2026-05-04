@@ -81,6 +81,60 @@ const progressPct = computed(() => {
 const filter = ref("all");
 const pokedexSearch = ref("");
 
+const POKEDEX_GENERATIONS = [
+  { label: "I", from: 1, to: 151 },
+  { label: "II", from: 152, to: 251 },
+  { label: "III", from: 252, to: 386 },
+  { label: "IV", from: 387, to: 493 },
+  { label: "V", from: 494, to: 649 },
+  { label: "VI", from: 650, to: 721 },
+  { label: "VII", from: 722, to: 809 },
+  { label: "VIII", from: 810, to: 905 },
+  { label: "IX", from: 906, to: 1025 },
+];
+
+const generationStats = computed(() => {
+  if (!isPokedex.value) return [];
+  const stats = POKEDEX_GENERATIONS.map((g) => ({
+    ...g,
+    total: 0,
+    owned: 0,
+  }));
+  let formsTotal = 0;
+  let formsOwned = 0;
+  for (const i of items.value) {
+    const dex = i.dexNumber;
+    if (dex == null) continue;
+    const owned = i.quantity > 0 ? 1 : 0;
+    const gen = stats.find((g) => dex >= g.from && dex <= g.to);
+    if (gen) {
+      gen.total += 1;
+      gen.owned += owned;
+    } else if (dex > 1025) {
+      formsTotal += 1;
+      formsOwned += owned;
+    }
+  }
+  const out = stats.filter((g) => g.total > 0);
+  if (formsTotal > 0) {
+    out.push({ label: "Forms", from: 1026, to: Infinity, total: formsTotal, owned: formsOwned });
+  }
+  return out;
+});
+
+function jumpToGeneration(gen) {
+  const el = document.querySelector(`[data-dex-anchor="${gen.from}"]`);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  // Fallback: find first slot whose dex is >= gen.from in current filtered list
+  const target = filteredItems.value.find((i) => (i.dexNumber ?? 0) >= gen.from);
+  if (!target) return;
+  const fallback = document.querySelector(`[data-dex-anchor="${target.dexNumber}"]`);
+  fallback?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function normalizeSearch(s) {
   return (s ?? "")
     .toLowerCase()
@@ -782,30 +836,50 @@ watch([ownedItems, totalItems], () => {
 
       <div
         v-if="isPokedex && items.length"
-        class="mb-4 flex w-full flex-wrap items-center gap-2"
+        class="mb-4 flex w-full flex-col gap-2"
       >
-        <UInput
-          v-model="pokedexSearch"
-          placeholder="Search by name or dex #"
-          icon="i-lucide-search"
-          :ui="{ trailing: 'pe-1' }"
-          class="w-full sm:w-72"
+        <div class="flex w-full flex-wrap items-center gap-2">
+          <UInput
+            v-model="pokedexSearch"
+            placeholder="Search by name or dex #"
+            icon="i-lucide-search"
+            :ui="{ trailing: 'pe-1' }"
+            class="w-full sm:w-72"
+          >
+            <template #trailing>
+              <UButton
+                v-if="pokedexSearch"
+                icon="i-lucide-x"
+                color="neutral"
+                variant="link"
+                size="sm"
+                aria-label="Clear search"
+                @click="pokedexSearch = ''"
+              />
+            </template>
+          </UInput>
+          <span class="ml-auto text-xs text-muted">
+            {{ filteredItems.length }} of {{ items.length }}
+          </span>
+        </div>
+        <div
+          v-if="generationStats.length"
+          class="flex w-full flex-wrap items-center gap-1.5"
         >
-          <template #trailing>
-            <UButton
-              v-if="pokedexSearch"
-              icon="i-lucide-x"
-              color="neutral"
-              variant="link"
-              size="sm"
-              aria-label="Clear search"
-              @click="pokedexSearch = ''"
-            />
-          </template>
-        </UInput>
-        <span class="ml-auto text-xs text-muted">
-          {{ filteredItems.length }} of {{ items.length }}
-        </span>
+          <UButton
+            v-for="g in generationStats"
+            :key="g.label"
+            size="xs"
+            :color="g.owned === g.total ? 'success' : 'neutral'"
+            :variant="g.owned > 0 ? 'soft' : 'outline'"
+            @click="jumpToGeneration(g)"
+          >
+            <span class="font-medium">Gen {{ g.label }}</span>
+            <span class="ml-1 text-muted tabular-nums">
+              {{ g.owned }}/{{ g.total }}
+            </span>
+          </UButton>
+        </div>
       </div>
 
       <div

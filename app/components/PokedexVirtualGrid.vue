@@ -15,7 +15,8 @@ const { pokemonSpriteUrl } = usePokemonIcons();
     <article
       v-for="item in props.items"
       :key="item.id"
-      class="pokedex-slot flex flex-col gap-1 min-w-0"
+      :data-dex-anchor="item.dexNumber"
+      class="pokedex-slot flex flex-col gap-1 min-w-0 scroll-mt-24"
     >
       <button
         v-if="!item.cardId"
