@@ -1,5 +1,7 @@
 {
   "id": "pokedex",
+  "kind": "pokedex",
+  "mode": "pokedex",
   "name": "Pokédex",
   "description": "One slot for each of the 1025 Pokémon in the National Dex.",
   "iconPokemon": 25,

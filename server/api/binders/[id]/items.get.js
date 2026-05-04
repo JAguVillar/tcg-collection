@@ -1,22 +1,7 @@
 import { serverSupabaseClient } from "#supabase/server";
 import { requireUser } from "~~/server/utils/auth";
 import { fetchAllPages } from "~~/server/utils/supabasePaginate";
-import pokedexTemplate from "~~/app/assets/binder-templates/pokedex.json";
-import pokedexMasterTemplate from "~~/app/assets/binder-templates/pokedex-master.json";
-
-// Backfill map for legacy pokedex binders created before search_query was
-// persisted (migration 0008). Keyed by `${dexNumber}|${formSlug ?? ""}`.
-const SEARCH_QUERY_BY_SLOT = (() => {
-  const m = new Map();
-  for (const tpl of [pokedexTemplate, pokedexMasterTemplate]) {
-    for (const s of tpl.slots ?? []) {
-      if (!s.searchQuery) continue;
-      const key = `${s.dexNumber}|${s.formSlug ?? ""}`;
-      if (!m.has(key)) m.set(key, s.searchQuery);
-    }
-  }
-  return m;
-})();
+import { POKEDEX_SEARCH_QUERY_BY_SLOT } from "~~/server/utils/binderTemplates";
 
 export default defineEventHandler(async (event) => {
   await requireUser(event);
@@ -83,7 +68,7 @@ export default defineEventHandler(async (event) => {
       spriteId: row.sprite_id,
       searchQuery:
         row.search_query ??
-        SEARCH_QUERY_BY_SLOT.get(
+        POKEDEX_SEARCH_QUERY_BY_SLOT.get(
           `${row.dex_number}|${row.form_slug ?? ""}`,
         ) ??
         null,

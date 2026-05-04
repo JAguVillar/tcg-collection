@@ -31,34 +31,39 @@ const createState = reactive({
 });
 const createError = ref(null);
 
-const TEMPLATE_PRESETS = [
-  {
-    value: null,
-    label: "Empty binder",
-    description: "Start blank — collection or custom checklist.",
-  },
-  {
-    value: "pokedex",
-    label: "Pokédex",
-    description: "1025 slots, one per National Dex Pokémon.",
-    name: "Pokédex",
-    iconPokemon: 25,
-    color: "red",
-  },
-  {
-    value: "pokedex-master",
-    label: "Pokédex Master",
-    description: "Pokédex + alternate forms (regionals, megas, GMax…).",
-    name: "Pokédex Master",
-    iconPokemon: 25,
-    color: "amber",
-  },
-];
+const { data: presetCatalog } = useFetch("/api/binder-presets", {
+  default: () => [],
+});
+
+// Pokedex presets first, then curated. Empty option always on top.
+const TEMPLATE_PRESETS = computed(() => {
+  const sorted = [...presetCatalog.value].sort((a, b) => {
+    if (a.kind !== b.kind) return a.kind === "pokedex" ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
+  return [
+    {
+      value: null,
+      label: "Empty binder",
+      description: "Start blank — collection or custom checklist.",
+    },
+    ...sorted.map((p) => ({
+      value: p.id,
+      label: p.name,
+      description:
+        p.description ??
+        `${p.slotCount} slot${p.slotCount === 1 ? "" : "s"}.`,
+      name: p.name,
+      iconPokemon: p.iconPokemon,
+      color: p.color,
+    })),
+  ];
+});
 
 watch(
   () => createState.template,
   (id) => {
-    const preset = TEMPLATE_PRESETS.find((t) => t.value === id);
+    const preset = TEMPLATE_PRESETS.value.find((t) => t.value === id);
     if (!preset || !id) return;
     if (!createState.name) createState.name = preset.name ?? "";
     if (createState.iconPokemon == null && preset.iconPokemon != null) {
@@ -174,7 +179,8 @@ async function onCreate() {
       description: createState.description?.trim() || null,
       iconPokemon: createState.iconPokemon || null,
       color: createState.color || null,
-      mode: createState.template ? "pokedex" : createState.mode,
+      // Mode is derived from the template on the server when one is picked.
+      mode: createState.template ? null : createState.mode,
       template: createState.template,
     });
     toast.add({

@@ -614,6 +614,33 @@ function exportMissingTxt() {
   });
 }
 
+async function exportPreset() {
+  try {
+    const preset = await $fetch(
+      `/api/binders/${binderId.value}/export-preset`,
+    );
+    const filename = `${preset.id || exportSlug.value || "preset"}.json`;
+    triggerDownload(
+      filename,
+      JSON.stringify(preset, null, 2),
+      "application/json;charset=utf-8",
+    );
+    toast.add({
+      color: "success",
+      icon: "i-lucide-download",
+      title: "Preset exported",
+      description: `${preset.slots.length} slot${preset.slots.length === 1 ? "" : "s"}`,
+    });
+  } catch (err) {
+    toast.add({
+      color: "error",
+      icon: "i-lucide-triangle-alert",
+      title: "Export failed",
+      description: err?.statusMessage ?? err?.message ?? "Unknown error",
+    });
+  }
+}
+
 async function exportMissingCopy() {
   if (!missingRows.value.length) return;
   try {
@@ -663,6 +690,13 @@ const moreActions = computed(() => {
           onSelect: exportMissingCopy,
         },
       ],
+    });
+  }
+  if (isCustom.value && items.value.length) {
+    main.push({
+      label: "Export as preset (JSON)",
+      icon: "i-lucide-file-json",
+      onSelect: exportPreset,
     });
   }
   if (main.length) groups.push(main);

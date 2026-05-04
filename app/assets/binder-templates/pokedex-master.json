@@ -1,5 +1,7 @@
 {
   "id": "pokedex-master",
+  "kind": "pokedex",
+  "mode": "pokedex",
   "name": "Pokédex Master",
   "description": "Pokédex plus alternate forms (regionals, megas, GMax, Origin/Therian, etc.).",
   "iconPokemon": 25,
