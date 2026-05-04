@@ -468,9 +468,13 @@ function openSlotPicker(item) {
     dexNumber: item.dexNumber,
     formSlug: item.formSlug ?? null,
   };
-  pendingSlotQuery.value = item.displayName?.split(" (")[0]?.toLowerCase() ?? "";
-  // The displayName is "Bulbasaur" or "Deoxys (Attack Form)" — we want the
-  // base species name as the search query.
+  // searchQuery comes from the curated template (e.g. "galarian darmanitan",
+  // "pikachu vmax"). Fall back to the species name derived from displayName
+  // for legacy slots that pre-date the search_query column.
+  pendingSlotQuery.value =
+    item.searchQuery ??
+    item.displayName?.split(" (")[0]?.toLowerCase() ??
+    "";
   addCardOpen.value = true;
 }
 
@@ -857,7 +861,7 @@ watch([ownedItems, totalItems], () => {
         <article
           v-for="item in filteredItems"
           :key="item.id"
-          class="flex flex-col gap-1 min-w-0"
+          class="flex flex-col gap-1 min-w-0 pokedex-slot"
         >
           <button
             v-if="!item.cardId"
@@ -1299,3 +1303,12 @@ watch([ownedItems, totalItems], () => {
     </template>
   </UDashboardPanel>
 </template>
+
+<style scoped>
+/* Cheap virtualization for the pokedex grid: skip layout/paint of
+   off-screen slots. The intrinsic size keeps the scrollbar honest. */
+.pokedex-slot {
+  content-visibility: auto;
+  contain-intrinsic-size: 220px;
+}
+</style>

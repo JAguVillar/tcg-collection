@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     .from("binder_items")
     .select(`
       id, card_id, variant, quantity, notes, created_at, updated_at,
-      dex_number, form_slug, display_name, sprite_id,
+      dex_number, form_slug, display_name, sprite_id, search_query,
       card:cards(
         id, name, number_display, set_id, set_name, series, rarity, artist,
         category, thumb_image_url, large_image_url, set_icon_url, release_date, raw
@@ -62,6 +62,7 @@ export default defineEventHandler(async (event) => {
       formSlug: row.form_slug,
       displayName: row.display_name,
       spriteId: row.sprite_id,
+      searchQuery: row.search_query,
       card: row.card?.raw
         ? {
             ...row.card.raw,

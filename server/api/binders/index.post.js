@@ -101,6 +101,7 @@ export default defineEventHandler(async (event) => {
       form_slug: s.formSlug ?? null,
       display_name: s.displayName,
       sprite_id: s.spriteId ?? s.dexNumber,
+      search_query: s.searchQuery ?? null,
     }));
 
     const CHUNK = 500;
