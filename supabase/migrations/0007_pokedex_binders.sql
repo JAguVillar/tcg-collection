@@ -11,7 +11,6 @@
 --   binder_items gains dex_number, form_slug, display_name, sprite_id.
 --   New unique partial index ensures one slot per (binder, dex, form).
 --   New check ensures every row references at least a card or a slot.
-
 alter table public.binders
   drop constraint if exists binders_mode_check;
 
