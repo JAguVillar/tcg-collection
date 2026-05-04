@@ -1,8 +1,9 @@
 import { serverSupabaseClient } from "#supabase/server";
 import { requireUser } from "~~/server/utils/auth";
+import { fetchAllPages } from "~~/server/utils/supabasePaginate";
 
 const BINDER_SELECT =
-  "id, name, description, is_active, icon_pokemon, color, mode, created_at, updated_at, binder_items(quantity)";
+  "id, name, description, is_active, icon_pokemon, color, mode, created_at, updated_at";
 
 function fetchBinders(supabase) {
   return supabase
@@ -46,10 +47,34 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // Aggregate counts via a paginated scan instead of an embedded relation —
+  // PostgREST caps embedded resources at db-max-rows (1000), which truncates
+  // pokedex binders (1025+ slots).
+  const binderIds = data.map((b) => b.id);
+  const counts = new Map(binderIds.map((id) => [id, { total: 0, owned: 0 }]));
+
+  if (binderIds.length) {
+    let rows;
+    try {
+      rows = await fetchAllPages(() =>
+        supabase
+          .from("binder_items")
+          .select("binder_id, quantity")
+          .in("binder_id", binderIds),
+      );
+    } catch (err) {
+      throw createError({ statusCode: 500, statusMessage: err.message });
+    }
+    for (const r of rows) {
+      const c = counts.get(r.binder_id);
+      if (!c) continue;
+      c.total += 1;
+      if (r.quantity > 0) c.owned += 1;
+    }
+  }
+
   return data.map((b) => {
-    const rows = b.binder_items ?? [];
-    const totalItems = rows.length;
-    const ownedItems = rows.reduce((n, r) => n + (r.quantity > 0 ? 1 : 0), 0);
+    const c = counts.get(b.id) ?? { total: 0, owned: 0 };
     return {
       id: b.id,
       name: b.name,
@@ -60,9 +85,9 @@ export default defineEventHandler(async (event) => {
       mode: b.mode,
       createdAt: b.created_at,
       updatedAt: b.updated_at,
-      itemCount: totalItems,
-      totalItems,
-      ownedItems,
+      itemCount: c.total,
+      totalItems: c.total,
+      ownedItems: c.owned,
     };
   });
 });

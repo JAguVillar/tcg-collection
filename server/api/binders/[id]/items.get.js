@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from "#supabase/server";
 import { requireUser } from "~~/server/utils/auth";
+import { fetchAllPages } from "~~/server/utils/supabasePaginate";
 
 export default defineEventHandler(async (event) => {
   await requireUser(event);
@@ -21,23 +22,25 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Binder not found" });
   }
 
-  const { data, error } = await supabase
-    .from("binder_items")
-    .select(`
-      id, card_id, variant, quantity, notes, created_at, updated_at,
-      dex_number, form_slug, display_name, sprite_id, search_query,
-      card:cards(
-        id, name, number_display, set_id, set_name, series, rarity, artist,
-        category, thumb_image_url, large_image_url, set_icon_url, release_date, raw
-      )
-    `)
-    .eq("binder_id", binderId)
-    .order("dex_number", { ascending: true, nullsFirst: false })
-    .order("form_slug", { ascending: true, nullsFirst: true })
-    .order("created_at", { ascending: true })
-    .range(0, 9999);
-
-  if (error) {
+  let data;
+  try {
+    data = await fetchAllPages(() =>
+      supabase
+        .from("binder_items")
+        .select(`
+          id, card_id, variant, quantity, notes, created_at, updated_at,
+          dex_number, form_slug, display_name, sprite_id, search_query,
+          card:cards(
+            id, name, number_display, set_id, set_name, series, rarity, artist,
+            category, thumb_image_url, large_image_url, set_icon_url, release_date, raw
+          )
+        `)
+        .eq("binder_id", binderId)
+        .order("dex_number", { ascending: true, nullsFirst: false })
+        .order("form_slug", { ascending: true, nullsFirst: true })
+        .order("created_at", { ascending: true }),
+    );
+  } catch (error) {
     throw createError({ statusCode: 500, statusMessage: error.message });
   }
 
