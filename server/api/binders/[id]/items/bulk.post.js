@@ -2,6 +2,7 @@ import { serverSupabaseClient, serverSupabaseServiceRole } from "#supabase/serve
 import { requireUser } from "~~/server/utils/auth";
 import { cardToRow } from "~~/server/utils/cards";
 import { collectAllCards } from "~~/server/utils/pkmnSearch";
+import { nextSortOrder } from "~~/server/utils/nextSortOrder";
 
 export default defineEventHandler(async (event) => {
   await requireUser(event);
@@ -114,14 +115,19 @@ export default defineEventHandler(async (event) => {
     (existing ?? []).map((r) => `${r.card_id}|${r.variant}`),
   );
 
-  const toInsert = uniqueCards
-    .filter(({ card, variant }) => !existingPairs.has(`${card.id}|${variant}`))
-    .map(({ card, variant }) => ({
-      binder_id: binderId,
-      card_id: card.id,
-      variant,
-      quantity: 0,
-    }));
+  const filteredPairs = uniqueCards.filter(
+    ({ card, variant }) => !existingPairs.has(`${card.id}|${variant}`),
+  );
+  const sortStart = filteredPairs.length
+    ? await nextSortOrder(supabase, binderId)
+    : 0;
+  const toInsert = filteredPairs.map(({ card, variant }, i) => ({
+    binder_id: binderId,
+    card_id: card.id,
+    variant,
+    quantity: 0,
+    sort_order: sortStart + i * 100,
+  }));
 
   let inserted = 0;
   if (toInsert.length) {

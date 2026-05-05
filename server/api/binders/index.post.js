@@ -125,11 +125,12 @@ export default defineEventHandler(async (event) => {
 
 async function buildTemplateRows(supabase, template, binderId) {
   if (template.kind === "pokedex") {
-    return template.slots.map((s) => ({
+    return template.slots.map((s, i) => ({
       binder_id: binderId,
       card_id: null,
       variant: "normal",
       quantity: 0,
+      sort_order: (i + 1) * 100,
       dex_number: s.dexNumber,
       form_slug: s.formSlug ?? null,
       display_name: s.displayName,
@@ -155,11 +156,12 @@ async function buildTemplateRows(supabase, template, binderId) {
     const known = new Set((existing ?? []).map((c) => c.id));
     return template.slots
       .filter((s) => s.cardId && known.has(s.cardId))
-      .map((s) => ({
+      .map((s, i) => ({
         binder_id: binderId,
         card_id: s.cardId,
         variant: s.variant ?? "normal",
         quantity: 0,
+        sort_order: (i + 1) * 100,
       }));
   }
 

@@ -1,6 +1,7 @@
 import { serverSupabaseClient, serverSupabaseServiceRole } from "#supabase/server";
 import { requireUser } from "~~/server/utils/auth";
 import { cardToRow } from "~~/server/utils/cards";
+import { nextSortOrder } from "~~/server/utils/nextSortOrder";
 
 export default defineEventHandler(async (event) => {
   await requireUser(event);
@@ -141,6 +142,7 @@ export default defineEventHandler(async (event) => {
     }
   } else {
     const initialQuantity = isCustom ? (owned ? 1 : 0) : delta;
+    const sortOrder = await nextSortOrder(supabase, binderId);
     const { data, error } = await supabase
       .from("binder_items")
       .insert({
@@ -148,6 +150,7 @@ export default defineEventHandler(async (event) => {
         card_id: cardId,
         variant,
         quantity: initialQuantity,
+        sort_order: sortOrder,
       })
       .select("id, card_id, variant, quantity")
       .single();

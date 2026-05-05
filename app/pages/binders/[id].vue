@@ -1,4 +1,5 @@
 <script setup>
+import { VueDraggable } from "vue-draggable-plus";
 import {
   buildMissingRows,
   toCsv,
@@ -21,6 +22,7 @@ const {
   removeCard,
   setOwned,
   bulkAdd,
+  reorder,
 } = useBinder(binderId);
 const { setActiveBinder, activeBinderId, fetchBinders } = useBinders();
 const toast = useToast();
@@ -186,6 +188,48 @@ const VIEW_MODES = [
   { label: "Binder", value: "binder", icon: "i-lucide-book-open" },
 ];
 const viewMode = ref("grid");
+
+// Manual reorder ("Edit order") mode. Active only for non-pokedex binders.
+// While editing: filter/sort/view are paused, all items are shown in
+// sort_order, the user drags cards to rearrange, and changes persist
+// optimistically through useBinder.reorder().
+const isEditingOrder = ref(false);
+const editingItems = ref([]);
+const canEditOrder = computed(() => !isPokedex.value);
+
+function enterEditOrder() {
+  if (!canEditOrder.value) return;
+  // Snapshot the current items in their persisted (sort_order) order — not
+  // the filtered/sorted view — so dragging works against the canonical list.
+  editingItems.value = [...items.value].sort((a, b) => {
+    const ax = a.sortOrder ?? 0;
+    const bx = b.sortOrder ?? 0;
+    return ax - bx;
+  });
+  isEditingOrder.value = true;
+}
+
+function exitEditOrder() {
+  isEditingOrder.value = false;
+  editingItems.value = [];
+}
+
+async function onReorderEnd() {
+  const orderedIds = editingItems.value.map((i) => i.id);
+  try {
+    await reorder(orderedIds);
+  } catch (err) {
+    toast.add({
+      color: "error",
+      title: "Reorder failed",
+      description: err?.data?.statusMessage ?? err?.message ?? "Error",
+    });
+    // Re-sync the editing snapshot from the (rolled-back) source.
+    editingItems.value = [...items.value].sort(
+      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
+    );
+  }
+}
 
 const tableColumns = computed(() => {
   const cols = [
@@ -799,6 +843,23 @@ watch([ownedItems, totalItems], () => {
             :ui="{ label: 'hidden sm:inline' }"
             @click="addCardOpen = true"
           />
+          <UButton
+            v-if="canEditOrder && items.length && !isEditingOrder"
+            icon="i-lucide-arrow-up-down"
+            label="Edit order"
+            color="neutral"
+            variant="outline"
+            :ui="{ label: 'hidden md:inline' }"
+            @click="enterEditOrder"
+          />
+          <UButton
+            v-else-if="isEditingOrder"
+            icon="i-lucide-check"
+            label="Done"
+            color="primary"
+            :ui="{ label: 'hidden md:inline' }"
+            @click="exitEditOrder"
+          />
           <UDropdownMenu
             v-if="moreActions.length"
             :items="moreActions"
@@ -848,7 +909,21 @@ watch([ownedItems, totalItems], () => {
         {{ binder.description }}
       </p>
 
-      <div v-if="isChecklistLike && totalItems" class="flex justify-between">
+      <UAlert
+        v-if="isEditingOrder"
+        color="primary"
+        variant="soft"
+        icon="i-lucide-arrow-up-down"
+        title="Editing order"
+        description="Drag cards to rearrange. Filters, sort, and view are paused — click Done when finished."
+        :actions="[{ label: 'Done', color: 'primary', onClick: exitEditOrder }]"
+        class="mb-4"
+      />
+
+      <div
+        v-if="isChecklistLike && totalItems && !isEditingOrder"
+        class="flex justify-between"
+      >
         <UTabs
           :items="filterTabs"
           v-model="filter"
@@ -915,7 +990,7 @@ watch([ownedItems, totalItems], () => {
       </div>
 
       <div
-        v-if="items.length"
+        v-if="items.length && !isEditingOrder"
         class="mb-4 flex w-full flex-wrap items-center gap-2"
       >
         <UTabs
@@ -1005,6 +1080,48 @@ watch([ownedItems, totalItems], () => {
           },
         ]"
       />
+
+      <VueDraggable
+        v-else-if="isEditingOrder"
+        v-model="editingItems"
+        :animation="180"
+        handle=".reorder-handle"
+        ghost-class="reorder-ghost"
+        class="cards-grid"
+        @end="onReorderEnd"
+      >
+        <article
+          v-for="item in editingItems"
+          :key="item.id"
+          class="flex flex-col gap-2 min-w-0 relative group"
+        >
+          <button
+            type="button"
+            class="reorder-handle absolute top-1.5 left-1.5 z-10 flex size-8 items-center justify-center rounded-md bg-elevated/80 text-default shadow-sm cursor-grab active:cursor-grabbing hover:bg-elevated"
+            aria-label="Drag to reorder"
+          >
+            <UIcon name="i-lucide-grip-vertical" class="size-4" />
+          </button>
+          <CardImage
+            :card="item.card"
+            :variant="item.variant"
+            :quantity="item.quantity"
+            :is-custom="isCustom"
+          />
+          <div class="flex items-start justify-between gap-2 min-w-0 px-0.5">
+            <CardMeta :card="item.card" :fallback-name="item.cardId" />
+            <UBadge
+              v-if="formatVariant(item.variant)"
+              :color="variantColor(item.variant)"
+              variant="soft"
+              size="sm"
+              class="capitalize shrink-0"
+            >
+              {{ formatVariant(item.variant) }}
+            </UBadge>
+          </div>
+        </article>
+      </VueDraggable>
 
       <PokedexVirtualGrid
         v-else-if="isPokedex && viewMode === 'grid'"
@@ -1447,4 +1564,10 @@ watch([ownedItems, totalItems], () => {
     </template>
   </UDashboardPanel>
 </template>
+
+<style scoped>
+.reorder-ghost {
+  opacity: 0.4;
+}
+</style>
 

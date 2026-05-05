@@ -155,6 +155,28 @@ export function useBinder(binderId) {
     return result;
   }
 
+  async function reorder(orderedIds) {
+    if (!id.value) throw new Error("Binder id is not set");
+    if (!Array.isArray(orderedIds) || !orderedIds.length) return;
+    const previous = items.value;
+    // Optimistic local update so the UI sticks even if the network is slow.
+    const byId = new Map(previous.map((i) => [i.id, i]));
+    const next = orderedIds.map((rid, idx) => {
+      const row = byId.get(rid);
+      return row ? { ...row, sortOrder: (idx + 1) * 100 } : null;
+    }).filter(Boolean);
+    items.value = next;
+    try {
+      await $fetch(`/api/binders/${id.value}/reorder`, {
+        method: "PATCH",
+        body: { orderedIds },
+      });
+    } catch (err) {
+      items.value = previous;
+      throw err;
+    }
+  }
+
   watch(id, () => fetchItems().catch(() => {}), { immediate: true });
 
   return {
@@ -169,5 +191,6 @@ export function useBinder(binderId) {
     removeCard,
     setOwned,
     bulkAdd,
+    reorder,
   };
 }

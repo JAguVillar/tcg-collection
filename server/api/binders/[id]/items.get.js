@@ -30,16 +30,15 @@ export default defineEventHandler(async (event) => {
         .from("binder_items")
         .select(`
           id, card_id, variant, quantity, notes, created_at, updated_at,
-          dex_number, form_slug, display_name, sprite_id, search_query,
+          dex_number, form_slug, display_name, sprite_id, search_query, sort_order,
           card:cards(
             id, name, number_display, set_id, set_name, series, rarity, artist,
             category, thumb_image_url, large_image_url, set_icon_url, release_date, raw
           )
         `)
         .eq("binder_id", binderId)
-        .order("dex_number", { ascending: true, nullsFirst: false })
-        .order("form_slug", { ascending: true, nullsFirst: true })
-        .order("created_at", { ascending: true }),
+        .order("sort_order", { ascending: true })
+        .order("id", { ascending: true }),
     );
   } catch (error) {
     throw createError({ statusCode: 500, statusMessage: error.message });
@@ -62,6 +61,7 @@ export default defineEventHandler(async (event) => {
       notes: row.notes,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
+      sortOrder: row.sort_order,
       dexNumber: row.dex_number,
       formSlug: row.form_slug,
       displayName: row.display_name,
