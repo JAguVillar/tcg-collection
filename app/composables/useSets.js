@@ -1,5 +1,5 @@
 export function useSets() {
-  const { data, pending, error } = useFetch("/api/sets", {
+  const { data, pending, error } = useFetch("/api/set", {
     key: "sets",
     default: () => [],
     server: false,
@@ -15,7 +15,8 @@ export function useSets() {
     return list.map((set) => ({
       label: set.name ?? set.title ?? String(set.id),
       value: set.id ?? set.code ?? set.name,
-      avatar: set.symbol || set.logo ? { src: set.symbol ?? set.logo } : undefined,
+      avatar:
+        set.symbol || set.logo ? { src: set.symbol ?? set.logo } : undefined,
     }));
   });
 
