@@ -1,5 +1,5 @@
 export function useSets() {
-  const { data, pending, error } = useFetch("/api/set", {
+  const { data, pending, error } = useFetch("/api/sets", {
     key: "sets",
     default: () => [],
     server: false,
