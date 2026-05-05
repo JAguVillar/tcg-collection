@@ -47,6 +47,7 @@ watch(
 
 function setOpen(v) {
   emit("update:open", v);
+  if (!v) emit("done");
 }
 
 function next() {
@@ -70,7 +71,6 @@ function skip() {
 <template>
   <UModal
     :open="open"
-    :dismissible="false"
     :ui="{ content: 'max-w-lg' }"
     @update:open="setOpen"
   >

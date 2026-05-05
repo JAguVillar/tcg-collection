@@ -8,6 +8,28 @@ const props = defineProps({
 });
 
 const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
+
+const variantLabel = computed(() => {
+  const v = props.variant ?? props.card?.variant;
+  if (!v || v === "normal") return "";
+  switch (v) {
+    case "holofoil":
+      return "Holo Foil";
+    case "reverseHolofoil":
+      return "Reverse Holo Foil";
+    case "firstEditionHolofoil":
+      return "1st Edition Holo Foil";
+    case "firstEditionNormal":
+      return "1st Edition";
+    default:
+      return v.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
+  }
+});
+
+const altText = computed(() => {
+  const name = props.card?.name ?? "";
+  return variantLabel.value ? `${name} — ${variantLabel.value}` : name;
+});
 </script>
 
 <template>
@@ -18,7 +40,7 @@ const isMissing = computed(() => props.isCustom && (props.quantity ?? 0) === 0);
     <img
       v-if="card?.thumbImageUrl"
       :src="card.thumbImageUrl"
-      :alt="card.name"
+      :alt="altText"
       loading="lazy"
       class="w-full h-full object-cover rounded-md block transition"
       :class="isMissing ? 'grayscale group-hover:grayscale-0' : ''"

@@ -194,7 +194,7 @@ const masterSetDescription = computed(() => {
           size="sm"
           :content="false"
         />
-        <div class="grid grid-cols-[1fr_10rem] gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-[1fr_10rem] gap-3 sm:gap-4">
           <UFormField
             :label="sourceFieldLabel"
             :name="sourceMode"
@@ -233,7 +233,7 @@ const masterSetDescription = computed(() => {
               />
             </div>
           </UFormField>
-          <UFormField label="Language" name="language" required class="w-40">
+          <UFormField label="Language" name="language" required class="sm:w-40">
             <USelect
               v-model="selectedCategory"
               :items="[

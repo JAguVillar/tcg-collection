@@ -18,6 +18,7 @@ const {
   items,
   loading,
   error,
+  fetchItems,
   addCard,
   removeCard,
   setOwned,
@@ -882,8 +883,18 @@ watch([ownedItems, totalItems], () => {
         v-if="error"
         color="error"
         icon="i-lucide-triangle-alert"
+        title="Could not load binder"
         :description="error"
         class="mb-4"
+        :actions="[
+          {
+            label: 'Retry',
+            color: 'error',
+            variant: 'soft',
+            icon: 'i-lucide-refresh-cw',
+            onClick: () => fetchItems(),
+          },
+        ]"
       />
 
       <div
@@ -1086,7 +1097,7 @@ watch([ownedItems, totalItems], () => {
         v-model="editingItems"
         :animation="180"
         handle=".reorder-handle"
-        ghost-class="reorder-ghost"
+        ghost-class="opacity-40"
         class="cards-grid"
         @end="onReorderEnd"
       >
@@ -1564,10 +1575,4 @@ watch([ownedItems, totalItems], () => {
     </template>
   </UDashboardPanel>
 </template>
-
-<style scoped>
-.reorder-ghost {
-  opacity: 0.4;
-}
-</style>
 

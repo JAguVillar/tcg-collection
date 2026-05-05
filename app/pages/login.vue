@@ -10,6 +10,7 @@ const toast = useToast();
 const mode = ref("signIn");
 const loading = ref(false);
 const message = ref(null);
+const showPassword = ref(false);
 const state = reactive({ email: "", password: "" });
 
 const title = computed(() =>
@@ -107,12 +108,27 @@ function toggleMode() {
       <UFormField label="Password" name="password" required>
         <UInput
           v-model="state.password"
-          type="password"
+          :type="showPassword ? 'text' : 'password'"
           :autocomplete="mode === 'signIn' ? 'current-password' : 'new-password'"
           placeholder="••••••••"
           icon="i-lucide-lock"
           class="w-full"
-        />
+          :ui="{ trailing: 'pe-1' }"
+        >
+          <template #trailing>
+            <UButton
+              :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+              color="neutral"
+              variant="ghost"
+              size="xs"
+              square
+              :aria-label="showPassword ? 'Hide password' : 'Show password'"
+              :aria-pressed="showPassword"
+              tabindex="-1"
+              @click="showPassword = !showPassword"
+            />
+          </template>
+        </UInput>
       </UFormField>
 
       <UButton

@@ -14,11 +14,11 @@ defineProps({
         :alt="card.set"
         class="size-6 shrink-0 object-contain bg-white rounded-md"
       />
-      <span class="text-md font-semibold text-default truncate">
+      <span class="text-base font-semibold text-default truncate">
         {{ card?.name ?? fallbackName }}
       </span>
     </div>
-    <span v-if="card?.numberDisplay" class="text-md text-muted">
+    <span v-if="card?.numberDisplay" class="text-base text-muted">
       #{{ card.numberDisplay }}
     </span>
   </div>

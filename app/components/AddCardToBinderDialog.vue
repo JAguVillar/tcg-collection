@@ -178,22 +178,13 @@ function setOpen(value) {
           />
         </div>
 
-        <div
+        <UAlert
           v-if="addedCount"
-          class="flex items-center justify-between gap-2 rounded-md bg-primary/5 border border-primary/20 px-3 py-2"
-        >
-          <div class="flex items-center gap-2 text-sm text-primary min-w-0">
-            <UIcon
-              name="i-lucide-check-circle"
-              class="size-4 shrink-0"
-            />
-            <span class="truncate">
-              <span class="font-semibold">{{ addedCount }}</span>
-              {{ addedCount === 1 ? "card" : "cards" }} added to
-              <span class="font-semibold">{{ binder?.name }}</span>
-            </span>
-          </div>
-        </div>
+          color="primary"
+          variant="soft"
+          icon="i-lucide-check-circle"
+          :title="`${addedCount} ${addedCount === 1 ? 'card' : 'cards'} added to ${binder?.name ?? 'binder'}`"
+        />
 
         <UAlert
           v-if="error"
@@ -240,13 +231,22 @@ function setOpen(value) {
           </UCard>
         </div>
 
-        <div
+        <EmptyState
           v-else-if="searchQuery && !loading"
-          class="flex flex-col items-center justify-center py-8 text-muted gap-2"
-        >
-          <UIcon name="i-lucide-search-x" class="size-8" />
-          <p class="text-sm">No cards found for "{{ searchQuery }}"</p>
-        </div>
+          icon="i-lucide-search-x"
+          :title="`No cards found for &quot;${searchQuery}&quot;`"
+          description="Try a different name, set, or artist."
+          :actions="[
+            {
+              label: 'Clear search',
+              color: 'neutral',
+              variant: 'outline',
+              onClick: () => {
+                searchQuery = '';
+              },
+            },
+          ]"
+        />
 
         <div v-if="cards.length && hasMore" class="flex justify-center">
           <UButton

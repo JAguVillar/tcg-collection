@@ -381,8 +381,18 @@ function quickAdd(card) {
         v-if="error"
         color="error"
         icon="i-lucide-triangle-alert"
+        title="Could not load cards"
         :description="error"
         class="mb-4"
+        :actions="[
+          {
+            label: 'Retry',
+            color: 'error',
+            variant: 'soft',
+            icon: 'i-lucide-refresh-cw',
+            onClick: () => searchCards(),
+          },
+        ]"
       />
 
       <div v-if="loading" class="cards-grid">

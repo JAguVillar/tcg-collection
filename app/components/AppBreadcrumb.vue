@@ -25,5 +25,9 @@ const items = computed(() => {
 </script>
 
 <template>
-  <UBreadcrumb :items="items" />
+  <UBreadcrumb
+    :items="items"
+    class="min-w-0"
+    :ui="{ list: 'min-w-0 flex-nowrap', item: 'min-w-0', link: 'truncate' }"
+  />
 </template>
