@@ -7,15 +7,18 @@ const props = defineProps({
 const emit = defineEmits(["update:open", "added"]);
 
 const { options: artistOptions } = useArtists();
+const { options: setOptions } = useSets();
 
 const SOURCE_MODES = [
   { label: "By search", value: "query" },
   { label: "By artist", value: "artist" },
+  { label: "By set", value: "set" },
 ];
 
 const sourceMode = ref("query");
 const searchQuery = ref("");
 const selectedArtist = ref(null);
+const selectedSet = ref(null);
 const selectedCategory = ref("EN");
 const separateVariants = ref(false);
 const preview = ref(null);
@@ -24,19 +27,47 @@ const previewError = ref(null);
 const submitting = ref(false);
 const submitError = ref(null);
 
-const currentSelection = computed(() =>
-  sourceMode.value === "artist"
-    ? selectedArtist.value
-    : searchQuery.value.trim(),
-);
+const selectedArtistOption = computed({
+  get() {
+    if (!selectedArtist.value) return null;
+    return (
+      artistOptions.value.find((o) => o.value === selectedArtist.value) ?? null
+    );
+  },
+  set(option) {
+    selectedArtist.value = option?.value ?? null;
+  },
+});
+
+const selectedSetOption = computed({
+  get() {
+    if (!selectedSet.value) return null;
+    return setOptions.value.find((o) => o.value === selectedSet.value) ?? null;
+  },
+  set(option) {
+    selectedSet.value = option?.value ?? null;
+  },
+});
+
+const currentSelection = computed(() => {
+  if (sourceMode.value === "artist") return selectedArtist.value;
+  if (sourceMode.value === "set") return selectedSet.value;
+  return searchQuery.value.trim();
+});
 
 const sourceLabel = computed(() => {
   if (!currentSelection.value) {
-    return sourceMode.value === "artist" ? "this artist" : "this search";
+    if (sourceMode.value === "artist") return "this artist";
+    if (sourceMode.value === "set") return "this set";
+    return "this search";
   }
-  return sourceMode.value === "artist"
-    ? currentSelection.value.label
-    : currentSelection.value;
+  if (sourceMode.value === "artist") {
+    return selectedArtistOption.value?.label ?? selectedArtist.value;
+  }
+  if (sourceMode.value === "set") {
+    return selectedSetOption.value?.label ?? selectedSet.value;
+  }
+  return currentSelection.value;
 });
 
 function buildPayload() {
@@ -45,7 +76,10 @@ function buildPayload() {
     category: selectedCategory.value,
   };
   if (sourceMode.value === "artist") {
-    return { ...base, mode: "artist", artist: selectedArtist.value?.value };
+    return { ...base, mode: "artist", artist: selectedArtist.value };
+  }
+  if (sourceMode.value === "set") {
+    return { ...base, mode: "set", set: selectedSet.value };
   }
   return { ...base, mode: "query", query: searchQuery.value.trim() };
 }
@@ -54,6 +88,7 @@ function reset() {
   sourceMode.value = "query";
   searchQuery.value = "";
   selectedArtist.value = null;
+  selectedSet.value = null;
   selectedCategory.value = "EN";
   separateVariants.value = false;
   preview.value = null;
@@ -105,14 +140,8 @@ async function onConfirm() {
       ...result,
       source: {
         mode: sourceMode.value,
-        label:
-          sourceMode.value === "artist"
-            ? currentSelection.value.label
-            : currentSelection.value,
-        value:
-          sourceMode.value === "artist"
-            ? currentSelection.value.value
-            : currentSelection.value,
+        label: sourceLabel.value,
+        value: currentSelection.value,
         category: selectedCategory.value,
       },
     });
@@ -128,13 +157,32 @@ async function onConfirm() {
 function setOpen(value) {
   emit("update:open", value);
 }
+
+const sourceFieldLabel = computed(() => {
+  if (sourceMode.value === "artist") return "Artist";
+  if (sourceMode.value === "set") return "Set";
+  return "Search query";
+});
+
+const emptyMessageNoun = computed(() => {
+  if (sourceMode.value === "artist") return "artist";
+  if (sourceMode.value === "set") return "set";
+  return "search";
+});
+
+const masterSetDescription = computed(() => {
+  if (sourceMode.value === "query") {
+    return "Add all variants of matching cards as separate entries (normal, holofoil, reverse holo, etc.)";
+  }
+  return "Add every variant as a separate entry (normal, holofoil, reverse holo, etc.)";
+});
 </script>
 
 <template>
   <UModal
     :open="open"
     title="Bulk add cards"
-    description="Fetches cards by search or artist and adds missing ones to this checklist."
+    description="Fetches cards by search, artist or set and adds missing ones to this checklist."
     @update:open="setOpen"
   >
     <template #body>
@@ -148,7 +196,7 @@ function setOpen(value) {
         />
         <div class="grid grid-cols-[1fr_10rem] gap-4">
           <UFormField
-            :label="sourceMode === 'artist' ? 'Artist' : 'Search query'"
+            :label="sourceFieldLabel"
             :name="sourceMode"
             required
             class="flex-1"
@@ -163,12 +211,24 @@ function setOpen(value) {
               />
 
               <UInputMenu
-                v-else
-                v-model="selectedArtist"
+                v-else-if="sourceMode === 'artist'"
+                v-model="selectedArtistOption"
                 :items="artistOptions"
                 :virtualize="true"
                 placeholder="Search an artist…"
                 icon="i-lucide-palette"
+                clear
+                class="flex-1 min-w-0"
+              />
+
+              <UInputMenu
+                v-else
+                v-model="selectedSetOption"
+                :items="setOptions"
+                :virtualize="true"
+                placeholder="Search a set…"
+                icon="i-lucide-layers"
+                clear
                 class="flex-1 min-w-0"
               />
             </div>
@@ -194,13 +254,7 @@ function setOpen(value) {
         >
           <template #title> Master set </template>
           <template #description>
-            <p>
-              {{
-                sourceMode === "artist"
-                  ? "Add every variant as a separate entry (normal, holofoil, reverse holo, etc.)"
-                  : "Add all variants of matching cards as separate entries (normal, holofoil, reverse holo, etc.)"
-              }}
-            </p>
+            <p>{{ masterSetDescription }}</p>
           </template>
           <template #actions>
             <UFormField>
@@ -254,8 +308,7 @@ function setOpen(value) {
             />
           </div>
           <p v-if="preview.count === 0" class="text-sm text-muted">
-            No cards found for this
-            {{ sourceMode === "artist" ? "artist" : "search" }}.
+            No cards found for this {{ emptyMessageNoun }}.
           </p>
           <p v-else class="text-xs text-muted">
             Cards already in this binder will be skipped.

@@ -17,11 +17,13 @@ const {
   error,
   hasMore,
   selectedArtist,
+  selectedSet,
   selectedCategory,
   searchCards,
   loadMore,
 } = useCardSearch();
 const { options: artistOptions } = useArtists();
+const { options: setOptions } = useSets();
 
 const addStatus = ref({});
 const addedCount = ref(0);
@@ -33,6 +35,7 @@ function cardKey(card) {
 function reset() {
   searchQuery.value = "";
   selectedArtist.value = null;
+  selectedSet.value = null;
   selectedCategory.value = "EN";
   cards.value = [];
   addStatus.value = {};
@@ -42,10 +45,22 @@ function reset() {
 const selectedArtistOption = computed({
   get() {
     if (!selectedArtist.value) return null;
-    return artistOptions.find((o) => o.value === selectedArtist.value) ?? null;
+    return (
+      artistOptions.value.find((o) => o.value === selectedArtist.value) ?? null
+    );
   },
   set(option) {
     selectedArtist.value = option?.value ?? null;
+  },
+});
+
+const selectedSetOption = computed({
+  get() {
+    if (!selectedSet.value) return null;
+    return setOptions.value.find((o) => o.value === selectedSet.value) ?? null;
+  },
+  set(option) {
+    selectedSet.value = option?.value ?? null;
   },
 });
 
@@ -65,11 +80,7 @@ watch(
   },
 );
 
-watch(selectedArtist, () => {
-  if (searchQuery.value.trim()) searchCards();
-});
-
-watch(selectedCategory, () => {
+watch([selectedArtist, selectedSet, selectedCategory], () => {
   if (searchQuery.value.trim()) searchCards();
 });
 
@@ -148,14 +159,24 @@ function setOpen(value) {
           />
         </form>
 
-        <UInputMenu
-          v-model="selectedArtistOption"
-          :items="artistOptions"
-          :virtualize="true"
-          placeholder="Filter by artist"
-          icon="i-lucide-palette"
-          clear
-        />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <UInputMenu
+            v-model="selectedSetOption"
+            :items="setOptions"
+            :virtualize="true"
+            placeholder="Filter by set"
+            icon="i-lucide-layers"
+            clear
+          />
+          <UInputMenu
+            v-model="selectedArtistOption"
+            :items="artistOptions"
+            :virtualize="true"
+            placeholder="Filter by artist"
+            icon="i-lucide-palette"
+            clear
+          />
+        </div>
 
         <div
           v-if="addedCount"

@@ -9,11 +9,17 @@ export default defineEventHandler(async (event) => {
   const binderId = getRouterParam(event, "id");
   const body = await readBody(event);
 
-  const mode = body?.mode === "artist" || (!body?.mode && body?.artist)
-    ? "artist"
-    : "query";
+  let mode = body?.mode;
+  if (!mode) {
+    if (body?.set) mode = "set";
+    else if (body?.artist) mode = "artist";
+    else mode = "query";
+  }
+  if (!["query", "artist", "set"].includes(mode)) mode = "query";
+
   const query = body?.query?.trim?.() ?? "";
   const artist = body?.artist?.trim?.() ?? "";
+  const set = typeof body?.set === "string" ? body.set.trim() : body?.set ?? "";
   const preview = Boolean(body?.preview);
   const separateVariants = Boolean(body?.separateVariants);
   const category = body?.category === "JP" ? "JP" : "EN";
@@ -23,6 +29,9 @@ export default defineEventHandler(async (event) => {
   }
   if (mode === "artist" && !artist) {
     throw createError({ statusCode: 400, statusMessage: "artist required" });
+  }
+  if (mode === "set" && !set) {
+    throw createError({ statusCode: 400, statusMessage: "set required" });
   }
 
   const supabase = await serverSupabaseClient(event);
@@ -48,7 +57,9 @@ export default defineEventHandler(async (event) => {
   const searchOverrides =
     mode === "artist"
       ? { artists: [artist], separateVariants, category }
-      : { query, separateVariants, category };
+      : mode === "set"
+        ? { sets: [set], separateVariants, category }
+        : { query, separateVariants, category };
 
   const { cards, hits } = await collectAllCards(searchOverrides);
 
