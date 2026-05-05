@@ -10,6 +10,7 @@ const {
   hasMore,
   separateVariants,
   selectedArtist,
+  selectedSet,
   selectedCategory,
   sortField,
   isAscending,
@@ -18,6 +19,7 @@ const {
   setSort,
 } = useCardSearch();
 const { options: artistOptions } = useArtists();
+const { options: setOptions } = useSets();
 
 const user = useSupabaseUser();
 const { activeBinder } = useBinders();
@@ -48,17 +50,29 @@ const languageItems = [
 
 searchCards({ query: "" });
 
-watch([separateVariants, selectedArtist, selectedCategory], () => {
+watch([separateVariants, selectedArtist, selectedSet, selectedCategory], () => {
   searchCards();
 });
 
 const selectedArtistOption = computed({
   get() {
     if (!selectedArtist.value) return null;
-    return artistOptions.find((o) => o.value === selectedArtist.value) ?? null;
+    return (
+      artistOptions.value.find((o) => o.value === selectedArtist.value) ?? null
+    );
   },
   set(option) {
     selectedArtist.value = option?.value ?? null;
+  },
+});
+
+const selectedSetOption = computed({
+  get() {
+    if (!selectedSet.value) return null;
+    return setOptions.value.find((o) => o.value === selectedSet.value) ?? null;
+  },
+  set(option) {
+    selectedSet.value = option?.value ?? null;
   },
 });
 
@@ -73,6 +87,7 @@ const activeSort = computed(() =>
 const activeFilterCount = computed(
   () =>
     (selectedArtist.value ? 1 : 0) +
+    (selectedSet.value ? 1 : 0) +
     (separateVariants.value ? 1 : 0) +
     (selectedCategory.value !== "EN" ? 1 : 0),
 );
@@ -185,6 +200,17 @@ function quickAdd(card) {
                         class="w-full"
                       />
                     </UFormField>
+                    <UFormField label="Set">
+                      <UInputMenu
+                        v-model="selectedSetOption"
+                        :items="setOptions"
+                        :virtualize="true"
+                        placeholder="Any set"
+                        icon="i-lucide-layers"
+                        clear
+                        class="w-full"
+                      />
+                    </UFormField>
                     <UFormField label="Artist">
                       <UInputMenu
                         v-model="selectedArtistOption"
@@ -279,6 +305,23 @@ function quickAdd(card) {
                   color="neutral"
                   aria-label="Clear language"
                   @click="selectedCategory = 'EN'"
+                />
+              </UBadge>
+              <UBadge
+                v-if="selectedSet"
+                color="neutral"
+                variant="soft"
+                :ui="{ base: 'pr-0.5 gap-1' }"
+              >
+                {{ selectedSetOption?.label ?? selectedSet }}
+                <UButton
+                  icon="i-lucide-x"
+                  size="xs"
+                  square
+                  variant="ghost"
+                  color="neutral"
+                  aria-label="Clear set"
+                  @click="selectedSet = null"
                 />
               </UBadge>
               <UBadge

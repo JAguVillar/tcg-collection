@@ -1,12 +1,22 @@
-import artistsData from "~/assets/artists-compact.json";
-
-const options = Object.freeze(
-  artistsData.map((artist) => ({
-    label: artist.name,
-    value: artist.name,
-  })),
-);
-
 export function useArtists() {
-  return { options };
+  const { data, pending, error } = useFetch("/api/artists", {
+    key: "artists",
+    default: () => [],
+    server: false,
+    lazy: true,
+  });
+
+  const options = computed(() => {
+    const list = Array.isArray(data.value)
+      ? data.value
+      : Array.isArray(data.value?.value)
+        ? data.value.value
+        : [];
+    return list.map((artist) => ({
+      label: artist.name,
+      value: artist.name,
+    }));
+  });
+
+  return { options, pending, error };
 }
