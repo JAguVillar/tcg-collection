@@ -12,10 +12,10 @@ export function useArtists() {
       : Array.isArray(data.value?.value)
         ? data.value.value
         : [];
-    return list.map((artist) => ({
-      label: artist.name,
-      value: artist.name,
-    }));
+    return list.map((artist) => {
+      const name = typeof artist === "string" ? artist : artist.name;
+      return { label: name, value: name };
+    });
   });
 
   return { options, pending, error };
