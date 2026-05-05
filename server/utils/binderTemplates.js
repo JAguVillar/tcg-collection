@@ -1,3 +1,7 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
 // Auto-discover binder templates from app/assets/binder-templates/*.json.
 // Adding a new preset is just `git add` of a JSON file — no manual
 // registration in API handlers or in the frontend dropdown.
@@ -11,18 +15,47 @@
 //       pokedex:  { dexNumber, formSlug?, displayName, spriteId?, searchQuery? }
 //       curated:  { cardId, variant? }
 //   }
-const modules = import.meta.glob(
-  "../../app/assets/binder-templates/*.json",
-  { eager: true, import: "default" },
+//
+// import.meta.glob would be cleaner but it's a Vite-only feature; Nitro's
+// runtime uses Rollup. Reading the directory with fs at module load is
+// equivalent for our case (templates are static, loaded once at boot).
+const TEMPLATES_DIR = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+  "app",
+  "assets",
+  "binder-templates",
 );
 
-export const TEMPLATES = Object.freeze(
-  Object.fromEntries(
-    Object.values(modules)
-      .filter((t) => t && typeof t === "object" && t.id)
-      .map((t) => [t.id, t]),
-  ),
-);
+function loadTemplates() {
+  const out = {};
+  let entries;
+  try {
+    entries = readdirSync(TEMPLATES_DIR);
+  } catch {
+    return out;
+  }
+  for (const name of entries) {
+    if (!name.endsWith(".json")) continue;
+    if (name.endsWith(".raw.json")) continue;
+    let parsed;
+    try {
+      parsed = JSON.parse(readFileSync(join(TEMPLATES_DIR, name), "utf8"));
+    } catch (err) {
+      console.warn(`[binderTemplates] Failed to parse ${name}:`, err.message);
+      continue;
+    }
+    if (!parsed?.id) {
+      console.warn(`[binderTemplates] ${name} has no id, skipping.`);
+      continue;
+    }
+    out[parsed.id] = parsed;
+  }
+  return out;
+}
+
+export const TEMPLATES = Object.freeze(loadTemplates());
 
 // Backfill map for legacy pokedex binders created before search_query
 // was persisted. Keyed by `${dexNumber}|${formSlug ?? ""}`.
