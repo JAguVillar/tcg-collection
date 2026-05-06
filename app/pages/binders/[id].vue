@@ -120,17 +120,19 @@ const generationStats = computed(() => {
   }
   const out = stats.filter((g) => g.total > 0);
   if (formsTotal > 0) {
-    out.push({ label: "Forms", from: 1026, to: Infinity, total: formsTotal, owned: formsOwned });
+    out.push({
+      label: "Forms",
+      from: 1026,
+      to: Infinity,
+      total: formsTotal,
+      owned: formsOwned,
+    });
   }
   return out;
 });
 
 function normalizeSearch(s) {
-  return (s ?? "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .trim();
+  return (s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
 }
 
 const filterCounts = computed(() => {
@@ -415,7 +417,8 @@ const filteredItems = computed(() => {
       });
     }
     return [...list].sort((a, b) => {
-      if (a.dexNumber !== b.dexNumber) return (a.dexNumber ?? 0) - (b.dexNumber ?? 0);
+      if (a.dexNumber !== b.dexNumber)
+        return (a.dexNumber ?? 0) - (b.dexNumber ?? 0);
       const fa = a.formSlug ?? "";
       const fb = b.formSlug ?? "";
       return fa.localeCompare(fb);
@@ -430,9 +433,13 @@ function jumpToGeneration(gen) {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
-  const target = filteredItems.value.find((i) => (i.dexNumber ?? 0) >= gen.from);
+  const target = filteredItems.value.find(
+    (i) => (i.dexNumber ?? 0) >= gen.from,
+  );
   if (!target) return;
-  const fallback = document.querySelector(`[data-dex-anchor="${target.dexNumber}"]`);
+  const fallback = document.querySelector(
+    `[data-dex-anchor="${target.dexNumber}"]`,
+  );
   fallback?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -491,7 +498,10 @@ const visiblePages = computed(() => {
     out.push({ key: `l-${leftPageNumber.value}`, items: leftPageItems.value });
   }
   if (hasRightPage.value) {
-    out.push({ key: `r-${rightPageNumber.value}`, items: rightPageItems.value });
+    out.push({
+      key: `r-${rightPageNumber.value}`,
+      items: rightPageItems.value,
+    });
   }
   return out;
 });
@@ -643,9 +653,7 @@ function openSlotPicker(item) {
   // "pikachu vmax"). Fall back to the species name derived from displayName
   // for legacy slots that pre-date the search_query column.
   pendingSlotQuery.value =
-    item.searchQuery ??
-    item.displayName?.split(" (")[0]?.toLowerCase() ??
-    "";
+    item.searchQuery ?? item.displayName?.split(" (")[0]?.toLowerCase() ?? "";
   addCardOpen.value = true;
 }
 
@@ -660,7 +668,10 @@ async function clearSlot(item) {
   try {
     await removeCard(item.cardId, item.variant, {
       all: true,
-      targetSlot: { dexNumber: item.dexNumber, formSlug: item.formSlug ?? null },
+      targetSlot: {
+        dexNumber: item.dexNumber,
+        formSlug: item.formSlug ?? null,
+      },
     });
   } catch (err) {
     toast.add({
@@ -716,9 +727,7 @@ function exportMissingTxt() {
 
 async function exportPreset() {
   try {
-    const preset = await $fetch(
-      `/api/binders/${binderId.value}/export-preset`,
-    );
+    const preset = await $fetch(`/api/binders/${binderId.value}/export-preset`);
     const filename = `${preset.id || exportSlug.value || "preset"}.json`;
     triggerDownload(
       filename,
@@ -852,11 +861,6 @@ watch([ownedItems, totalItems], () => {
             <div class="hidden min-w-0 md:block">
               <AppBreadcrumb :overrides="breadcrumbOverrides" />
             </div>
-            <span
-              class="truncate text-base font-semibold text-default md:hidden"
-            >
-              {{ binder?.name }}
-            </span>
             <UBadge
               v-if="isCustom"
               color="info"
@@ -1589,4 +1593,3 @@ watch([ownedItems, totalItems], () => {
     </template>
   </UDashboardPanel>
 </template>
-
