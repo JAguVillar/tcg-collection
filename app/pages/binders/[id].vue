@@ -995,15 +995,15 @@ watch([ownedItems, totalItems], () => {
 
       <div
         v-if="isChecklistLike && totalItems && !isEditingOrder"
-        class="flex justify-between"
+        class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
       >
         <UTabs
           :items="filterTabs"
           v-model="filter"
           variant="link"
           :content="false"
-          class="flex-1/2"
           size="lg"
+          class="min-w-0 w-full overflow-x-auto sm:flex-1"
         />
         <UTabs
           :items="VIEW_MODES"
@@ -1011,6 +1011,7 @@ watch([ownedItems, totalItems], () => {
           variant="pill"
           size="md"
           :content="false"
+          class="self-end sm:self-auto"
         />
       </div>
 
@@ -1064,7 +1065,7 @@ watch([ownedItems, totalItems], () => {
 
       <div
         v-if="items.length && !isEditingOrder"
-        class="mb-4 flex w-full flex-wrap items-center gap-2"
+        class="mb-4 flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-3"
       >
         <UTabs
           v-if="viewMode === 'binder' && filteredItems.length"
@@ -1073,8 +1074,12 @@ watch([ownedItems, totalItems], () => {
           variant="pill"
           size="sm"
           :content="false"
+          class="min-w-0 w-full overflow-x-auto sm:w-auto"
         />
-        <div v-if="!isPokedex" class="ml-auto flex items-center gap-1.5">
+        <div
+          v-if="!isPokedex"
+          class="flex items-center gap-1.5 self-end sm:ml-auto sm:self-auto"
+        >
           <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
             <UButton
               :label="`Sort: ${activeSort?.label}`"
