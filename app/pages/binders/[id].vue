@@ -275,6 +275,19 @@ const POCKET_SIZES = [
 ];
 const pocketSize = ref(9);
 const currentPage = ref(1);
+const mobilePage = ref(1);
+
+const isDesktop = ref(true);
+onMounted(() => {
+  if (typeof window === "undefined") return;
+  const mq = window.matchMedia("(min-width: 768px)");
+  const update = () => {
+    isDesktop.value = mq.matches;
+  };
+  update();
+  mq.addEventListener("change", update);
+  onBeforeUnmount(() => mq.removeEventListener("change", update));
+});
 
 const activePocket = computed(
   () =>
@@ -462,12 +475,54 @@ const hasRightPage = computed(
 const leftPageItems = computed(() => pageSlice(leftPageNumber.value));
 const rightPageItems = computed(() => pageSlice(rightPageNumber.value));
 
+const mobilePageItems = computed(() => pageSlice(mobilePage.value));
+
+const visiblePages = computed(() => {
+  if (!isDesktop.value) {
+    return [
+      {
+        key: `m-${mobilePage.value}`,
+        items: mobilePageItems.value,
+      },
+    ];
+  }
+  const out = [];
+  if (hasLeftPage.value) {
+    out.push({ key: `l-${leftPageNumber.value}`, items: leftPageItems.value });
+  }
+  if (hasRightPage.value) {
+    out.push({ key: `r-${rightPageNumber.value}`, items: rightPageItems.value });
+  }
+  return out;
+});
+
+const navTotal = computed(() =>
+  isDesktop.value ? totalPages.value : physicalPages.value,
+);
+const navCurrent = computed({
+  get: () => (isDesktop.value ? currentPage.value : mobilePage.value),
+  set: (v) => {
+    if (isDesktop.value) currentPage.value = v;
+    else mobilePage.value = v;
+  },
+});
+const navLabel = computed(() =>
+  isDesktop.value
+    ? `Spread ${currentPage.value} of ${totalPages.value}`
+    : `Page ${mobilePage.value} of ${physicalPages.value}`,
+);
+
 watch([pocketSize, filter, sortField, isAscending], () => {
   currentPage.value = 1;
+  mobilePage.value = 1;
 });
 
 watch(totalPages, (tp) => {
   if (currentPage.value > tp) currentPage.value = tp;
+});
+
+watch(physicalPages, (n) => {
+  if (mobilePage.value > n) mobilePage.value = Math.max(1, n);
 });
 
 async function bumpUp(item) {
@@ -794,15 +849,21 @@ watch([ownedItems, totalItems], () => {
               :alt="binder?.iconPokemon"
               class="size-8 shrink-0 object-contain"
             />
-            <div class="min-w-0">
+            <div class="hidden min-w-0 md:block">
               <AppBreadcrumb :overrides="breadcrumbOverrides" />
             </div>
+            <span
+              class="truncate text-base font-semibold text-default md:hidden"
+            >
+              {{ binder?.name }}
+            </span>
             <UBadge
               v-if="isCustom"
               color="info"
               variant="soft"
               icon="i-lucide-list-checks"
               size="sm"
+              :ui="{ label: 'hidden sm:inline' }"
             >
               Custom
             </UBadge>
@@ -812,6 +873,7 @@ watch([ownedItems, totalItems], () => {
               variant="soft"
               icon="i-lucide-bookmark-check"
               size="sm"
+              :ui="{ label: 'hidden sm:inline' }"
             >
               Active
             </UBadge>
@@ -1394,84 +1456,30 @@ watch([ownedItems, totalItems], () => {
           class="w-full max-w-7xl rounded-xl border border-default bg-elevated/30 p-3 sm:p-6"
         >
           <div
-            class="grid gap-4 md:gap-6 md:grid-cols-2 md:divide-x md:divide-default items-start"
+            class="grid gap-4 md:gap-6 items-start"
+            :class="
+              isDesktop && visiblePages.length === 2
+                ? 'md:grid-cols-2 md:divide-x md:divide-default'
+                : ''
+            "
           >
             <div
-              v-if="hasLeftPage"
-              class="grid gap-2 sm:gap-3 md:gap-4 md:pr-4 lg:pr-6"
-              :class="pocketGridClass"
+              v-for="(page, pi) in visiblePages"
+              :key="page.key"
+              class="grid gap-2 sm:gap-3 md:gap-4"
+              :class="[
+                pocketGridClass,
+                isDesktop && visiblePages.length === 2 && pi === 0
+                  ? 'md:pr-4 lg:pr-6'
+                  : '',
+                isDesktop && visiblePages.length === 2 && pi === 1
+                  ? 'md:pl-4 lg:pl-6'
+                  : '',
+              ]"
             >
               <template
-                v-for="(item, idx) in leftPageItems"
-                :key="item?.id ?? `left-empty-${idx}`"
-              >
-                <PokedexSlotPlaceholder
-                  v-if="item && isPokedex && !item.cardId"
-                  :item="item"
-                  @pick="openSlotPicker"
-                />
-                <CardImage
-                  v-else-if="item"
-                  :card="item.card"
-                  :variant="item.variant"
-                  :quantity="item.quantity"
-                  :is-custom="isCustom"
-                >
-                  <UBadge
-                    v-if="formatVariant(item.variant)"
-                    :color="variantColor(item.variant)"
-                    variant="solid"
-                    size="sm"
-                    class="absolute bottom-1.5 left-1.5 capitalize"
-                  >
-                    {{ formatVariant(item.variant) }}
-                  </UBadge>
-                  <UButton
-                    v-if="isCustom"
-                    :icon="
-                      item.quantity > 0 ? 'i-lucide-check' : 'i-lucide-plus'
-                    "
-                    :color="
-                      item.quantity > 0
-                        ? ownedButtonColor(item.variant)
-                        : 'neutral'
-                    "
-                    :variant="item.quantity > 0 ? 'solid' : 'soft'"
-                    size="xs"
-                    square
-                    :loading="isToggling(item)"
-                    :disabled="isToggling(item)"
-                    class="absolute bottom-1.5 right-1.5"
-                    :aria-label="
-                      item.quantity > 0 ? 'Mark as missing' : 'Mark as obtained'
-                    "
-                    @click.stop.prevent="toggleOwned(item)"
-                  />
-                  <UButton
-                    v-if="isPokedex"
-                    icon="i-lucide-x"
-                    color="error"
-                    variant="solid"
-                    size="xs"
-                    square
-                    class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition"
-                    aria-label="Clear slot"
-                    @click.stop.prevent="clearSlot(item)"
-                  />
-                </CardImage>
-                <div v-else class="aspect-[5/7] rounded-md bg-muted/10"></div>
-              </template>
-            </div>
-            <div v-else aria-hidden="true"></div>
-
-            <div
-              v-if="hasRightPage"
-              class="grid gap-2 sm:gap-3 md:gap-4 md:pl-4 lg:pl-6"
-              :class="pocketGridClass"
-            >
-              <template
-                v-for="(item, idx) in rightPageItems"
-                :key="item?.id ?? `right-empty-${idx}`"
+                v-for="(item, idx) in page.items"
+                :key="item?.id ?? `${page.key}-empty-${idx}`"
               >
                 <PokedexSlotPlaceholder
                   v-if="item && isPokedex && !item.cardId"
@@ -1530,29 +1538,30 @@ watch([ownedItems, totalItems], () => {
                 <div v-else class="aspect-[5/7] rounded-md bg-muted/10"></div>
               </template>
             </div>
-            <div v-else aria-hidden="true"></div>
           </div>
         </div>
 
-        <div class="flex flex-wrap items-center justify-center gap-3">
+        <div
+          class="flex w-full max-w-md items-center justify-between gap-3 sm:max-w-sm"
+        >
           <UButton
             icon="i-lucide-chevron-left"
-            label="Prev"
+            label="Previous"
             color="neutral"
             variant="outline"
-            :disabled="currentPage <= 1"
-            @click="currentPage--"
+            :disabled="navCurrent <= 1"
+            @click="navCurrent = navCurrent - 1"
           />
-          <span class="text-sm text-muted">
-            Spread {{ currentPage }} of {{ totalPages }}
+          <span class="text-sm font-medium text-default text-center">
+            {{ navLabel }}
           </span>
           <UButton
             trailing-icon="i-lucide-chevron-right"
             label="Next"
             color="neutral"
             variant="outline"
-            :disabled="currentPage >= totalPages"
-            @click="currentPage++"
+            :disabled="navCurrent >= navTotal"
+            @click="navCurrent = navCurrent + 1"
           />
         </div>
       </div>
