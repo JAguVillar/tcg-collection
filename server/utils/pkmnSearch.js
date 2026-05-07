@@ -1,80 +1,54 @@
-export const PKMN_API_URL = "https://api.tcg.gg/pkmn/v1/search/advanced";
+// Dispatcher for Pokémon card search. Routes by `body.mode`:
+//   - "advanced" (default): rich filter set via api.tcg.gg
+//   - "common":              query-only fallback via pkmn.gg/_next/data
+//
+// Both strategies return the same { value, hits } shape so consumers don't
+// need to branch.
 
-export const DEFAULT_SEARCH_BODY = {
-  query: "",
-  cardTypes: [],
-  subTypes: [],
-  sets: [],
-  energyTypes: [],
-  rarities: [],
-  weaknessTypes: [],
-  resistanceTypes: [],
-  retreatCosts: [],
-  hitPoints: [],
-  nationalPokedexNumbers: [],
-  attackQuery: null,
-  numberQuery: null,
-  abilityQuery: null,
-  evolvesFromQuery: null,
-  page: 1,
-  isAscending: true,
-  sortField: 7,
-  artists: [],
-  collectionMode: false,
-  userId: "27d09d531bb7cd8eac4a6b2bd1fe0701",
-  category: "EN",
-  separateVariants: true,
-};
+import * as advanced from "./searchStrategies/advanced";
+import * as common from "./searchStrategies/common";
+
+export const PKMN_API_URL = advanced.ADVANCED_API_URL;
+export const DEFAULT_SEARCH_BODY = advanced.ADVANCED_DEFAULT_BODY;
+
+export const SEARCH_MODES = ["advanced", "common"];
+
+function pickStrategy(mode) {
+  return mode === "common" ? common : advanced;
+}
 
 export function buildSearchPayload(body = {}) {
-  const payload = {
-    ...DEFAULT_SEARCH_BODY,
-    ...body,
-  };
-
+  // Backwards-compatible helper; only meaningful for advanced mode.
+  const { mode: _mode, ...rest } = body;
+  const payload = { ...advanced.ADVANCED_DEFAULT_BODY, ...rest };
   if (payload.artist && (!Array.isArray(payload.artists) || !payload.artists.length)) {
     payload.artists = [payload.artist];
   }
   delete payload.artist;
-
   return payload;
 }
 
 export async function searchCards(body = {}) {
-  const payload = buildSearchPayload(body);
-
-  const data = await $fetch(PKMN_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: payload,
-  });
-
-  // api.tcg.gg wraps each result as { card: {...}, variant?, ... }.
-  // Flatten so consumers keep seeing a plain card object.
-  if (Array.isArray(data?.value)) {
-    data.value = data.value.map((item) => {
-      if (item && typeof item === "object" && item.card && typeof item.card === "object") {
-        const { card, ...rest } = item;
-        return { ...card, ...rest };
-      }
-      return item;
-    });
-  }
-
-  return data;
+  const strategy = pickStrategy(body?.mode);
+  return strategy.search(body);
 }
 
 export async function collectAllCards(body = {}) {
-  const firstPage = buildSearchPayload(body).page ?? 1;
+  // Bulk collection only makes sense in advanced mode (full server-side
+  // pagination + filters). The common endpoint returns its full result set
+  // in one shot, so a single call suffices.
+  if (body?.mode === "common") {
+    const { value, hits } = await common.search(body);
+    return { cards: value, hits: hits ?? value.length };
+  }
 
-  let page = Number.isFinite(firstPage) && firstPage > 0 ? firstPage : 1;
+  const firstPage = Number(body?.page) > 0 ? Number(body.page) : 1;
+  let page = firstPage;
   let hits = null;
   const cards = [];
 
   while (true) {
-    const data = await searchCards({ ...body, page });
+    const data = await advanced.search({ ...body, page });
     const pageCards = Array.isArray(data?.value) ? data.value : [];
 
     if (hits === null && Number.isFinite(Number(data?.hits))) {
@@ -82,15 +56,10 @@ export async function collectAllCards(body = {}) {
     }
 
     if (!pageCards.length) break;
-
     cards.push(...pageCards);
-
     if (hits !== null && cards.length >= hits) break;
     page += 1;
   }
 
-  return {
-    cards,
-    hits: hits ?? cards.length,
-  };
+  return { cards, hits: hits ?? cards.length };
 }

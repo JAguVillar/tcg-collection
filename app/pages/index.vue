@@ -14,6 +14,7 @@ const {
   selectedCategory,
   sortField,
   isAscending,
+  isCommonMode,
   searchCards,
   loadMore,
   setSort,
@@ -51,6 +52,9 @@ const languageItems = [
 searchCards({ query: "" });
 
 watch([separateVariants, selectedArtist, selectedSet, selectedCategory], () => {
+  // Filter changes only apply in advanced mode. In common mode the API
+  // ignores them, so skip the redundant request.
+  if (isCommonMode.value) return;
   searchCards();
 });
 
@@ -180,13 +184,16 @@ function quickAdd(card) {
                 :loading="loading"
               />
 
-              <UPopover :content="{ align: 'end' }">
+              <SearchModeToggle size="lg" />
+
+              <UPopover :content="{ align: 'end' }" :disabled="isCommonMode">
                 <UButton
                   icon="i-lucide-sliders-horizontal"
                   color="neutral"
                   :variant="activeFilterCount ? 'solid' : 'outline'"
                   size="lg"
                   square
+                  :disabled="isCommonMode"
                   :aria-label="`Filters${activeFilterCount ? ` (${activeFilterCount} active)` : ''}`"
                 >
                 </UButton>
@@ -239,6 +246,7 @@ function quickAdd(card) {
                   :variant="separateVariants ? 'solid' : 'outline'"
                   size="lg"
                   square
+                  :disabled="isCommonMode"
                   :aria-label="
                     separateVariants
                       ? 'Hide variants (combine into one card)'
@@ -249,7 +257,11 @@ function quickAdd(card) {
                 />
               </UTooltip>
 
-              <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
+              <UDropdownMenu
+                v-if="!isCommonMode"
+                :items="sortMenuItems"
+                :content="{ align: 'end' }"
+              >
                 <UButton
                   :label="activeSort?.label"
                   color="neutral"
@@ -261,7 +273,7 @@ function quickAdd(card) {
                 />
               </UDropdownMenu>
               <UButton
-                v-if="activeSort?.hasDirection"
+                v-if="!isCommonMode && activeSort?.hasDirection"
                 :icon="
                   isAscending
                     ? 'i-lucide-arrow-up-narrow-wide'

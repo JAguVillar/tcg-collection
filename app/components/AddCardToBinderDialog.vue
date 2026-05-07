@@ -19,6 +19,7 @@ const {
   selectedArtist,
   selectedSet,
   selectedCategory,
+  isCommonMode,
   searchCards,
   loadMore,
 } = useCardSearch();
@@ -81,6 +82,7 @@ watch(
 );
 
 watch([selectedArtist, selectedSet, selectedCategory], () => {
+  if (isCommonMode.value) return;
   if (searchQuery.value.trim()) searchCards();
 });
 
@@ -138,6 +140,7 @@ function setOpen(value) {
             size="md"
             autofocus
           />
+          <SearchModeToggle size="md" />
           <USelect
             v-model="selectedCategory"
             :items="[
@@ -146,6 +149,7 @@ function setOpen(value) {
             ]"
             icon="i-lucide-languages"
             class="sm:w-40"
+            :disabled="isCommonMode"
           />
           <UButton
             type="submit"
@@ -159,7 +163,7 @@ function setOpen(value) {
           />
         </form>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div v-if="!isCommonMode" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <UInputMenu
             v-model="selectedSetOption"
             :items="setOptions"

@@ -35,7 +35,20 @@ export const SORT_OPTIONS = [
   { label: "Released", value: 5, hasDirection: true },
 ];
 
+export const SEARCH_MODES = {
+  ADVANCED: "advanced",
+  COMMON: "common",
+};
+
+// Shared, app-wide search mode so all consumers (main page, dialogs) stay in
+// sync. useState() under SSR ensures it's reactive but doesn't leak across
+// requests. Default = advanced (full filters).
+export function useSearchMode() {
+  return useState("cardSearch:mode", () => SEARCH_MODES.ADVANCED);
+}
+
 export function useCardSearch() {
+  const searchMode = useSearchMode();
   const searchQuery = ref("");
   const page = ref(1);
   const cards = ref([]);
@@ -54,9 +67,23 @@ export function useCardSearch() {
   // overwrite the state for the latest query.
   let requestSeq = 0;
 
+  const isCommonMode = computed(() => searchMode.value === SEARCH_MODES.COMMON);
+
   function _buildBody(overrides = {}) {
+    if (searchMode.value === SEARCH_MODES.COMMON) {
+      // Common search only knows how to handle the free-text query. Filter
+      // state is preserved in the composable so switching back to advanced
+      // restores the user's selection.
+      return {
+        mode: SEARCH_MODES.COMMON,
+        query: searchQuery.value,
+        page: 1,
+        ...overrides,
+      };
+    }
     return {
       ...DEFAULT_SEARCH_BODY,
+      mode: SEARCH_MODES.ADVANCED,
       query: searchQuery.value,
       separateVariants: separateVariants.value,
       artists: selectedArtist.value ? [selectedArtist.value] : [],
@@ -160,7 +187,18 @@ export function useCardSearch() {
     searchCards();
   }
 
+  // When the mode flips, re-run with the existing query. We don't clear the
+  // input or filter selection — common mode just ignores the filters.
+  watch(searchMode, () => {
+    cards.value = [];
+    page.value = 1;
+    hasMore.value = true;
+    searchCards();
+  });
+
   return {
+    searchMode,
+    isCommonMode,
     searchQuery,
     page,
     cards,
