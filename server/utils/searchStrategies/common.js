@@ -10,8 +10,16 @@
 const PKMN_HOST = "https://www.pkmn.gg";
 const BUILD_ID_TTL_MS = 30 * 60 * 1000; // 30min
 const PAGE_SIZE = 60;
+// Next.js data routes are picky: they require a real-browser UA + the
+// x-nextjs-data hint, otherwise they 404 or return an empty redirect blob.
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; tcg-collection/1.0; +https://github.com/jaguvillar/tcg-collection)";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36";
+const BROWSER_HEADERS = {
+  "User-Agent": USER_AGENT,
+  Accept: "*/*",
+  "Accept-Language": "en-US,en;q=0.9",
+  Referer: `${PKMN_HOST}/`,
+};
 
 let cachedBuildId = null;
 let cachedBuildIdAt = 0;
@@ -19,7 +27,7 @@ let inflightBuildId = null;
 
 async function fetchBuildId() {
   const html = await $fetch(`${PKMN_HOST}/`, {
-    headers: { "User-Agent": USER_AGENT, Accept: "text/html" },
+    headers: { ...BROWSER_HEADERS, Accept: "text/html" },
     responseType: "text",
   });
   const match = typeof html === "string" && html.match(/"buildId":"([^"]+)"/);
@@ -53,33 +61,44 @@ async function getBuildId({ force = false } = {}) {
 
 async function fetchSearchJson(buildId, query) {
   return $fetch(`${PKMN_HOST}/_next/data/${buildId}/search.json`, {
-    headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+    headers: {
+      ...BROWSER_HEADERS,
+      Accept: "application/json",
+      // Without this header Next.js may answer with a redirect blob and
+      // pageProps.cards comes back missing — see pkmn.gg's network panel.
+      "x-nextjs-data": "1",
+    },
     query: { q: query },
   });
 }
 
 // Walk the response tree and find the likeliest "cards" array. The pkmn.gg
 // payload is a Next.js getServerSideProps blob, so the exact path may shift.
-// We pick the largest array of objects that look like cards (have id + name).
+// We pick the largest array whose items look like cards — either flat card
+// objects ({id, name, ...}) or wrapped ({card: {...}, variant?, ...}).
+function looksLikeCard(obj) {
+  if (!obj || typeof obj !== "object") return false;
+  const inner = obj.card && typeof obj.card === "object" ? obj.card : obj;
+  const hasId = "id" in inner || "cardId" in inner || "_id" in inner;
+  const hasName =
+    "name" in inner ||
+    "title" in inner ||
+    "supertype" in inner ||
+    "images" in inner;
+  return hasId && hasName;
+}
+
 function extractCards(data) {
   let best = null;
   let bestScore = 0;
-
-  function looksLikeCard(obj) {
-    if (!obj || typeof obj !== "object") return false;
-    const hasId = "id" in obj || "cardId" in obj || "_id" in obj;
-    const hasName = "name" in obj || "title" in obj;
-    return hasId && hasName;
-  }
 
   function walk(node) {
     if (!node) return;
     if (Array.isArray(node)) {
       if (node.length && node.every(looksLikeCard)) {
-        const score = node.length;
-        if (score > bestScore) {
+        if (node.length > bestScore) {
           best = node;
-          bestScore = score;
+          bestScore = node.length;
         }
       }
       for (const item of node) walk(item);
@@ -92,6 +111,23 @@ function extractCards(data) {
 
   walk(data);
   return best ?? [];
+}
+
+// Compact shape summary used to debug payload changes from pkmn.gg.
+function describeShape(node, depth = 0) {
+  if (depth > 3 || node == null) return typeof node;
+  if (Array.isArray(node)) {
+    return `Array(${node.length})${
+      node.length ? `<${describeShape(node[0], depth + 1)}>` : ""
+    }`;
+  }
+  if (typeof node === "object") {
+    const keys = Object.keys(node).slice(0, 12);
+    return `{${keys
+      .map((k) => `${k}: ${describeShape(node[k], depth + 1)}`)
+      .join(", ")}${Object.keys(node).length > 12 ? ", …" : ""}}`;
+  }
+  return typeof node;
 }
 
 function normalize(card) {
@@ -129,6 +165,16 @@ export async function search(body = {}) {
 
   const all = extractCards(raw).map(normalize);
   const hits = all.length;
+
+  if (!hits) {
+    // First time we see a query come back empty — surface the shape so we
+    // can adjust extractCards if pkmn.gg renamed keys.
+    console.warn(
+      `[common-search] no cards extracted for q="${query}" buildId=${buildId} shape=${describeShape(
+        raw,
+      )}`,
+    );
+  }
 
   // pkmn.gg returns the full set in a single payload; paginate in-memory
   // so the front-end's loadMore() flow works identically across modes.
