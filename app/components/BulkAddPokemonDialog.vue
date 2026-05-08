@@ -8,6 +8,7 @@ const emit = defineEmits(["update:open", "added"]);
 
 const { options: artistOptions } = useArtists();
 const { options: setOptions } = useSets();
+const { mode: searchMode } = useSearchMode();
 
 const SOURCE_MODES = [
   { label: "By search", value: "query" },
@@ -74,6 +75,7 @@ function buildPayload() {
   const base = {
     separateVariants: separateVariants.value,
     category: selectedCategory.value,
+    searchMode: searchMode.value,
   };
   if (sourceMode.value === "artist") {
     return { ...base, mode: "artist", artist: selectedArtist.value };
@@ -126,7 +128,7 @@ async function refreshPreview() {
   }
 }
 
-watch([currentSelection, separateVariants, selectedCategory], () => {
+watch([currentSelection, separateVariants, selectedCategory, searchMode], () => {
   refreshPreview();
 });
 
@@ -193,6 +195,25 @@ const masterSetDescription = computed(() => {
           variant="pill"
           size="sm"
           :content="false"
+        />
+        <div class="flex items-center justify-between gap-2">
+          <USwitch
+            :model-value="searchMode === 'common'"
+            label="Use common search"
+            unchecked-icon="i-lucide-sliders-horizontal"
+            checked-icon="i-lucide-scan-search"
+            @update:model-value="(value) => (searchMode = value ? 'common' : 'advanced')"
+          />
+          <UBadge color="neutral" variant="subtle">
+            {{ searchMode === "common" ? "Common search" : "Advanced search" }}
+          </UBadge>
+        </div>
+        <UAlert
+          v-if="searchMode === 'common'"
+          color="amber"
+          variant="soft"
+          icon="i-lucide-info"
+          :description="sourceMode === 'query' ? 'Common search expands text matching and can return broader card results.' : 'Common search does not strictly apply artist/set filters. Use advanced mode for precise bulk adds.'"
         />
         <div class="grid grid-cols-1 sm:grid-cols-[1fr_10rem] gap-3 sm:gap-4">
           <UFormField

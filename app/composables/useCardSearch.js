@@ -36,6 +36,7 @@ export const SORT_OPTIONS = [
 ];
 
 export function useCardSearch() {
+  const { mode: searchMode } = useSearchMode();
   const searchQuery = ref("");
   const page = ref(1);
   const cards = ref([]);
@@ -49,22 +50,41 @@ export function useCardSearch() {
   const selectedCategory = ref("EN");
   const sortField = ref(7);
   const isAscending = ref(true);
+  const unsupportedFilters = ref([]);
 
   // Monotonic guard so stale responses from rapid toggles/searches don't
   // overwrite the state for the latest query.
   let requestSeq = 0;
 
   function _buildBody(overrides = {}) {
+    const mode = searchMode.value;
+    const base = {
+      query: searchQuery.value,
+      category: selectedCategory.value,
+      searchMode: mode,
+      ...overrides,
+    };
+
+    if (mode === "common") {
+      return {
+        query: base.query,
+        category: base.category,
+        page: base.page ?? 1,
+        searchMode: base.searchMode,
+      };
+    }
+
     return {
       ...DEFAULT_SEARCH_BODY,
-      query: searchQuery.value,
+      query: base.query,
       separateVariants: separateVariants.value,
       artists: selectedArtist.value ? [selectedArtist.value] : [],
       sets: selectedSet.value ? [selectedSet.value] : [],
-      category: selectedCategory.value,
+      category: base.category,
       sortField: sortField.value,
       isAscending: isAscending.value,
       ...overrides,
+      searchMode: base.searchMode,
     };
   }
 
@@ -91,6 +111,7 @@ export function useCardSearch() {
 
       const results = data?.value ?? [];
       cards.value = results;
+      unsupportedFilters.value = Array.isArray(data?.unsupportedFilters) ? data.unsupportedFilters : [];
 
       if (results.length === 0) {
         hasMore.value = false;
@@ -126,6 +147,7 @@ export function useCardSearch() {
       if (seq !== requestSeq) return [];
 
       const results = data?.value ?? [];
+      unsupportedFilters.value = Array.isArray(data?.unsupportedFilters) ? data.unsupportedFilters : [];
 
       if (results.length === 0) {
         hasMore.value = false;
@@ -174,6 +196,8 @@ export function useCardSearch() {
     selectedCategory,
     sortField,
     isAscending,
+    searchMode,
+    unsupportedFilters,
     searchCards,
     loadMore,
     setSort,

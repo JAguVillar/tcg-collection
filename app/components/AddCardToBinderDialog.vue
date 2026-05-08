@@ -19,6 +19,8 @@ const {
   selectedArtist,
   selectedSet,
   selectedCategory,
+  searchMode,
+  unsupportedFilters,
   searchCards,
   loadMore,
 } = useCardSearch();
@@ -27,6 +29,7 @@ const { options: setOptions } = useSets();
 
 const addStatus = ref({});
 const addedCount = ref(0);
+const isCommonMode = computed(() => searchMode.value === "common");
 
 function cardKey(card) {
   return `${card.id}:${card.variant ?? "normal"}`;
@@ -80,7 +83,7 @@ watch(
   },
 );
 
-watch([selectedArtist, selectedSet, selectedCategory], () => {
+watch([selectedArtist, selectedSet, selectedCategory, searchMode], () => {
   if (searchQuery.value.trim()) searchCards();
 });
 
@@ -158,6 +161,27 @@ function setOpen(value) {
             class="sm:w-auto"
           />
         </form>
+
+        <div class="flex items-center justify-between gap-2">
+          <USwitch
+            :model-value="isCommonMode"
+            label="Use common search"
+            unchecked-icon="i-lucide-sliders-horizontal"
+            checked-icon="i-lucide-scan-search"
+            @update:model-value="(value) => (searchMode = value ? 'common' : 'advanced')"
+          />
+          <UBadge color="neutral" variant="subtle">
+            {{ isCommonMode ? 'Common search' : 'Advanced search' }}
+          </UBadge>
+        </div>
+
+        <UAlert
+          v-if="isCommonMode && unsupportedFilters.length"
+          color="amber"
+          variant="soft"
+          icon="i-lucide-info"
+          description="In common mode, set and artist filters are informational and may not narrow results."
+        />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <UInputMenu

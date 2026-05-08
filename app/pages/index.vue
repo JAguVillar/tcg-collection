@@ -14,6 +14,8 @@ const {
   selectedCategory,
   sortField,
   isAscending,
+  searchMode,
+  unsupportedFilters,
   searchCards,
   loadMore,
   setSort,
@@ -26,6 +28,8 @@ const { activeBinder } = useBinders();
 const toast = useToast();
 
 const quickAddStatus = ref({});
+
+const advancedSearchOpen = ref(false);
 
 const languageItems = [
   {
@@ -50,9 +54,36 @@ const languageItems = [
 
 searchCards({ query: "" });
 
-watch([separateVariants, selectedArtist, selectedSet, selectedCategory], () => {
-  searchCards();
+watch(
+  [separateVariants, selectedArtist, selectedSet, selectedCategory, searchMode],
+  () => {
+    searchCards();
+  },
+);
+
+const isCommonMode = computed(() => searchMode.value === "common");
+
+watch(
+  searchMode,
+  (value) => {
+    const shouldOpen = value === "advanced";
+    if (advancedSearchOpen.value !== shouldOpen) {
+      advancedSearchOpen.value = shouldOpen;
+    }
+  },
+  { immediate: true },
+);
+
+watch(advancedSearchOpen, (open) => {
+  const nextMode = open ? "advanced" : "common";
+  if (searchMode.value !== nextMode) {
+    searchMode.value = nextMode;
+  }
 });
+
+const searchModeLabel = computed(() =>
+  isCommonMode.value ? "Common search" : "Advanced search",
+);
 
 const selectedArtistOption = computed({
   get() {
@@ -168,9 +199,15 @@ function quickAdd(card) {
         <template #default>
           <div class="flex flex-col w-full py-3 gap-3">
             <form
-              class="flex w-full items-center gap-2"
+              class="flex w- items-center gap-2"
               @submit.prevent="searchCards()"
             >
+              <UButton
+                :variant="advancedSearchOpen ? 'solid' : 'outline'"
+                icon="i-lucide-sliders-horizontal"
+                size="lg"
+                @click="advancedSearchOpen = !advancedSearchOpen"
+              />
               <UInput
                 v-model="searchQuery"
                 icon="i-lucide-search"
@@ -178,101 +215,6 @@ function quickAdd(card) {
                 class="flex-1"
                 size="lg"
                 :loading="loading"
-              />
-
-              <UPopover :content="{ align: 'end' }">
-                <UButton
-                  icon="i-lucide-sliders-horizontal"
-                  color="neutral"
-                  :variant="activeFilterCount ? 'solid' : 'outline'"
-                  size="lg"
-                  square
-                  :aria-label="`Filters${activeFilterCount ? ` (${activeFilterCount} active)` : ''}`"
-                >
-                </UButton>
-                <template #content>
-                  <div class="p-4 w-80 flex flex-col gap-4">
-                    <UFormField label="Language">
-                      <USelect
-                        v-model="selectedCategory"
-                        :items="languageItems"
-                        icon="i-lucide-languages"
-                        class="w-full"
-                      />
-                    </UFormField>
-                    <UFormField label="Set">
-                      <UInputMenu
-                        v-model="selectedSetOption"
-                        :items="setOptions"
-                        :virtualize="true"
-                        placeholder="Any set"
-                        icon="i-lucide-layers"
-                        clear
-                        class="w-full"
-                      />
-                    </UFormField>
-                    <UFormField label="Artist">
-                      <UInputMenu
-                        v-model="selectedArtistOption"
-                        :items="artistOptions"
-                        :virtualize="true"
-                        placeholder="Any artist"
-                        icon="i-lucide-palette"
-                        clear
-                        class="w-full"
-                      />
-                    </UFormField>
-                  </div>
-                </template>
-              </UPopover>
-
-              <UTooltip
-                :text="
-                  separateVariants
-                    ? 'Variants shown as separate cards'
-                    : 'Show variants as separate cards (holo, reverse, etc.)'
-                "
-              >
-                <UButton
-                  icon="i-lucide-sparkles"
-                  :color="separateVariants ? 'purple' : 'neutral'"
-                  :variant="separateVariants ? 'solid' : 'outline'"
-                  size="lg"
-                  square
-                  :aria-label="
-                    separateVariants
-                      ? 'Hide variants (combine into one card)'
-                      : 'Show variants as separate cards'
-                  "
-                  :aria-pressed="separateVariants"
-                  @click="separateVariants = !separateVariants"
-                />
-              </UTooltip>
-
-              <UDropdownMenu :items="sortMenuItems" :content="{ align: 'end' }">
-                <UButton
-                  :label="activeSort?.label"
-                  color="neutral"
-                  variant="outline"
-                  size="lg"
-                  icon="i-lucide-arrow-up-down"
-                  trailing-icon="i-lucide-chevron-down"
-                  :ui="{ label: 'hidden md:inline' }"
-                />
-              </UDropdownMenu>
-              <UButton
-                v-if="activeSort?.hasDirection"
-                :icon="
-                  isAscending
-                    ? 'i-lucide-arrow-up-narrow-wide'
-                    : 'i-lucide-arrow-down-wide-narrow'
-                "
-                color="neutral"
-                variant="outline"
-                size="lg"
-                square
-                :aria-label="isAscending ? 'Ascending' : 'Descending'"
-                @click="setSort(sortField)"
               />
 
               <UButton
@@ -283,8 +225,106 @@ function quickAdd(card) {
                 size="lg"
                 :ui="{ label: 'hidden sm:inline' }"
               />
-            </form>
+              <template v-if="advancedSearchOpen">
+                <UPopover :content="{ align: 'end' }">
+                  <UButton
+                    icon="i-lucide-funnel"
+                    color="neutral"
+                    variant="outline"
+                    size="lg"
+                    square
+                    :aria-label="`Filters${activeFilterCount ? ` (${activeFilterCount} active)` : ''}`"
+                  >
+                  </UButton>
+                  <template #content>
+                    <div class="p-4 w-80 flex flex-col gap-4">
+                      <UFormField label="Language">
+                        <USelect
+                          v-model="selectedCategory"
+                          :items="languageItems"
+                          icon="i-lucide-languages"
+                          class="w-full"
+                        />
+                      </UFormField>
+                      <UFormField label="Set">
+                        <UInputMenu
+                          v-model="selectedSetOption"
+                          :items="setOptions"
+                          :virtualize="true"
+                          placeholder="Any set"
+                          icon="i-lucide-layers"
+                          clear
+                          class="w-full"
+                        />
+                      </UFormField>
+                      <UFormField label="Artist">
+                        <UInputMenu
+                          v-model="selectedArtistOption"
+                          :items="artistOptions"
+                          :virtualize="true"
+                          placeholder="Any artist"
+                          icon="i-lucide-palette"
+                          clear
+                          class="w-full"
+                        />
+                      </UFormField>
+                    </div>
+                  </template>
+                </UPopover>
 
+                <UTooltip
+                  :text="
+                    separateVariants
+                      ? 'Variants shown as separate cards'
+                      : 'Show variants as separate cards (holo, reverse, etc.)'
+                  "
+                >
+                  <UButton
+                    icon="i-lucide-sparkles"
+                    :color="separateVariants ? 'purple' : 'neutral'"
+                    :variant="separateVariants ? 'solid' : 'outline'"
+                    size="lg"
+                    square
+                    :aria-label="
+                      separateVariants
+                        ? 'Hide variants (combine into one card)'
+                        : 'Show variants as separate cards'
+                    "
+                    :aria-pressed="separateVariants"
+                    @click="separateVariants = !separateVariants"
+                  />
+                </UTooltip>
+
+                <UDropdownMenu
+                  :items="sortMenuItems"
+                  :content="{ align: 'end' }"
+                >
+                  <UButton
+                    :label="activeSort?.label"
+                    color="neutral"
+                    variant="outline"
+                    size="lg"
+                    icon="i-lucide-arrow-up-down"
+                    trailing-icon="i-lucide-chevron-down"
+                    :ui="{ label: 'hidden md:inline' }"
+                  />
+                </UDropdownMenu>
+                <UButton
+                  v-if="activeSort?.hasDirection"
+                  :icon="
+                    isAscending
+                      ? 'i-lucide-arrow-up-narrow-wide'
+                      : 'i-lucide-arrow-down-wide-narrow'
+                  "
+                  color="neutral"
+                  variant="outline"
+                  size="lg"
+                  square
+                  :aria-label="isAscending ? 'Ascending' : 'Descending'"
+                  @click="setSort(sortField)"
+                />
+              </template>
+            </form>
             <div
               v-if="activeFilterCount"
               class="flex flex-wrap items-center gap-1.5"
@@ -375,6 +415,16 @@ function quickAdd(card) {
         :actions="[{ label: 'Sign in', to: '/login', color: 'primary' }]"
         class="mb-4"
         close
+      />
+
+      <UAlert
+        v-if="isCommonMode && unsupportedFilters.length"
+        color="amber"
+        variant="soft"
+        icon="i-lucide-info"
+        title="Common search ignores some filters"
+        description="Set, artist, variant split, and sorting controls are only applied in advanced mode."
+        class="mb-4"
       />
 
       <UAlert
