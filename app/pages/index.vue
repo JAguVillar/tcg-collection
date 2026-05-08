@@ -17,6 +17,7 @@ const {
   searchMode,
   unsupportedFilters,
   searchCards,
+  searchImmediate,
   loadMore,
   setSort,
 } = useCardSearch();
@@ -31,33 +32,12 @@ const quickAddStatus = ref({});
 
 const advancedSearchOpen = ref(false);
 
-const languageItems = [
-  {
-    label: "English (EN)",
-    value: "EN",
-    avatar: {
-      src: "https://hatscripts.github.io/circle-flags/flags/us.svg",
-      alt: "English",
-      loading: "lazy",
-    },
-  },
-  {
-    label: "Japanese (JP)",
-    value: "JP",
-    avatar: {
-      src: "https://hatscripts.github.io/circle-flags/flags/jp.svg",
-      alt: "Japanese",
-      loading: "lazy",
-    },
-  },
-];
-
-searchCards({ query: "" });
+searchImmediate({ query: "" });
 
 watch(
   [separateVariants, selectedArtist, selectedSet, selectedCategory, searchMode],
   () => {
-    searchCards();
+    searchImmediate();
   },
 );
 
@@ -123,8 +103,8 @@ const activeFilterCount = computed(
     (selectedCategory.value !== "EN" ? 1 : 0),
 );
 
-const selectedLanguage = computed(() =>
-  languageItems.find((l) => l.value === selectedCategory.value),
+const selectedLanguageLabel = computed(() =>
+  selectedCategory.value === "JP" ? "Japanese (JP)" : "English (EN)",
 );
 
 const sortMenuItems = computed(() => [
@@ -239,12 +219,7 @@ function quickAdd(card) {
                   <template #content>
                     <div class="p-4 w-80 flex flex-col gap-4">
                       <UFormField label="Language">
-                        <USelect
-                          v-model="selectedCategory"
-                          :items="languageItems"
-                          icon="i-lucide-languages"
-                          class="w-full"
-                        />
+                        <LanguageSelect v-model="selectedCategory" class="w-full" />
                       </UFormField>
                       <UFormField label="Set">
                         <UInputMenu
@@ -336,7 +311,7 @@ function quickAdd(card) {
                 variant="soft"
                 :ui="{ base: 'pr-0.5 gap-1' }"
               >
-                {{ selectedLanguage?.label }}
+                {{ selectedLanguageLabel }}
                 <UButton
                   icon="i-lucide-x"
                   size="xs"

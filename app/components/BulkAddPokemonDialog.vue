@@ -16,6 +16,8 @@ const SOURCE_MODES = [
   { label: "By set", value: "set" },
 ];
 
+const PREVIEW_DEBOUNCE_MS = 400;
+
 const sourceMode = ref("query");
 const searchQuery = ref("");
 const selectedArtist = ref(null);
@@ -27,6 +29,8 @@ const previewLoading = ref(false);
 const previewError = ref(null);
 const submitting = ref(false);
 const submitError = ref(null);
+
+let previewSeq = 0;
 
 const selectedArtistOption = computed({
   get() {
@@ -53,7 +57,7 @@ const selectedSetOption = computed({
 const currentSelection = computed(() => {
   if (sourceMode.value === "artist") return selectedArtist.value;
   if (sourceMode.value === "set") return selectedSet.value;
-  return searchQuery.value.trim();
+  return normalizeQuery(searchQuery.value);
 });
 
 const sourceLabel = computed(() => {
@@ -83,10 +87,12 @@ function buildPayload() {
   if (sourceMode.value === "set") {
     return { ...base, mode: "set", set: selectedSet.value };
   }
-  return { ...base, mode: "query", query: searchQuery.value.trim() };
+  return { ...base, mode: "query", query: normalizeQuery(searchQuery.value) };
 }
 
 function reset() {
+  debouncedRefresh.cancel();
+  previewSeq++;
   sourceMode.value = "query";
   searchQuery.value = "";
   selectedArtist.value = null;
@@ -96,6 +102,7 @@ function reset() {
   preview.value = null;
   previewError.value = null;
   submitError.value = null;
+  previewLoading.value = false;
 }
 
 watch(
@@ -106,34 +113,51 @@ watch(
 );
 
 watch(sourceMode, () => {
+  debouncedRefresh.cancel();
   preview.value = null;
   previewError.value = null;
   submitError.value = null;
 });
 
-async function refreshPreview() {
+async function fetchPreview() {
+  const seq = ++previewSeq;
   preview.value = null;
   previewError.value = null;
   submitError.value = null;
-  if (!currentSelection.value) return;
-  if (sourceMode.value === "query" && currentSelection.value.length < 2) return;
+  if (!currentSelection.value) {
+    previewLoading.value = false;
+    return;
+  }
+  if (sourceMode.value === "query" && currentSelection.value.length < 2) {
+    previewLoading.value = false;
+    return;
+  }
   previewLoading.value = true;
   try {
-    preview.value = await props.bulkAdd(buildPayload(), { preview: true });
+    const result = await props.bulkAdd(buildPayload(), { preview: true });
+    if (seq !== previewSeq) return;
+    preview.value = result;
   } catch (err) {
+    if (seq !== previewSeq) return;
     previewError.value =
       err?.data?.statusMessage ?? err?.message ?? "Could not load preview";
   } finally {
-    previewLoading.value = false;
+    if (seq === previewSeq) previewLoading.value = false;
   }
 }
 
-watch([currentSelection, separateVariants, selectedCategory, searchMode], () => {
-  refreshPreview();
-});
+const debouncedRefresh = debounce(fetchPreview, PREVIEW_DEBOUNCE_MS);
+
+watch(
+  [currentSelection, separateVariants, selectedCategory, searchMode],
+  () => {
+    debouncedRefresh();
+  },
+);
 
 async function onConfirm() {
   if (!currentSelection.value) return;
+  await debouncedRefresh.flush();
   submitting.value = true;
   submitError.value = null;
   try {
@@ -196,18 +220,7 @@ const masterSetDescription = computed(() => {
           size="sm"
           :content="false"
         />
-        <div class="flex items-center justify-between gap-2">
-          <USwitch
-            :model-value="searchMode === 'common'"
-            label="Use common search"
-            unchecked-icon="i-lucide-sliders-horizontal"
-            checked-icon="i-lucide-scan-search"
-            @update:model-value="(value) => (searchMode = value ? 'common' : 'advanced')"
-          />
-          <UBadge color="neutral" variant="subtle">
-            {{ searchMode === "common" ? "Common search" : "Advanced search" }}
-          </UBadge>
-        </div>
+        <SearchModeSwitch />
         <UAlert
           v-if="searchMode === 'common'"
           color="amber"
@@ -255,16 +268,7 @@ const masterSetDescription = computed(() => {
             </div>
           </UFormField>
           <UFormField label="Language" name="language" required class="sm:w-40">
-            <USelect
-              v-model="selectedCategory"
-              :items="[
-                { label: 'English (EN)', value: 'EN' },
-                { label: 'Japanese (JP)', value: 'JP' },
-              ]"
-              icon="i-lucide-languages"
-              placeholder="Select language"
-              class="w-full"
-            />
+            <LanguageSelect v-model="selectedCategory" class="w-full" />
           </UFormField>
         </div>
 

@@ -22,8 +22,10 @@ const {
   searchMode,
   unsupportedFilters,
   searchCards,
+  searchImmediate,
   loadMore,
-} = useCardSearch();
+  abort,
+} = useCardSearch({ debounceMs: 350 });
 const { options: artistOptions } = useArtists();
 const { options: setOptions } = useSets();
 
@@ -36,6 +38,7 @@ function cardKey(card) {
 }
 
 function reset() {
+  abort();
   searchQuery.value = "";
   selectedArtist.value = null;
   selectedSet.value = null;
@@ -77,19 +80,23 @@ watch(
     if (props.initialQuery) {
       searchQuery.value = props.initialQuery;
       nextTick(() => {
-        if (searchQuery.value.trim()) searchCards();
+        if (searchQuery.value.trim()) searchImmediate();
       });
     }
   },
 );
 
-watch([selectedArtist, selectedSet, selectedCategory, searchMode], () => {
+watch(searchQuery, () => {
   if (searchQuery.value.trim()) searchCards();
+});
+
+watch([selectedArtist, selectedSet, selectedCategory, searchMode], () => {
+  if (searchQuery.value.trim()) searchImmediate();
 });
 
 function submitSearch() {
   if (!searchQuery.value.trim()) return;
-  searchCards();
+  searchImmediate();
 }
 
 async function addToBinder(card) {
@@ -141,15 +148,7 @@ function setOpen(value) {
             size="md"
             autofocus
           />
-          <USelect
-            v-model="selectedCategory"
-            :items="[
-              { label: 'English (EN)', value: 'EN' },
-              { label: 'Japanese (JP)', value: 'JP' },
-            ]"
-            icon="i-lucide-languages"
-            class="sm:w-40"
-          />
+          <LanguageSelect v-model="selectedCategory" class="sm:w-40" />
           <UButton
             type="submit"
             icon="i-lucide-search"
@@ -162,18 +161,7 @@ function setOpen(value) {
           />
         </form>
 
-        <div class="flex items-center justify-between gap-2">
-          <USwitch
-            :model-value="isCommonMode"
-            label="Use common search"
-            unchecked-icon="i-lucide-sliders-horizontal"
-            checked-icon="i-lucide-scan-search"
-            @update:model-value="(value) => (searchMode = value ? 'common' : 'advanced')"
-          />
-          <UBadge color="neutral" variant="subtle">
-            {{ isCommonMode ? 'Common search' : 'Advanced search' }}
-          </UBadge>
-        </div>
+        <SearchModeSwitch />
 
         <UAlert
           v-if="isCommonMode && unsupportedFilters.length"

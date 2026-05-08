@@ -35,7 +35,9 @@ export const SORT_OPTIONS = [
   { label: "Released", value: 5, hasDirection: true },
 ];
 
-export function useCardSearch() {
+export function useCardSearch(options = {}) {
+  const { debounceMs = 0 } = options;
+
   const { mode: searchMode } = useSearchMode();
   const searchQuery = ref("");
   const page = ref(1);
@@ -55,49 +57,63 @@ export function useCardSearch() {
   // Monotonic guard so stale responses from rapid toggles/searches don't
   // overwrite the state for the latest query.
   let requestSeq = 0;
+  let activeController = null;
 
-  function _buildBody(overrides = {}) {
+  function getSearchBody(overrides = {}) {
     const mode = searchMode.value;
-    const base = {
-      query: searchQuery.value,
-      category: selectedCategory.value,
-      searchMode: mode,
-      ...overrides,
-    };
+    const rawQuery = overrides.query !== undefined
+      ? overrides.query
+      : searchQuery.value;
+    const query = normalizeQuery(rawQuery);
+    const category = overrides.category ?? selectedCategory.value;
+    const page = overrides.page ?? 1;
 
     if (mode === "common") {
-      return {
-        query: base.query,
-        category: base.category,
-        page: base.page ?? 1,
-        searchMode: base.searchMode,
-      };
+      return { query, category, page, searchMode: mode };
     }
 
     return {
       ...DEFAULT_SEARCH_BODY,
-      query: base.query,
-      separateVariants: separateVariants.value,
-      artists: selectedArtist.value ? [selectedArtist.value] : [],
-      sets: selectedSet.value ? [selectedSet.value] : [],
-      category: base.category,
-      sortField: sortField.value,
-      isAscending: isAscending.value,
       ...overrides,
-      searchMode: base.searchMode,
+      query,
+      category,
+      page,
+      separateVariants: overrides.separateVariants ?? separateVariants.value,
+      artists: overrides.artists ?? (selectedArtist.value ? [selectedArtist.value] : []),
+      sets: overrides.sets ?? (selectedSet.value ? [selectedSet.value] : []),
+      sortField: overrides.sortField ?? sortField.value,
+      isAscending: overrides.isAscending ?? isAscending.value,
+      searchMode: mode,
     };
   }
 
-  async function searchCards(options = {}) {
+  function abort() {
+    if (activeController) {
+      activeController.abort();
+      activeController = null;
+    }
+    requestSeq++;
+  }
+
+  async function searchImmediate(opts = {}) {
+    if (debouncedSearch) debouncedSearch.cancel();
+    return runSearch(opts);
+  }
+
+  async function runSearch(searchOptions = {}) {
+    if (activeController) activeController.abort();
+    activeController = new AbortController();
+    const controller = activeController;
+
     const seq = ++requestSeq;
     loading.value = true;
     error.value = null;
     page.value = 1;
     hasMore.value = true;
 
-    const body = _buildBody({
-      ...options,
-      query: options.query ?? searchQuery.value,
+    const body = getSearchBody({
+      ...searchOptions,
+      query: searchOptions.query ?? searchQuery.value,
       page: 1,
     });
 
@@ -105,13 +121,16 @@ export function useCardSearch() {
       const data = await $fetch("/api/cards/search", {
         method: "POST",
         body,
+        signal: controller.signal,
       });
 
       if (seq !== requestSeq) return [];
 
       const results = data?.value ?? [];
       cards.value = results;
-      unsupportedFilters.value = Array.isArray(data?.unsupportedFilters) ? data.unsupportedFilters : [];
+      unsupportedFilters.value = Array.isArray(data?.unsupportedFilters)
+        ? data.unsupportedFilters
+        : [];
 
       if (results.length === 0) {
         hasMore.value = false;
@@ -119,13 +138,23 @@ export function useCardSearch() {
 
       return results;
     } catch (err) {
-      if (seq !== requestSeq) return [];
+      if (err?.name === "AbortError" || seq !== requestSeq) return [];
       error.value = err?.message ?? "Error searching cards";
       console.error("Card search error:", err);
       return [];
     } finally {
-      if (seq === requestSeq) loading.value = false;
+      if (seq === requestSeq) {
+        loading.value = false;
+        if (activeController === controller) activeController = null;
+      }
     }
+  }
+
+  const debouncedSearch = debounceMs > 0 ? debounce(runSearch, debounceMs) : null;
+
+  async function searchCards(opts = {}) {
+    if (debouncedSearch) return debouncedSearch(opts);
+    return runSearch(opts);
   }
 
   async function loadMore() {
@@ -136,7 +165,7 @@ export function useCardSearch() {
     error.value = null;
     page.value++;
 
-    const body = _buildBody({ page: page.value });
+    const body = getSearchBody({ page: page.value });
 
     try {
       const data = await $fetch("/api/cards/search", {
@@ -147,7 +176,9 @@ export function useCardSearch() {
       if (seq !== requestSeq) return [];
 
       const results = data?.value ?? [];
-      unsupportedFilters.value = Array.isArray(data?.unsupportedFilters) ? data.unsupportedFilters : [];
+      unsupportedFilters.value = Array.isArray(data?.unsupportedFilters)
+        ? data.unsupportedFilters
+        : [];
 
       if (results.length === 0) {
         hasMore.value = false;
@@ -171,15 +202,13 @@ export function useCardSearch() {
     const option = SORT_OPTIONS.find((o) => o.value === field);
 
     if (sortField.value === field && option?.hasDirection) {
-      // Same field clicked: toggle direction
       isAscending.value = !isAscending.value;
     } else {
-      // Different field: set it with ascending default
       sortField.value = field;
       isAscending.value = true;
     }
 
-    searchCards();
+    searchImmediate();
   }
 
   return {
@@ -199,7 +228,10 @@ export function useCardSearch() {
     searchMode,
     unsupportedFilters,
     searchCards,
+    searchImmediate,
     loadMore,
     setSort,
+    getSearchBody,
+    abort,
   };
 }
