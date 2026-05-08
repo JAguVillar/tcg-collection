@@ -8,7 +8,16 @@ const emit = defineEmits(["update:open", "added"]);
 
 const { options: artistOptions } = useArtists();
 const { options: setOptions } = useSets();
-const { mode: searchMode } = useSearchMode();
+
+const search = useCardSearch();
+const {
+  searchQuery,
+  selectedArtist,
+  selectedSet,
+  selectedCategory,
+  separateVariants,
+  searchMode,
+} = search;
 
 const SOURCE_MODES = [
   { label: "By search", value: "query" },
@@ -17,11 +26,6 @@ const SOURCE_MODES = [
 ];
 
 const sourceMode = ref("query");
-const searchQuery = ref("");
-const selectedArtist = ref(null);
-const selectedSet = ref(null);
-const selectedCategory = ref("EN");
-const separateVariants = ref(false);
 const preview = ref(null);
 const previewLoading = ref(false);
 const previewError = ref(null);
@@ -171,13 +175,6 @@ const emptyMessageNoun = computed(() => {
   if (sourceMode.value === "set") return "set";
   return "search";
 });
-
-const masterSetDescription = computed(() => {
-  if (sourceMode.value === "query") {
-    return "Add all variants of matching cards as separate entries (normal, holofoil, reverse holo, etc.)";
-  }
-  return "Add every variant as a separate entry (normal, holofoil, reverse holo, etc.)";
-});
 </script>
 
 <template>
@@ -196,52 +193,29 @@ const masterSetDescription = computed(() => {
           size="sm"
           :content="false"
         />
-        <div class="flex items-center justify-between gap-2">
-          <USwitch
-            :model-value="searchMode === 'common'"
-            label="Use common search"
-            unchecked-icon="i-lucide-sliders-horizontal"
-            checked-icon="i-lucide-scan-search"
-            @update:model-value="(value) => (searchMode = value ? 'common' : 'advanced')"
-          />
-          <UBadge color="neutral" variant="subtle">
-            {{ searchMode === "common" ? "Common search" : "Advanced search" }}
-          </UBadge>
-        </div>
-        <UAlert
-          v-if="searchMode === 'common'"
-          color="amber"
-          variant="soft"
-          icon="i-lucide-info"
-          :description="sourceMode === 'query' ? 'Common search expands text matching and can return broader card results.' : 'Common search does not strictly apply artist/set filters. Use advanced mode for precise bulk adds.'"
-        />
-        <div class="grid grid-cols-1 sm:grid-cols-[1fr_10rem] gap-3 sm:gap-4">
-          <UFormField
-            :label="sourceFieldLabel"
-            :name="sourceMode"
-            required
-            class="flex-1"
-          >
-            <div class="flex items-center gap-3">
-              <UInput
-                v-if="sourceMode === 'query'"
-                v-model="searchQuery"
-                placeholder="Search cards (e.g. pikachu, professor, energy)…"
-                icon="i-lucide-search"
-                class="flex-1 min-w-0"
-              />
 
+        <UFormField :label="sourceFieldLabel" :name="sourceMode" required>
+          <CardSearchBar
+            :search="search"
+            :show-submit="false"
+            :show-sort="false"
+            :show-set-filter="false"
+            :show-artist-filter="false"
+            size="md"
+            placeholder="Search cards (e.g. pikachu, professor, energy)…"
+          >
+            <template v-if="sourceMode !== 'query'" #input>
               <UInputMenu
-                v-else-if="sourceMode === 'artist'"
+                v-if="sourceMode === 'artist'"
                 v-model="selectedArtistOption"
                 :items="artistOptions"
                 :virtualize="true"
                 placeholder="Search an artist…"
                 icon="i-lucide-palette"
                 clear
+                size="md"
                 class="flex-1 min-w-0"
               />
-
               <UInputMenu
                 v-else
                 v-model="selectedSetOption"
@@ -250,43 +224,12 @@ const masterSetDescription = computed(() => {
                 placeholder="Search a set…"
                 icon="i-lucide-layers"
                 clear
+                size="md"
                 class="flex-1 min-w-0"
               />
-            </div>
-          </UFormField>
-          <UFormField label="Language" name="language" required class="sm:w-40">
-            <USelect
-              v-model="selectedCategory"
-              :items="[
-                { label: 'English (EN)', value: 'EN' },
-                { label: 'Japanese (JP)', value: 'JP' },
-              ]"
-              icon="i-lucide-languages"
-              placeholder="Select language"
-              class="w-full"
-            />
-          </UFormField>
-        </div>
-
-        <UAlert
-          color="amber"
-          :variant="separateVariants ? 'subtle' : 'soft'"
-          icon="i-lucide-gem"
-        >
-          <template #title> Master set </template>
-          <template #description>
-            <p>{{ masterSetDescription }}</p>
-          </template>
-          <template #actions>
-            <UFormField>
-              <USwitch
-                v-model="separateVariants"
-                label="Add all variants"
-                color="amber"
-              />
-            </UFormField>
-          </template>
-        </UAlert>
+            </template>
+          </CardSearchBar>
+        </UFormField>
 
         <div
           v-if="previewLoading"

@@ -9,6 +9,7 @@ const props = defineProps({
 
 const emit = defineEmits(["update:open", "added"]);
 
+const search = useCardSearch();
 const {
   searchQuery,
   cards,
@@ -19,13 +20,12 @@ const {
   selectedArtist,
   selectedSet,
   selectedCategory,
+  separateVariants,
   searchMode,
   unsupportedFilters,
   searchCards,
   loadMore,
-} = useCardSearch();
-const { options: artistOptions } = useArtists();
-const { options: setOptions } = useSets();
+} = search;
 
 const addStatus = ref({});
 const addedCount = ref(0);
@@ -40,32 +40,11 @@ function reset() {
   selectedArtist.value = null;
   selectedSet.value = null;
   selectedCategory.value = "EN";
+  separateVariants.value = false;
   cards.value = [];
   addStatus.value = {};
   addedCount.value = 0;
 }
-
-const selectedArtistOption = computed({
-  get() {
-    if (!selectedArtist.value) return null;
-    return (
-      artistOptions.value.find((o) => o.value === selectedArtist.value) ?? null
-    );
-  },
-  set(option) {
-    selectedArtist.value = option?.value ?? null;
-  },
-});
-
-const selectedSetOption = computed({
-  get() {
-    if (!selectedSet.value) return null;
-    return setOptions.value.find((o) => o.value === selectedSet.value) ?? null;
-  },
-  set(option) {
-    selectedSet.value = option?.value ?? null;
-  },
-});
 
 watch(
   () => props.open,
@@ -83,9 +62,12 @@ watch(
   },
 );
 
-watch([selectedArtist, selectedSet, selectedCategory, searchMode], () => {
-  if (searchQuery.value.trim()) searchCards();
-});
+watch(
+  [selectedArtist, selectedSet, selectedCategory, separateVariants, searchMode],
+  () => {
+    if (searchQuery.value.trim()) searchCards();
+  },
+);
 
 function submitSearch() {
   if (!searchQuery.value.trim()) return;
@@ -129,51 +111,12 @@ function setOpen(value) {
   >
     <template #body>
       <div class="flex flex-col gap-3 sm:gap-4">
-        <form
-          class="flex flex-col sm:flex-row sm:items-center gap-2"
-          @submit.prevent="submitSearch"
-        >
-          <UInput
-            v-model="searchQuery"
-            icon="i-lucide-search"
-            placeholder="Search for a Pokémon card…"
-            class="flex-1"
-            size="md"
-            autofocus
-          />
-          <USelect
-            v-model="selectedCategory"
-            :items="[
-              { label: 'English (EN)', value: 'EN' },
-              { label: 'Japanese (JP)', value: 'JP' },
-            ]"
-            icon="i-lucide-languages"
-            class="sm:w-40"
-          />
-          <UButton
-            type="submit"
-            icon="i-lucide-search"
-            :loading="loading"
-            :disabled="!searchQuery.trim()"
-            :ui="{ label: 'hidden sm:inline' }"
-            label="Search"
-            block
-            class="sm:w-auto"
-          />
-        </form>
-
-        <div class="flex items-center justify-between gap-2">
-          <USwitch
-            :model-value="isCommonMode"
-            label="Use common search"
-            unchecked-icon="i-lucide-sliders-horizontal"
-            checked-icon="i-lucide-scan-search"
-            @update:model-value="(value) => (searchMode = value ? 'common' : 'advanced')"
-          />
-          <UBadge color="neutral" variant="subtle">
-            {{ isCommonMode ? 'Common search' : 'Advanced search' }}
-          </UBadge>
-        </div>
+        <CardSearchBar
+          :search="search"
+          size="md"
+          placeholder="Search for a Pokémon card…"
+          @submit="submitSearch"
+        />
 
         <UAlert
           v-if="isCommonMode && unsupportedFilters.length"
@@ -182,25 +125,6 @@ function setOpen(value) {
           icon="i-lucide-info"
           description="In common mode, set and artist filters are informational and may not narrow results."
         />
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <UInputMenu
-            v-model="selectedSetOption"
-            :items="setOptions"
-            :virtualize="true"
-            placeholder="Filter by set"
-            icon="i-lucide-layers"
-            clear
-          />
-          <UInputMenu
-            v-model="selectedArtistOption"
-            :items="artistOptions"
-            :virtualize="true"
-            placeholder="Filter by artist"
-            icon="i-lucide-palette"
-            clear
-          />
-        </div>
 
         <UAlert
           v-if="addedCount"
